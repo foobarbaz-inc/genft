@@ -14,13 +14,15 @@ contract ArtNFT is ERC721URIStorage {
 
     event TokenMinted(address to, uint256 blockTimestamp, uint256 tokenId);
 
+    constructor() ERC721("GENft", "GEN") {}
+
     function initialize(
         address parent_,
         address owner_
     ) external {
         require(!initialized, "Already initialized");
         parent = parent_;
-        owner = owner;
+        owner = owner_;
         initialized = true;
     }
 
@@ -40,12 +42,14 @@ contract ArtNFT is ERC721URIStorage {
         currentTokenId++;
         _mint(to, currentTokenId);
         emit TokenMinted(to, block.timestamp, currentTokenId);
+        return currentTokenId;
     }
 
     function setPrice(uint256 price_) external onlyOwner {
         price = price_;
     }
 
-    function setTokenURI(uint256 tokenId, string memory tokenURI) external onlyParent {
-        _setTokenURI(tokenId, tokenURI);
+    function setTokenURI(uint256 tokenId_, string memory tokenURI_) external onlyParent {
+        _setTokenURI(tokenId_, tokenURI_);
     }
+}
