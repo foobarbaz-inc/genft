@@ -3,26 +3,25 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-//SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.0;
-
-import "hardhat/console.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-
-contract ArtNFT is ERC721 {
+contract ArtNFT is ERC721URIStorage {
     address private owner;
     address private parent;
-    string private baseURI;
+    bool private initialized;
     uint256 currentTokenId;
     uint256 price;
 
     event TokenMinted(address to, uint256 blockTimestamp, uint256 tokenId);
 
-    constructor(string memory baseURI_, address parent_, address owner_) {
-        baseURI = baseURI_;
+    function initialize(
+        address parent_,
+        address owner_
+    ) external {
+        require(!initialized, "Already initialized");
         parent = parent_;
         owner = owner;
+        initialized = true;
     }
 
     modifier onlyOwner() {
@@ -35,6 +34,7 @@ contract ArtNFT is ERC721 {
         _;
     }
 
+    // todo add optional mint gating settable by owner
     function mint(address to) external payable returns (uint) {
         require(msg.value >= price, "Insufficient payment");
         currentTokenId++;
@@ -44,4 +44,8 @@ contract ArtNFT is ERC721 {
 
     function setPrice(uint256 price_) external onlyOwner {
         price = price_;
+    }
+
+    function setTokenURI(uint256 tokenId, string memory tokenURI) external onlyParent {
+        _setTokenURI(tokenId, tokenURI);
     }
