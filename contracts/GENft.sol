@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract MetaNFT is ERC721 {
+contract GENft is ERC721 {
     address private owner;
     string private baseURI;
     uint256 currentTokenId;
@@ -48,7 +48,7 @@ contract MetaNFT is ERC721 {
         tokenIdToLabel[currentTokenId] = label;
         _mint(to, currentTokenId);
         // todo: deploy ERC721 contract w/ msg.sender as owner
-        // ArtNFT artNFT = new ArtNFT("", msg.sender);
+        // ArtNFT artNFT = new ArtNFT("", address(this), msg.sender);
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
