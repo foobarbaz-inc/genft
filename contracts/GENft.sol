@@ -3,9 +3,11 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract GENft is ERC721 {
     address private owner;
+    address private referenceChild;
     string private baseURI;
     uint256 currentTokenId;
     uint256 price;
@@ -15,9 +17,11 @@ contract GENft is ERC721 {
 
     event TokenUriSet(address childContract, uint256 tokenId);
 
-    constructor(string memory baseURI_) {
+    constructor(string memory baseURI_, address referenceChild_, uint price_) {
         baseURI = baseURI_;
         owner = msg.sender;
+        referenceChild = referenceChild_;
+        price = price_;
     }
 
     modifier onlyOwner() {
@@ -47,8 +51,11 @@ contract GENft is ERC721 {
         currentTokenId++;
         tokenIdToLabel[currentTokenId] = label;
         _mint(to, currentTokenId);
-        // todo: deploy ERC721 contract w/ msg.sender as owner
-        // ArtNFT artNFT = new ArtNFT("", address(this), msg.sender);
+        address childAddress = Clones.clone(referenceChild);
+        ArtNFT childContract = ArtNFT(childAddress);
+        // todo
+        // what to use as general base URI? how to set on first token minting?
+        childContract.initialize(address(this), msg.sender);
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
@@ -58,7 +65,11 @@ contract GENft is ERC721 {
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenIdToLabel[tokenId]))) : "";
     }
 
-    function setChildTokenUri(address childContract, uint256 tokenId, string memory tokenUri) external onlyWorker {
-
+    function setChildTokenURI(address childContract, uint256 tokenId, string memory tokenURI) external onlyWorker {
+        ArtNFT child = ArtNFT(childContract);
+        if (tokenId == 1) {
+            // set base URI
+        }
+        child.setTokenURI(tokenId, tokenURI);
     }
 }
