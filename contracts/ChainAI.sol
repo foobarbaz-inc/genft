@@ -4,45 +4,52 @@ pragma solidity ^0.8.0;
 
 contract ChainAI {
 
-    uint modelPrice; // price to add a model to the contract
-    uint latestModelId; // increment model IDs as more models are added
-    uint latestDataId; // used for input & output data identification
-    uint latestModelRunId; // keep track of model runs
+    uint public trainingPrice; // price to run training
+    uint public inferencePrice; // price to run inference
+    uint latestJobId; // keep track of model runs
     address owner; // used for adding and removing addresses of trusted GPU workers
 
-    mapping (address -> bool) trustedGPUWorkers;
-    mapping (uint -> ModelRun) modelRuns;
-    mapping (uint -> string) modelStorageLocations; // model location on Arweave / IPFS
-    mapping (uint -> string) dataStorageLocations; //
+    mapping (address => bool) sequencers;
+    mapping (uint => Job) jobs;
 
-    enum ModelRunStatus {
-        NotStarted,
-        Executing,
+    enum JobStatus {
+        Created,
         Failed,
         Succeeded
     }
 
-    // store model run sender, allow them to cancel & get refund
-    struct ModelRun {
-        uint id;
-        uint modelId;
-        uint dataInputId;
-        uint dataOutputId;
-        uint createdTimestamp;
-        address callbackAddress;
-        bytes32 callbackData;
-        ModelRunStatus status;
+    enum JobType {
+        Training,
+        Inference
     }
 
-    event ModelAdded(uint modelId, string modelStorageLocation);
-    event DataAdded(uint dataId, string dataStorageLocation);
-    event ModelRunCreated(uint modelRunId, uint modelId, uint dataInputId, uint dataOutputId, uint createdTimestamp);
-    event ModelRunStarted(uint modelRunId, uint modelId, uint dataInputId, uint dataOutputId, uint createdTimestamp);
-    event ModelRunFailed(uint modelRunId, uint modelId, uint dataInputId, uint dataOutputId, uint createdTimestamp);
-    event ModelRunSucceeded(uint modelRunId, uint modelId, uint dataInputId, uint dataOutputId, uint createdTimestamp);
+    // store model run sender, allow them to cancel & get refund
+    struct Job {
+        uint id;
+        uint createdTimestamp;
+        JobStatus status;
+        JobType jobType;
+        address callbackAddress;
+        bytes callbackData;
+        string modelStorageLocation;
+        string dataInputStorageLocation;
+        string dataOutputStorageLocation;
+    }
 
-    constructor() {
+    event JobCreated(
+        uint jobId,
+        JobType jobType,
+        string modelStorageLocation,
+        string dataInputStorageLocation,
+        uint createdTimestamp
+    );
+    event JobFailed(uint jobId);
+    event JobSucceeded(uint jobId);
+
+    constructor(uint trainingPrice_, uint inferencePrice_) {
         owner = msg.sender;
+        trainingPrice = trainingPrice_;
+        inferencePrice = inferencePrice_;
     }
 
     modifier onlyOwner {
@@ -50,81 +57,110 @@ contract ChainAI {
         _;
     }
 
-    modifier validModel(uint modelId) {
-        require(modelStorageLocations[modelId], "Model does not exist");
-        _;
-    }
-
-    function addModel(string memory modelStorageLocation) external {
-        latestModelId++;
-        modelStorageLocations[latestModelId] = modelStorageLocation;
-        emit ModelAdded(latestModelId, modelStorageLocation);
-    }
-
-    function addInputData(string memory inputDataStorageLocation) external {
-        latestDataId++;
-        dataStorageLocations[latestDataId] = inputDataStorageLocation;
-        emit DataAdded(latestDataId, inputDataStorageLocation);
-    }
-
-    function runModel(
-        uint modelId,
-        uint inputDataId,
+    function _startJob(
+        JobType jobType,
+        string memory modelStorageLocation,
+        string memory dataInputStorageLocation,
         address callbackAddress,
-        bytes32 callbackData
-    ) external payable validModel(modelId) {
-        require(msg.value >= modelPrice, "Insufficient ETH amount paid");
-        require(dataStorageLocations[inputDataId], "Input data does not exist");
-        latestModelRunId++;
-        latestDataId++;
+        bytes memory callbackData
+    ) internal {
+        latestJobId++;
+        // create job
         uint createdTimestamp = block.timestamp;
-        ModelRun memory run = new ModelRun(
-            latestModelRunId,
-            modelId,
-            dataInputId,
-            latestDataId,
-            createdTimestamp,
-            callbackAddress,
-            callbackData,
-            ModelRunStatus.NotStarted
+        Job memory job = Job({
+            id: latestJobId,
+            modelStorageLocation: modelStorageLocation,
+            dataInputStorageLocation: dataInputStorageLocation,
+            createdTimestamp: createdTimestamp,
+            callbackAddress: callbackAddress,
+            callbackData: callbackData,
+            jobType: jobType,
+            status: JobStatus.Created,
+            dataOutputStorageLocation: ""
+          });
+        // add to jobs mapping
+        jobs[latestJobId] = job;
+        emit JobCreated(
+            latestJobId,
+            jobType,
+            modelStorageLocation,
+            dataInputStorageLocation,
+            createdTimestamp
         );
-        modelRuns[latestModelRunId] = run;
-        emit ModelRunCreated(latestModelRunId, modelId, dataInputId, latestDataId, createdTimestamp);
     }
 
-    function updateModelStatus(
-        uint modelId,
-        ModelRunStatus modelStatus,
-        string resultsLocation
+    function startInferenceJob(
+      string memory modelStorageLocation,
+      string memory dataInputStorageLocation,
+      address callbackAddress,
+      bytes memory callbackData
+    ) external payable {
+        require(msg.value >= inferencePrice, "Insufficient ETH amount paid");
+        _startJob(
+            JobType.Inference,
+            modelStorageLocation,
+            dataInputStorageLocation,
+            callbackAddress,
+            callbackData
+        );
+    }
+
+    function startTrainingJob(
+      string memory modelStorageLocation,
+      string memory dataInputStorageLocation,
+      address callbackAddress,
+      bytes memory callbackData
+    ) external payable  {
+        require(msg.value >= trainingPrice, "Insufficient ETH amount paid");
+        _startJob(
+            JobType.Training,
+            modelStorageLocation,
+            dataInputStorageLocation,
+            callbackAddress,
+            callbackData
+        );
+    }
+
+    function updateJobStatus(
+        uint jobId,
+        JobStatus jobStatus,
+        string memory resultsLocation
     ) external {
-        require(trustedGPUWorkers[msg.sender], "Not a trusted GPU worker");
-        ModelRun storage run = modelRuns[modelId];
-        run.status = modelStatus;
-        if (modelStatus == ModelStatus.Executing) {
-            emit ModelRunStarted(run.id, run.modelId, run.dataInputId, run.dataOutputId, run.createdTimestamp);
-        } else if (modelStatus == ModelStatus.Failed) {
+        require(sequencers[msg.sender], "Not a trusted GPU worker");
+        Job storage job = jobs[jobId];
+        job.status = jobStatus;
+        if (jobStatus == JobStatus.Failed) {
             // todo
             // should the msg.sender be refunded, or get a balance they can withdraw?
             // should the model automatically be restarted?
-            emit ModelRunFailed(run.id, run.modelId, run.dataInputId, run.dataOutputId, run.createdTimestamp);
-        } else if (modelStatus == ModelStatus.Succeeded) {
-            require(resultsLocation != "", "Invalid results location");
-            dataStorageLocations[run.dataOutputId] = resultsLocation;
-            (bool success,) = run.callbackAddress.call(callbackData);
+            emit JobFailed(job.id);
+        } else if (jobStatus == JobStatus.Succeeded) {
+            job.dataOutputStorageLocation = resultsLocation;
+            // todo add in correctly encoded locaiton argument
+            (bool success,) = job.callbackAddress.call(job.callbackData);
             require(success, "Callback failed");
-            emit ModelRunSucceeded(run.id, run.modelId, run.dataInputId, run.dataOutputId, run.createdTimestamp);
+            emit JobSucceeded(job.id);
         }
     }
 
-    function addGPUWorker(address worker) external onlyOwner {
-        trustedGPUWorkers[worker] = true;
+    function addSequencer(address sequencer) external onlyOwner {
+        sequencers[sequencer] = true;
     }
 
-    function removeGPUWorker(address worker) external onlyOwner {
-        trustedGPUWorkers[worker] = false;
+    function removeSequencer(address sequencer) external onlyOwner {
+        sequencers[sequencer] = false;
+    }
+
+    function updateInferencePrice(uint price) external onlyOwner {
+        inferencePrice = price;
+    }
+
+    function updateTrainingPrice(uint price) external onlyOwner {
+        trainingPrice = price;
     }
 
     function withdraw() external onlyOwner {
         (bool success,) = payable(owner).call{value: address(this).balance}("");
+        require(success, "Withdraw failed");
     }
 }

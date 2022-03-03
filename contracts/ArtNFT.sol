@@ -4,25 +4,35 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "./ChainAI.sol"; // todo make this an interface
+import "./GENft.sol"; // todo make this an interface
 
 contract ArtNFT is ERC721URIStorage {
     address private owner;
-    address private parent;
+    address public mlCoordinator;
+    address public parent;
     bool private initialized;
+    uint256 public myTokenId;
     uint256 currentTokenId;
     uint256 price;
 
-    event TokenMinted(address to, uint256 blockTimestamp, uint256 tokenId);
+    mapping (uint256 => string) tokenIdToDataInput;
+
+    event TokenUriSet(uint256 tokenId);
 
     constructor() ERC721("GENft", "GEN") {}
 
     function initialize(
         address parent_,
-        address owner_
+        address owner_,
+        address mlCoordinator_,
+        uint256 myTokenId_
     ) external {
         require(!initialized, "Already initialized");
         parent = parent_;
         owner = owner_;
+        mlCoordinator = mlCoordinator_;
+        myTokenId = myTokenId_;
         initialized = true;
     }
 
@@ -31,17 +41,27 @@ contract ArtNFT is ERC721URIStorage {
         _;
     }
 
-    modifier onlyParent() {
-        require(msg.sender == parent, "Not the parent");
-        _;
-    }
-
     // todo add optional mint gating settable by owner
-    function mint(address to) external payable returns (uint) {
+    function mint(address to, string memory dataInputLocation) external payable returns (uint) {
         require(msg.value >= price, "Insufficient payment");
+        ChainAI mlContract = ChainAI(mlCoordinator);
+        uint inferencePrice = mlContract.inferencePrice();
+        require(msg.value >= inferencePrice, "Insufficient payment for inference");
+        GENft parentContract = GENft(parent);
+        string memory modelStorageLocation = parentContract.tokenURI(myTokenId);
+        require(
+            keccak256(abi.encodePacked(modelStorageLocation)) != keccak256(abi.encodePacked("")),
+            "Model not yet set"
+        );
         currentTokenId++;
         _mint(to, currentTokenId);
-        emit TokenMinted(to, block.timestamp, currentTokenId);
+        // todo encode setTokenURI & correct args for callback fxn & data
+        mlContract.startInferenceJob{value: inferencePrice}(
+            modelStorageLocation,
+            dataInputLocation,
+            address(0),
+            bytes("hi")
+        );
         return currentTokenId;
     }
 
@@ -49,7 +69,9 @@ contract ArtNFT is ERC721URIStorage {
         price = price_;
     }
 
-    function setTokenURI(uint256 tokenId_, string memory tokenURI_) external onlyParent {
+    function setTokenURI(uint256 tokenId_, string memory tokenURI_) external {
+        require(msg.sender == mlCoordinator, "Not ML coordinator");
         _setTokenURI(tokenId_, tokenURI_);
+        emit TokenUriSet(tokenId_);
     }
 }

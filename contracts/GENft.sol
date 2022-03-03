@@ -3,28 +3,32 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
-import "./ArtNFT.sol";
+import "./ChainAI.sol"; // todo make this an interface
+import "./ArtNFT.sol"; // todo make this an interface
 
-contract GENft is ERC721 {
+contract GENft is ERC721URIStorage {
     address private owner;
     address private referenceChild;
-    string private baseURI;
+    address public mlCoordinator;
+    string private baseModelLocation;
     uint256 currentTokenId;
     uint256 price;
 
-    mapping (uint256 => string) tokenIdToLabel;
-    mapping (address => bool) workers;
+    mapping (uint256 => string) tokenIdToDataInput;
 
-    event TokenUriSet(address childContract, uint256 tokenId);
+    event TokenUriSet(uint256 tokenId);
 
     constructor(
-        string memory baseURI_,
+        string memory baseModelLocation_,
         address referenceChild_,
+        address mlCoordinator_,
         uint price_
     ) ERC721("GENft", "GEN") {
-        baseURI = baseURI_;
+        baseModelLocation = baseModelLocation_;
         owner = msg.sender;
+        mlCoordinator = mlCoordinator_;
         referenceChild = referenceChild_;
         price = price_;
     }
@@ -34,47 +38,30 @@ contract GENft is ERC721 {
         _;
     }
 
-    modifier onlyWorker() {
-        require(workers[msg.sender], "Not a worker");
-        _;
-    }
-
-    function _baseURI() internal view virtual override returns (string memory) {
-        return baseURI;
-    }
-
-    function addWorker(address worker_) external onlyOwner {
-        workers[worker_] = true;
-    }
-
-    function removeWorker(address worker_) external onlyOwner {
-        workers[worker_] = false;
-    }
-
-    function mint(address to, string memory label) external payable returns (uint) {
+    function mint(address to, string memory dataInputLocation) external payable returns (uint) {
         require(msg.value >= price, "Insufficient payment");
+        ChainAI mlContract = ChainAI(mlCoordinator);
+        uint trainingPrice = mlContract.trainingPrice();
+        require(msg.value >= trainingPrice, "Insufficient payment for training");
         currentTokenId++;
-        tokenIdToLabel[currentTokenId] = label;
+        tokenIdToDataInput[currentTokenId] = dataInputLocation;
         _mint(to, currentTokenId);
         address childAddress = Clones.clone(referenceChild);
         ArtNFT childContract = ArtNFT(childAddress);
-        // todo
-        // what to use as general base URI? how to set on first token minting?
-        childContract.initialize(address(this), msg.sender);
+        childContract.initialize(address(this), msg.sender, mlCoordinator, currentTokenId);
+        // todo encode setTokenURI & correct args for callback fxn & data
+        mlContract.startTrainingJob{value: trainingPrice}(
+            baseModelLocation,
+            dataInputLocation,
+            address(0),
+            bytes("hi")
+        );
         return currentTokenId;
     }
 
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-        // return URI of base URI + label
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenIdToLabel[tokenId])) : "";
-    }
-
-    function setChildTokenURI(address childContract, uint256 tokenId_, string memory tokenURI_) external onlyWorker {
-        ArtNFT child = ArtNFT(childContract);
-        if (tokenId_ == 1) {
-            // set base URI
-        }
-        child.setTokenURI(tokenId_, tokenURI_);
+    function setTokenURI(uint256 tokenId_, string memory tokenURI_) external {
+        require(msg.sender == mlCoordinator, "Not ML coordinator");
+        _setTokenURI(tokenId_, tokenURI_);
+        emit TokenUriSet(tokenId_);
     }
 }
