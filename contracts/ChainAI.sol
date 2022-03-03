@@ -9,8 +9,8 @@ contract ChainAI {
     uint latestJobId; // keep track of model runs
     address owner; // used for adding and removing addresses of trusted GPU workers
 
-    mapping (address => bool) sequencers;
-    mapping (uint => Job) jobs;
+    mapping (address => bool) public sequencers;
+    mapping (uint => Job) public jobs;
 
     enum JobStatus {
         Created,
