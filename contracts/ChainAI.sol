@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
+import "hardhat/console.sol";
 
 contract ChainAI {
 
@@ -137,7 +138,11 @@ contract ChainAI {
         } else if (jobStatus == JobStatus.Succeeded) {
             job.dataOutputStorageLocation = resultsLocation;
             // todo add in correctly encoded locaiton argument
-            (bool success,) = job.callbackAddress.call(job.callbackData);
+            console.log('hi callback');
+            bytes memory fullCallbackData = abi.encodePacked(job.callbackData, resultsLocation);
+            //console.log(job.callbackData);
+            console.log(resultsLocation);
+            (bool success,) = job.callbackAddress.call(fullCallbackData);
             require(success, "Callback failed");
             emit JobSucceeded(job.id);
         }

@@ -7,10 +7,10 @@ async function increase_time(seconds) {
 }
 
 describe("ChainAI", function () {
-  async function deploy() {
+  async function deployChainAI(trainingPrice, inferencePrice) {
     const [deployer, sequencer, randomPerson] = await ethers.getSigners()
     const ChainAIFactory = await ethers.getContractFactory("ChainAI");
-    const chainAI = await ChainAIFactory.deploy(0, 0);
+    const chainAI = await ChainAIFactory.deploy(trainingPrice, inferencePrice);
     await chainAI.deployed()
     return {
       chainAI,
@@ -19,15 +19,28 @@ describe("ChainAI", function () {
       randomPerson
     }
   }
+  async function deployArtNFT() {
+    const ArtNftFactory = await ethers.getContractFactory("ArtNFT");
+    const artNft = await ArtNftFactory.deploy();
+    await artNft.deployed()
+    return artNft
+  }
+  async function deployGENft(baseModelLocation, referenceChild, mlCoordinator, price) {
+    const GENftFactory = await ethers.getContractFactory("GENft");
+    const genft = await GENftFactory.deploy(baseModelLocation, referenceChild, mlCoordinator, price);
+    await genft.deployed()
+    return genft
+  }
+  // TESTING CHAIN AI BASIC FUNCTIONS
   it("Should allow the deployer to add a sequencer", async function () {
-    const {chainAI, deployer, sequencer, randomPerson} = await deploy()
+    const {chainAI, deployer, sequencer, randomPerson} = await deployChainAI(0, 0)
     await chainAI.connect(deployer).addSequencer(sequencer.address)
     expect(await chainAI.sequencers(sequencer.address)).to.be.true;
     await expect(chainAI.connect(randomPerson).addSequencer(randomPerson.address))
       .to.be.revertedWith("Only owner allowed");
   });
   it("Should allow the deployer to change inference & training prices", async function () {
-    const {chainAI, deployer, sequencer, randomPerson} = await deploy()
+    const {chainAI, deployer, sequencer, randomPerson} = await deployChainAI(0, 0)
     var newInferencePrice = ethers.utils.parseEther("0.1");
     var newTrainingPrice = ethers.utils.parseEther("0.3");
     await chainAI.connect(deployer).updateInferencePrice(newInferencePrice);
@@ -38,5 +51,54 @@ describe("ChainAI", function () {
     expect(await chainAI.trainingPrice()).to.equal(newTrainingPrice);
     await expect(chainAI.connect(randomPerson).updateTrainingPrice(newInferencePrice))
       .to.be.revertedWith("Only owner allowed");
+  });
+  // TESTING GENFT BASIC FUNCTIONS
+  it("Clones a new instance of ArtNFT when you mint a GENft token", async function () {
+    const { chainAI, deployer, sequencer, randomPerson } = await deployChainAI(0, 0);
+    const artNft = await deployArtNFT()
+    const genft = await deployGENft("", artNft.address, chainAI.address, 0)
+    expect(await genft.mint(randomPerson.address, ""))
+      .to.emit(genft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
+  });
+  it("Blocks non ML coordinator from setting tokenURI", async function () {
+    const { chainAI, deployer, sequencer, randomPerson } = await deployChainAI(0, 0);
+    const artNft = await deployArtNFT()
+    const genft = await deployGENft("", artNft.address, chainAI.address, 0)
+    await expect(genft.connect(sequencer).setTokenURI(1, ""))
+      .to.be.revertedWith("Not ML coordinator")
+  });
+  // TESTING ARTNFT BASIC FUNCTIONS
+  it("Initializes the ArtNft contract only once", async function () {
+
+  });
+  it("Allows the ML coordinator to set the tokenURI", async function () {
+
+  });
+  // INTEGRATION TESTING -- CROSS CONTRACT LOGIC
+  it("Creates training job when new GenFT minted", async function () {
+    const { chainAI, deployer, sequencer, randomPerson } = await deployChainAI(0, 0);
+    const artNft = await deployArtNFT()
+    const genft = await deployGENft("", artNft.address, chainAI.address, 0)
+    const blockNumber = await ethers.provider.getBlockNumber();
+    const timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
+    expect(await genft.mint(randomPerson.address, ""))
+      .to.emit(genft, "Transfer").withArgs(
+        '0x0000000000000000000000000000000000000000', randomPerson.address, 1)
+      .to.emit(chainAI, "JobCreated").withArgs(1, 0, "", "", timestamp)
+  });
+  it("Updates token URI when training completes", async function () {
+    const { chainAI, deployer, sequencer, randomPerson } = await deployChainAI(0, 0);
+    await chainAI.connect(deployer).addSequencer(sequencer.address)
+    const artNft = await deployArtNFT()
+    const genft = await deployGENft("", artNft.address, chainAI.address, 0)
+    const blockNumber = await ethers.provider.getBlockNumber();
+    const timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
+    expect(await genft.mint(randomPerson.address, ""))
+      .to.emit(genft, "Transfer").withArgs(
+        '0x0000000000000000000000000000000000000000', randomPerson.address, 1)
+      .to.emit(chainAI, "JobCreated").withArgs(1, 0, "", "", timestamp)
+    expect(await chainAI.connect(sequencer).updateJobStatus(1, 2, "http://foo"))
+      .to.emit(genft, "TokenUriSet", 1)
+      .to.emit(chainAI, "JobSucceeded", 1)
   });
 });

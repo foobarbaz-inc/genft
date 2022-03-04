@@ -38,6 +38,13 @@ contract GENft is ERC721URIStorage {
         _;
     }
 
+    function _calculateCallbackData(uint256 tokenId_) private pure returns (bytes memory) {
+        string memory signatureInput = "setTokenURI(uint256,string)";
+        bytes32 signature = keccak256(abi.encode(signatureInput));
+        bytes memory partiallyApplied = abi.encodePacked(signature, bytes32(tokenId_));
+        return partiallyApplied;
+    }
+
     function mint(address to, string memory dataInputLocation) external payable returns (uint) {
         require(msg.value >= price, "Insufficient payment");
         ChainAI mlContract = ChainAI(mlCoordinator);
@@ -50,11 +57,12 @@ contract GENft is ERC721URIStorage {
         ArtNFT childContract = ArtNFT(childAddress);
         childContract.initialize(address(this), msg.sender, mlCoordinator, currentTokenId);
         // todo encode setTokenURI & correct args for callback fxn & data
+        bytes memory callbackData = _calculateCallbackData(currentTokenId);
         mlContract.startTrainingJob{value: trainingPrice}(
             baseModelLocation,
             dataInputLocation,
-            address(0),
-            bytes("hi")
+            address(this),
+            callbackData
         );
         return currentTokenId;
     }
