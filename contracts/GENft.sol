@@ -17,9 +17,10 @@ contract GENft is ERC721URIStorage {
     uint256 price;
 
     mapping (uint256 => string) tokenIdToDataInput;
+    mapping (uint256 => address) public tokenIdToChildContract;
 
     event ArtNftCreated(address child, address owner);
-    event TokenUriSet(uint256 tokenId);
+    event TokenUriSet(uint256 tokenId, string tokenURI);
 
     constructor(
         string memory baseModelLocation_,
@@ -58,6 +59,7 @@ contract GENft is ERC721URIStorage {
         ArtNFT childContract = ArtNFT(childAddress);
         childContract.initialize(address(this), msg.sender, mlCoordinator, currentTokenId);
         emit ArtNftCreated(childAddress, msg.sender);
+        tokenIdToChildContract[currentTokenId] = childAddress;
         bytes memory callbackData = _calculateCallbackData(currentTokenId);
         mlContract.startTrainingJob{value: trainingPrice}(
             baseModelLocation,
@@ -71,6 +73,8 @@ contract GENft is ERC721URIStorage {
     function setTokenURI(uint256 tokenId_, string memory tokenURI_) external {
         require(msg.sender == mlCoordinator, "Not ML coordinator");
         _setTokenURI(tokenId_, tokenURI_);
-        emit TokenUriSet(tokenId_);
+        console.log("Hi i am setting the token uri");
+        console.log(tokenURI_);
+        emit TokenUriSet(tokenId_, tokenURI_);
     }
 }

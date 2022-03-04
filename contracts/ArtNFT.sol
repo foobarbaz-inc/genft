@@ -18,7 +18,7 @@ contract ArtNFT is ERC721URIStorage {
 
     mapping (uint256 => string) tokenIdToDataInput;
 
-    event TokenUriSet(uint256 tokenId);
+    event TokenUriSet(uint256 tokenId, string tokenURI);
 
     constructor() ERC721("GENft", "GEN") {}
 
@@ -56,6 +56,8 @@ contract ArtNFT is ERC721URIStorage {
         require(msg.value >= inferencePrice, "Insufficient payment for inference");
         GENft parentContract = GENft(parent);
         string memory modelStorageLocation = parentContract.tokenURI(myTokenId);
+        console.log("token URI");
+        console.log(modelStorageLocation);
         require(
             keccak256(abi.encodePacked(modelStorageLocation)) != keccak256(abi.encodePacked("")),
             "Model not yet set"
@@ -80,6 +82,6 @@ contract ArtNFT is ERC721URIStorage {
     function setTokenURI(uint256 tokenId_, string memory tokenURI_) external {
         require(msg.sender == mlCoordinator, "Not ML coordinator");
         _setTokenURI(tokenId_, tokenURI_);
-        emit TokenUriSet(tokenId_);
+        emit TokenUriSet(tokenId_, tokenURI_);
     }
 }

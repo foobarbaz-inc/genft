@@ -81,6 +81,8 @@ contract ChainAI {
           });
         // add to jobs mapping
         jobs[latestJobId] = job;
+        console.log("model storage location");
+        console.log(modelStorageLocation);
         emit JobCreated(
             latestJobId,
             jobType,
