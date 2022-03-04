@@ -41,6 +41,13 @@ contract ArtNFT is ERC721URIStorage {
         _;
     }
 
+    function _calculateCallbackData(uint256 tokenId_) private pure returns (bytes memory) {
+        string memory signatureInput = "setTokenURI(uint256,string)";
+        bytes4 signature = bytes4(keccak256(abi.encodePacked(signatureInput)));
+        bytes memory partiallyApplied = abi.encodePacked(signature, bytes32(tokenId_));
+        return partiallyApplied;
+    }
+
     // todo add optional mint gating settable by owner
     function mint(address to, string memory dataInputLocation) external payable returns (uint) {
         require(msg.value >= price, "Insufficient payment");
@@ -56,11 +63,12 @@ contract ArtNFT is ERC721URIStorage {
         currentTokenId++;
         _mint(to, currentTokenId);
         // todo encode setTokenURI & correct args for callback fxn & data
+        bytes memory callbackData = _calculateCallbackData(currentTokenId);
         mlContract.startInferenceJob{value: inferencePrice}(
             modelStorageLocation,
             dataInputLocation,
-            address(0),
-            bytes("hi")
+            address(this),
+            callbackData
         );
         return currentTokenId;
     }

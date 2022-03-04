@@ -18,6 +18,7 @@ contract GENft is ERC721URIStorage {
 
     mapping (uint256 => string) tokenIdToDataInput;
 
+    event ArtNftCreated(address child, address owner);
     event TokenUriSet(uint256 tokenId);
 
     constructor(
@@ -40,7 +41,7 @@ contract GENft is ERC721URIStorage {
 
     function _calculateCallbackData(uint256 tokenId_) private pure returns (bytes memory) {
         string memory signatureInput = "setTokenURI(uint256,string)";
-        bytes32 signature = keccak256(abi.encode(signatureInput));
+        bytes4 signature = bytes4(keccak256(abi.encodePacked(signatureInput)));
         bytes memory partiallyApplied = abi.encodePacked(signature, bytes32(tokenId_));
         return partiallyApplied;
     }
@@ -56,7 +57,7 @@ contract GENft is ERC721URIStorage {
         address childAddress = Clones.clone(referenceChild);
         ArtNFT childContract = ArtNFT(childAddress);
         childContract.initialize(address(this), msg.sender, mlCoordinator, currentTokenId);
-        // todo encode setTokenURI & correct args for callback fxn & data
+        emit ArtNftCreated(childAddress, msg.sender);
         bytes memory callbackData = _calculateCallbackData(currentTokenId);
         mlContract.startTrainingJob{value: trainingPrice}(
             baseModelLocation,

@@ -58,6 +58,7 @@ describe("ChainAI", function () {
     const artNft = await deployArtNFT()
     const genft = await deployGENft("", artNft.address, chainAI.address, 0)
     expect(await genft.mint(randomPerson.address, ""))
+      .to.emit(genft, "ArtNftCreated")
       .to.emit(genft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
   });
   it("Blocks non ML coordinator from setting tokenURI", async function () {

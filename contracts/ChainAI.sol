@@ -137,11 +137,7 @@ contract ChainAI {
             emit JobFailed(job.id);
         } else if (jobStatus == JobStatus.Succeeded) {
             job.dataOutputStorageLocation = resultsLocation;
-            // todo add in correctly encoded locaiton argument
-            console.log('hi callback');
-            bytes memory fullCallbackData = abi.encodePacked(job.callbackData, resultsLocation);
-            //console.log(job.callbackData);
-            console.log(resultsLocation);
+            bytes memory fullCallbackData = abi.encodePacked(job.callbackData, abi.encode(resultsLocation));
             (bool success,) = job.callbackAddress.call(fullCallbackData);
             require(success, "Callback failed");
             emit JobSucceeded(job.id);
