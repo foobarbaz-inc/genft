@@ -70,7 +70,7 @@ describe("ChainAI", function () {
     const { chainAI, deployer, sequencer, randomPerson } = await deployChainAI(0, 0);
     const artNft = await deployArtNFT()
     const genft = await deployGENft("", artNft.address, chainAI.address, 0)
-    await expect(genft.connect(sequencer).setTokenURI(1, ""))
+    await expect(genft.connect(sequencer).setDataLocation(1, ""))
       .to.be.revertedWith("Not ML coordinator")
   });
   // TESTING ARTNFT BASIC FUNCTIONS
@@ -95,15 +95,6 @@ describe("ChainAI", function () {
     expect(await chainAI.connect(sequencer).updateJobStatus(1, 2, "http://foo"))
       .to.emit(genft, "TokenUriSet", 1)
       .to.emit(chainAI, "JobSucceeded", 1)
-    var calldata = await getSetTokenURI(genft, 1, "http://foo");
-    console.log("calldata test");
-    console.log(calldata);
-    expect(await deployer.sendTransaction({
-      to: genft.address,
-      data: calldata
-    }))
-      .to.emit(genft, "TokenUriSet").withArgs(1, "testing");
-    console.log('here')
     var blockNumber = await ethers.provider.getBlockNumber();
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
     expect(await childArtNft.connect(randomPerson).mint(randomPerson.address, ""))

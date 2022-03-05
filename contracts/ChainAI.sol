@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
+import "./IMLClient.sol";
 
 contract ChainAI {
 
@@ -13,25 +13,24 @@ contract ChainAI {
     mapping (address => bool) public sequencers;
     mapping (uint => Job) public jobs;
 
+    enum JobType {
+        Training,
+        Inference
+    }
+
     enum JobStatus {
         Created,
         Failed,
         Succeeded
     }
 
-    enum JobType {
-        Training,
-        Inference
-    }
-
-    // store model run sender, allow them to cancel & get refund
     struct Job {
         uint id;
         uint createdTimestamp;
         JobStatus status;
         JobType jobType;
         address callbackAddress;
-        bytes callbackData;
+        uint256 callbackId;
         string modelStorageLocation;
         string dataInputStorageLocation;
         string dataOutputStorageLocation;
@@ -63,7 +62,7 @@ contract ChainAI {
         string memory modelStorageLocation,
         string memory dataInputStorageLocation,
         address callbackAddress,
-        bytes memory callbackData
+        uint256 callbackId
     ) internal {
         latestJobId++;
         // create job
@@ -74,15 +73,13 @@ contract ChainAI {
             dataInputStorageLocation: dataInputStorageLocation,
             createdTimestamp: createdTimestamp,
             callbackAddress: callbackAddress,
-            callbackData: callbackData,
+            callbackId: callbackId,
             jobType: jobType,
             status: JobStatus.Created,
             dataOutputStorageLocation: ""
           });
         // add to jobs mapping
         jobs[latestJobId] = job;
-        console.log("model storage location");
-        console.log(modelStorageLocation);
         emit JobCreated(
             latestJobId,
             jobType,
@@ -96,7 +93,7 @@ contract ChainAI {
       string memory modelStorageLocation,
       string memory dataInputStorageLocation,
       address callbackAddress,
-      bytes memory callbackData
+      uint256 callbackId
     ) external payable {
         require(msg.value >= inferencePrice, "Insufficient ETH amount paid");
         _startJob(
@@ -104,7 +101,7 @@ contract ChainAI {
             modelStorageLocation,
             dataInputStorageLocation,
             callbackAddress,
-            callbackData
+            callbackId
         );
     }
 
@@ -112,15 +109,15 @@ contract ChainAI {
       string memory modelStorageLocation,
       string memory dataInputStorageLocation,
       address callbackAddress,
-      bytes memory callbackData
-    ) external payable  {
+      uint256 callbackId
+    ) external payable {
         require(msg.value >= trainingPrice, "Insufficient ETH amount paid");
         _startJob(
             JobType.Training,
             modelStorageLocation,
             dataInputStorageLocation,
             callbackAddress,
-            callbackData
+            callbackId
         );
     }
 
@@ -139,16 +136,8 @@ contract ChainAI {
             emit JobFailed(job.id);
         } else if (jobStatus == JobStatus.Succeeded) {
             job.dataOutputStorageLocation = resultsLocation;
-            bytes memory result = abi.encode(resultsLocation);
-            console.log('abi encode results location');
-            console.logBytes(result);
-
-            //bytes memory fullCallbackData = abi.encodePacked(job.callbackData, abi.encode(resultsLocation));
-            bytes memory fullCallbackData = abi.encodePacked(job.callbackData, result);
-            console.log('calldata contract');
-            console.logBytes(fullCallbackData);
-            (bool success,) = job.callbackAddress.call(fullCallbackData);
-            require(success, "Callback failed");
+            IMLClient client = IMLClient(job.callbackAddress);
+            client.setDataLocation(job.callbackId, resultsLocation);
             emit JobSucceeded(job.id);
         }
     }

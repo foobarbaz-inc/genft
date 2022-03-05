@@ -4,10 +4,12 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "./ChainAI.sol"; // todo make this an interface
+import "./ChainAI.sol";
+import "./IMLClient.sol";
 import "./GENft.sol"; // todo make this an interface
 
-contract ArtNFT is ERC721URIStorage {
+contract ArtNFT is ERC721URIStorage, IMLClient {
+
     address private owner;
     address public mlCoordinator;
     address public parent;
@@ -56,21 +58,17 @@ contract ArtNFT is ERC721URIStorage {
         require(msg.value >= inferencePrice, "Insufficient payment for inference");
         GENft parentContract = GENft(parent);
         string memory modelStorageLocation = parentContract.tokenURI(myTokenId);
-        console.log("token URI");
-        console.log(modelStorageLocation);
         require(
             keccak256(abi.encodePacked(modelStorageLocation)) != keccak256(abi.encodePacked("")),
             "Model not yet set"
         );
         currentTokenId++;
         _mint(to, currentTokenId);
-        // todo encode setTokenURI & correct args for callback fxn & data
-        bytes memory callbackData = _calculateCallbackData(currentTokenId);
         mlContract.startInferenceJob{value: inferencePrice}(
             modelStorageLocation,
             dataInputLocation,
             address(this),
-            callbackData
+            currentTokenId
         );
         return currentTokenId;
     }
@@ -79,9 +77,12 @@ contract ArtNFT is ERC721URIStorage {
         price = price_;
     }
 
-    function setTokenURI(uint256 tokenId_, string memory tokenURI_) external {
+    function setDataLocation(
+        uint256 dataId,
+        string memory dataLocation
+    ) external override {
         require(msg.sender == mlCoordinator, "Not ML coordinator");
-        _setTokenURI(tokenId_, tokenURI_);
-        emit TokenUriSet(tokenId_, tokenURI_);
+        _setTokenURI(dataId, dataLocation);
+        emit TokenUriSet(dataId, dataLocation);
     }
 }

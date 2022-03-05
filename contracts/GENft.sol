@@ -1,14 +1,14 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
-import "./ChainAI.sol"; // todo make this an interface
+import "./ChainAI.sol";
+import "./IMLClient.sol";
 import "./ArtNFT.sol"; // todo make this an interface
 
-contract GENft is ERC721URIStorage {
+contract GENft is ERC721URIStorage, IMLClient {
     address private owner;
     address private referenceChild;
     address public mlCoordinator;
@@ -60,21 +60,21 @@ contract GENft is ERC721URIStorage {
         childContract.initialize(address(this), msg.sender, mlCoordinator, currentTokenId);
         emit ArtNftCreated(childAddress, msg.sender);
         tokenIdToChildContract[currentTokenId] = childAddress;
-        bytes memory callbackData = _calculateCallbackData(currentTokenId);
         mlContract.startTrainingJob{value: trainingPrice}(
             baseModelLocation,
             dataInputLocation,
             address(this),
-            callbackData
+            currentTokenId
         );
         return currentTokenId;
     }
 
-    function setTokenURI(uint256 tokenId_, string memory tokenURI_) external {
-        //require(msg.sender == mlCoordinator, "Not ML coordinator");
-        _setTokenURI(tokenId_, tokenURI_);
-        console.log("Hi i am setting the token uri");
-        console.log(tokenURI_);
-        emit TokenUriSet(tokenId_, tokenURI_);
+    function setDataLocation(
+        uint256 dataId,
+        string memory dataLocation
+    ) external override {
+        require(msg.sender == mlCoordinator, "Not ML coordinator");
+        _setTokenURI(dataId, dataLocation);
+        emit TokenUriSet(dataId, dataLocation);
     }
 }
