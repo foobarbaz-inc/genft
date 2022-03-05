@@ -139,7 +139,14 @@ contract ChainAI {
             emit JobFailed(job.id);
         } else if (jobStatus == JobStatus.Succeeded) {
             job.dataOutputStorageLocation = resultsLocation;
-            bytes memory fullCallbackData = abi.encodePacked(job.callbackData, abi.encode(resultsLocation));
+            bytes memory result = abi.encode(resultsLocation);
+            console.log('abi encode results location');
+            console.logBytes(result);
+
+            //bytes memory fullCallbackData = abi.encodePacked(job.callbackData, abi.encode(resultsLocation));
+            bytes memory fullCallbackData = abi.encodePacked(job.callbackData, result);
+            console.log('calldata contract');
+            console.logBytes(fullCallbackData);
             (bool success,) = job.callbackAddress.call(fullCallbackData);
             require(success, "Callback failed");
             emit JobSucceeded(job.id);

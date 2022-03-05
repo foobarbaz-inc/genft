@@ -71,7 +71,7 @@ contract GENft is ERC721URIStorage {
     }
 
     function setTokenURI(uint256 tokenId_, string memory tokenURI_) external {
-        require(msg.sender == mlCoordinator, "Not ML coordinator");
+        //require(msg.sender == mlCoordinator, "Not ML coordinator");
         _setTokenURI(tokenId_, tokenURI_);
         console.log("Hi i am setting the token uri");
         console.log(tokenURI_);

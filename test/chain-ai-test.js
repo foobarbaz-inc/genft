@@ -31,6 +31,11 @@ describe("ChainAI", function () {
     await genft.deployed()
     return genft
   }
+  async function getSetTokenURI(contract, tokenId, tokenURI) {
+    var calldatasVars = [tokenId, tokenURI];
+    var calldata = await contract.interface.encodeFunctionData("setTokenURI", calldatasVars);
+    return calldata
+  }
   // TESTING CHAIN AI BASIC FUNCTIONS
   it("Should allow the deployer to add a sequencer", async function () {
     const {chainAI, deployer, sequencer, randomPerson} = await deployChainAI(0, 0)
@@ -77,8 +82,8 @@ describe("ChainAI", function () {
     await chainAI.connect(deployer).addSequencer(sequencer.address)
     const artNft = await deployArtNFT()
     const genft = await deployGENft("", artNft.address, chainAI.address, 0)
-    const blockNumber = await ethers.provider.getBlockNumber();
-    const timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
+    var blockNumber = await ethers.provider.getBlockNumber();
+    var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
     expect(await genft.mint(randomPerson.address, ""))
       .to.emit(genft, "Transfer").withArgs(
         '0x0000000000000000000000000000000000000000', randomPerson.address, 1)
@@ -90,7 +95,17 @@ describe("ChainAI", function () {
     expect(await chainAI.connect(sequencer).updateJobStatus(1, 2, "http://foo"))
       .to.emit(genft, "TokenUriSet", 1)
       .to.emit(chainAI, "JobSucceeded", 1)
+    var calldata = await getSetTokenURI(genft, 1, "http://foo");
+    console.log("calldata test");
+    console.log(calldata);
+    expect(await deployer.sendTransaction({
+      to: genft.address,
+      data: calldata
+    }))
+      .to.emit(genft, "TokenUriSet").withArgs(1, "testing");
     console.log('here')
+    var blockNumber = await ethers.provider.getBlockNumber();
+    var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
     expect(await childArtNft.connect(randomPerson).mint(randomPerson.address, ""))
       .to.emit(childArtNft, "Transfer").withArgs(
         '0x0000000000000000000000000000000000000000', randomPerson.address, 1)
@@ -101,8 +116,8 @@ describe("ChainAI", function () {
     const { chainAI, deployer, sequencer, randomPerson } = await deployChainAI(0, 0);
     const artNft = await deployArtNFT()
     const genft = await deployGENft("", artNft.address, chainAI.address, 0)
-    const blockNumber = await ethers.provider.getBlockNumber();
-    const timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
+    var blockNumber = await ethers.provider.getBlockNumber();
+    var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
     expect(await genft.mint(randomPerson.address, ""))
       .to.emit(genft, "Transfer").withArgs(
         '0x0000000000000000000000000000000000000000', randomPerson.address, 1)
@@ -113,8 +128,8 @@ describe("ChainAI", function () {
     await chainAI.connect(deployer).addSequencer(sequencer.address)
     const artNft = await deployArtNFT()
     const genft = await deployGENft("", artNft.address, chainAI.address, 0)
-    const blockNumber = await ethers.provider.getBlockNumber();
-    const timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
+    var blockNumber = await ethers.provider.getBlockNumber();
+    var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
     expect(await genft.mint(randomPerson.address, ""))
       .to.emit(genft, "Transfer").withArgs(
         '0x0000000000000000000000000000000000000000', randomPerson.address, 1)
