@@ -77,4 +77,10 @@ contract GENft is ERC721URIStorage, IMLClient {
         _setTokenURI(dataId, dataLocation);
         emit TokenUriSet(dataId, dataLocation);
     }
+
+    function updateBaseModelLocation(
+        string memory newBaseUri
+    ) external onlyOwner {
+        baseModelLocation = newBaseUri;
+    }
 }
