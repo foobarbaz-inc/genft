@@ -92,7 +92,6 @@ contract ChainAI {
     function startInferenceJob(
       string memory modelStorageLocation,
       string memory dataInputStorageLocation,
-      address callbackAddress,
       uint256 callbackId
     ) external payable {
         require(msg.value >= inferencePrice, "Insufficient ETH amount paid");
@@ -100,7 +99,7 @@ contract ChainAI {
             JobType.Inference,
             modelStorageLocation,
             dataInputStorageLocation,
-            callbackAddress,
+            msg.sender,
             callbackId
         );
     }
@@ -108,7 +107,6 @@ contract ChainAI {
     function startTrainingJob(
       string memory modelStorageLocation,
       string memory dataInputStorageLocation,
-      address callbackAddress,
       uint256 callbackId
     ) external payable {
         require(msg.value >= trainingPrice, "Insufficient ETH amount paid");
@@ -116,7 +114,7 @@ contract ChainAI {
             JobType.Training,
             modelStorageLocation,
             dataInputStorageLocation,
-            callbackAddress,
+            msg.sender,
             callbackId
         );
     }
@@ -138,6 +136,7 @@ contract ChainAI {
             job.dataOutputStorageLocation = resultsLocation;
             IMLClient client = IMLClient(job.callbackAddress);
             client.setDataLocation(job.callbackId, resultsLocation);
+            // todo how to handle incorrect interface
             emit JobSucceeded(job.id);
         }
     }

@@ -43,6 +43,11 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
         _;
     }
 
+    modifier onlyParent() {
+        require(msg.sender == parent, "Not the parent");
+        _;
+    }
+
     function _calculateCallbackData(uint256 tokenId_) private pure returns (bytes memory) {
         string memory signatureInput = "setTokenURI(uint256,string)";
         bytes4 signature = bytes4(keccak256(abi.encodePacked(signatureInput)));
@@ -84,5 +89,11 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
         require(msg.sender == mlCoordinator, "Not ML coordinator");
         _setTokenURI(dataId, dataLocation);
         emit TokenUriSet(dataId, dataLocation);
+    }
+
+    function changeOwner(
+        address newOwner
+    ) external onlyParent {
+        owner = newOwner;
     }
 }
