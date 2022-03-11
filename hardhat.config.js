@@ -20,8 +20,6 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 
 const RINKEBY_PRIVATE_KEY_ONE = process.env.RINKEBY_PRIVATE_KEY;
-const RINKEBY_PRIVATE_KEY_TWO = process.env.RINKEBY_PRIVATE_KEY_TWO;
-const RINKEBY_PRIVATE_KEY_THREE = process.env.RINKEBY_PRIVATE_KEY_THREE;
 
 module.exports = {
   solidity: "0.8.4",
@@ -29,9 +27,7 @@ module.exports = {
     rinkeby: {
      url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
      accounts: [
-       `${RINKEBY_PRIVATE_KEY_ONE}`,
-       `${RINKEBY_PRIVATE_KEY_TWO}`,
-       `${RINKEBY_PRIVATE_KEY_THREE}`
+       `${RINKEBY_PRIVATE_KEY_ONE}`
       ]
     }
   }
