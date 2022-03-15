@@ -49,8 +49,9 @@ describe("ArtNFT", function () {
       .to.be.revertedWith("Model not yet set");
 
     // Set model
-    expect(await genft.setDataLocation(1, "trainedModelLoc"))
-      .to.emit(genft, "TokenUriSet", 1, "trainedModelLoc")
+    expect(await chainAI.connect(sequencer).updateJobStatus(1, 2, "trainedModelLoc"))
+      .to.emit(genft, "TokenUriSet").withArgs(1, "trainedModelLoc")
+      .to.emit(chainAI, "JobSucceeded").withArgs(1)
 
     // Test when model is set
     var blockNumber = await ethers.provider.getBlockNumber();
