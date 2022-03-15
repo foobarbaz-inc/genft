@@ -78,15 +78,16 @@ contract GENft is ERC721URIStorage, IMLClient {
         tokenIdToDataZip[currentTokenId] = dataZipStorageLocation;
         tokenIdToLossFn[currentTokenId] = lossFnStorageLocation;
         
-        // Set the owner of the given NFT properly
-        _mint(to, currentTokenId);
-
         // Clone the reference child
         address childAddress = Clones.clone(referenceChild);
         ArtNFT childContract = ArtNFT(childAddress);
         childContract.initialize(address(this), msg.sender, mlCoordinator, currentTokenId, dataType);
         emit ArtNftCreated(childAddress, msg.sender);
         tokenIdToChildContract[currentTokenId] = childAddress;
+
+        // Set the owner of the given NFT properly
+        // Need to do this in this order because _beforeTokenTransfer gets called on mint
+        _mint(to, currentTokenId);
         
         // Start training
         mlContract.startTrainingJob{value: trainingPrice}(
