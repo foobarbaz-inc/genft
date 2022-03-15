@@ -31,4 +31,8 @@ describe("GENft", function () {
     await expect(genft.connect(sequencer).setDataLocation(1, ""))
       .to.be.revertedWith("Not ML coordinator")
   });
+
+  // todo tests:
+  // - transfer ownership
+  // - stuff with price
 });

@@ -61,4 +61,7 @@ describe("ArtNFT", function () {
         '0x0000000000000000000000000000000000000000', randomPerson.address, 1)
       .to.emit(chainAI, "InferenceJobCreated").withArgs(2, 0, "trainedModelLoc", "e", timestamp)
   });
+
+  // todo tests:
+  // - stuff with price
 });
