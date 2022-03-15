@@ -16,7 +16,14 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
     bool private initialized;
     uint256 public myTokenId;
     uint256 currentTokenId;
-    uint256 price; // This is just the price for minting, it doesn't include the price of inference
+    uint256 mintPriceToThisContract; // This is just the price of minting, it doesn't include the price of inference
+
+    function price() public view returns(uint256) {
+        ChainAI mlContract = ChainAI(mlCoordinator);
+        uint inferencePrice = mlContract.inferencePrice();
+        uint256 totalPrice = mintPriceToThisContract + inferencePrice;
+        return(totalPrice);
+    }
 
     // inference parameters
     ChainAI.JobDataType dataType;
@@ -31,6 +38,7 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
         address parent_,
         address owner_,
         address mlCoordinator_,
+        uint256 price_,
         uint256 myTokenId_,
         ChainAI.JobDataType dataType_
     ) external {
@@ -38,6 +46,7 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
         parent = parent_;
         owner = owner_;
         mlCoordinator = mlCoordinator_;
+        mintPriceToThisContract = price_;
         myTokenId = myTokenId_;
         initialized = true;
         dataType = dataType_;
@@ -55,9 +64,7 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
 
     // todo add optional mint gating settable by owner
     function mint(address to, string memory dataInputLocation) external payable returns (uint) {
-        ChainAI mlContract = ChainAI(mlCoordinator);
-        uint inferencePrice = mlContract.inferencePrice();
-        require(msg.value >= price + inferencePrice, "Insufficient payment for inference");
+        require(msg.value >= price(), "Insufficient payment for minting");
         GENft parentContract = GENft(parent);
         string memory trainedModelStorageLocation = parentContract.tokenURI(myTokenId);
         require(
@@ -66,6 +73,8 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
         );
         currentTokenId++;
         _mint(to, currentTokenId);
+        ChainAI mlContract = ChainAI(mlCoordinator);
+        uint inferencePrice = mlContract.inferencePrice();
         mlContract.startInferenceJob{value: inferencePrice}(
             dataType,
             trainedModelStorageLocation,
@@ -75,9 +84,9 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
         return currentTokenId;
     }
 
-    function setPrice(uint256 price_) external onlyOwner {
-        price = price_;
-    }
+    /*function setMintPriceToThisContract(uint256 price_) external onlyOwner {
+        mintPriceToThisContract = price_;
+    }*/
 
     function setDataLocation(
         uint256 dataId,

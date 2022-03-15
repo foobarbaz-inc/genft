@@ -13,7 +13,7 @@ describe("Integration", function () {
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
 
     // Mint GENft
-    expect(await genft.mint(randomPerson.address, "c", "d"))
+    expect(await genft.mint(randomPerson.address, "c", "d", 0))
       .to.emit(genft, "ArtNftCreated")
       .to.emit(genft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
       .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)

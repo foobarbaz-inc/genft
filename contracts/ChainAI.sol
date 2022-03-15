@@ -3,10 +3,6 @@ pragma solidity ^0.8.0;
 
 import "./IMLClient.sol";
 
-library ChainAIStructs {
-    
-}
-
 contract ChainAI {
     
     // contract variables
@@ -57,24 +53,24 @@ contract ChainAI {
 
     // job struct definitions
     struct JobParams {
+        JobStatus status; // uint8
         uint id;
         uint createdTimestamp;
-        JobStatus status;
-        address callbackAddress;
         uint256 callbackId;
+        address callbackAddress;
     }
 
     struct TrainingJob {
         JobParams jobParams;
         JobDataType dataType;
-        string dataZipStorageLocation;
-        string modelStorageLocation;
-        string initFnStorageLocation;
-        string lossFnStorageLocation;
         Optimizer optimizer;
         uint256 learning_rate_x1e8;
         uint256 batch_size;
         uint256 epochs;
+        string dataZipStorageLocation;
+        string modelStorageLocation;
+        string initFnStorageLocation;
+        string lossFnStorageLocation;
         string modelOutputStorageLocation;
     }
 
@@ -127,18 +123,18 @@ contract ChainAI {
         string memory dataInputStorageLocation,
         uint256 callbackId
     ) external payable {
-        require(msg.value >= inferencePrice, "Insufficient ETH amount paid");
+        require(msg.value >= inferencePrice, "Insufficient payment for inference");
 
         latestJobId++;
         uint createdTimestamp = block.timestamp;
         
         // make the actual job
         JobParams memory jobParams = JobParams({
+            status: JobStatus.Created,
             id: latestJobId,
             createdTimestamp: createdTimestamp,
-            status: JobStatus.Created,
-            callbackAddress: msg.sender,
-            callbackId: callbackId
+            callbackId: callbackId,
+            callbackAddress: msg.sender
         });
 
         InferenceJob memory job = InferenceJob({
@@ -173,18 +169,18 @@ contract ChainAI {
         uint256 epochs,
         uint256 callbackId
     ) external payable {
-        require(msg.value >= trainingPrice, "Insufficient ETH amount paid");
+        require(msg.value >= trainingPrice, "Insufficient payment for training");
 
         latestJobId++;
         uint createdTimestamp = block.timestamp;
         
         // make the actual job
         JobParams memory jobParams = JobParams({
+            status: JobStatus.Created,
             id: latestJobId,
             createdTimestamp: createdTimestamp,
-            status: JobStatus.Created,
-            callbackAddress: msg.sender,
-            callbackId: callbackId
+            callbackId: callbackId,
+            callbackAddress: msg.sender
         });
 
         TrainingJob memory job = TrainingJob({

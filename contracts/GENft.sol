@@ -13,16 +13,23 @@ contract GENft is ERC721URIStorage, IMLClient {
     address private referenceChild;
     address public mlCoordinator;
     uint256 currentTokenId;
-    uint256 price; // This is just the price of minting, it doesn't include the price of training
+    uint256 mintPriceToThisContract; // This is just the price of minting, it doesn't include the price of training
 
     // training parameters
-    ChainAI.JobDataType dataType;
-    string modelStorageLocation;
-    string initFnStorageLocation;
-    ChainAI.Optimizer optimizer;
     uint256 learning_rate_x1e8;
     uint256 batch_size;
     uint256 epochs;
+    ChainAI.JobDataType dataType;
+    ChainAI.Optimizer optimizer;
+    string modelStorageLocation;
+    string initFnStorageLocation;
+
+    function price() public view returns(uint256) {
+        ChainAI mlContract = ChainAI(mlCoordinator);
+        uint trainingPrice = mlContract.trainingPrice();
+        uint256 totalPrice = mintPriceToThisContract + trainingPrice;
+        return(totalPrice);
+    }
 
     mapping (uint256 => string) tokenIdToDataZip;
     mapping (uint256 => string) tokenIdToLossFn;
@@ -46,7 +53,7 @@ contract GENft is ERC721URIStorage, IMLClient {
         owner = msg.sender;
         mlCoordinator = mlCoordinator_;
         referenceChild = referenceChild_;
-        price = price_;
+        mintPriceToThisContract = price_;
 
         // training params
         dataType = dataType_;
@@ -66,12 +73,11 @@ contract GENft is ERC721URIStorage, IMLClient {
     function mint(
         address to,
         string memory dataZipStorageLocation,
-        string memory lossFnStorageLocation
+        string memory lossFnStorageLocation,
+        uint256 artNFTPriceToContract
     ) external payable returns (uint) {
         // check that the payment is enough
-        ChainAI mlContract = ChainAI(mlCoordinator);
-        uint trainingPrice = mlContract.trainingPrice();
-        require(msg.value >= price + trainingPrice, "Insufficient payment");
+        require(msg.value >= price(), "Insufficient payment for minting");
 
         currentTokenId++;
         // Set the data for the specific GENft
@@ -81,7 +87,14 @@ contract GENft is ERC721URIStorage, IMLClient {
         // Clone the reference child
         address childAddress = Clones.clone(referenceChild);
         ArtNFT childContract = ArtNFT(childAddress);
-        childContract.initialize(address(this), msg.sender, mlCoordinator, currentTokenId, dataType);
+        childContract.initialize(
+            address(this),
+            msg.sender,
+            mlCoordinator,
+            artNFTPriceToContract,
+            currentTokenId,
+            dataType
+        );
         emit ArtNftCreated(childAddress, msg.sender);
         tokenIdToChildContract[currentTokenId] = childAddress;
 
@@ -90,6 +103,8 @@ contract GENft is ERC721URIStorage, IMLClient {
         _mint(to, currentTokenId);
         
         // Start training
+        ChainAI mlContract = ChainAI(mlCoordinator);
+        uint trainingPrice = mlContract.trainingPrice();
         mlContract.startTrainingJob{value: trainingPrice}(
             dataType,
             dataZipStorageLocation,
@@ -113,13 +128,6 @@ contract GENft is ERC721URIStorage, IMLClient {
         _setTokenURI(dataId, dataLocation);
         emit TokenUriSet(dataId, dataLocation);
     }
-
-    // Do we need this?
-    /*function updateBaseModelLocation(
-        string memory newBaseUri
-    ) external onlyOwner {
-        baseModelLocation = newBaseUri;
-    }*/
 
     function _beforeTokenTransfer(
         address /*from*/,
