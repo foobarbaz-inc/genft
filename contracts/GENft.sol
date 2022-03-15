@@ -16,10 +16,10 @@ contract GENft is ERC721URIStorage, IMLClient {
     uint256 price; // This is just the price of minting, it doesn't include the price of training
 
     // training parameters
-    uint8 dataType;
+    ChainAI.JobDataType dataType;
     string modelStorageLocation;
     string initFnStorageLocation;
-    uint8 optimizer;
+    ChainAI.Optimizer optimizer;
     uint256 learning_rate_x1e8;
     uint256 batch_size;
     uint256 epochs;
@@ -35,10 +35,10 @@ contract GENft is ERC721URIStorage, IMLClient {
         address referenceChild_,
         address mlCoordinator_,
         uint price_,
-        uint8 dataType_,
-        string modelStorageLocation_,
-        string initFnStorageLocation_,
-        uint8 optimizer_,
+        ChainAI.JobDataType dataType_,
+        string memory modelStorageLocation_,
+        string memory initFnStorageLocation_,
+        ChainAI.Optimizer optimizer_,
         uint256 learning_rate_x1e8_,
         uint256 batch_size_,
         uint256 epochs_
@@ -90,7 +90,7 @@ contract GENft is ERC721URIStorage, IMLClient {
         
         // Start training
         mlContract.startTrainingJob{value: trainingPrice}(
-            data_type,
+            dataType,
             dataZipStorageLocation,
             modelStorageLocation,
             initFnStorageLocation,
@@ -113,18 +113,19 @@ contract GENft is ERC721URIStorage, IMLClient {
         emit TokenUriSet(dataId, dataLocation);
     }
 
-    function updateBaseModelLocation(
+    // Do we need this?
+    /*function updateBaseModelLocation(
         string memory newBaseUri
     ) external onlyOwner {
         baseModelLocation = newBaseUri;
-    }
+    }*/
 
     function _beforeTokenTransfer(
-        address from,
+        address /*from*/,
         address to,
         uint256 tokenId
     ) internal override {
-        address childContract = tokenIdToChildContract[tokenId];
+        address childAddress = tokenIdToChildContract[tokenId];
         ArtNFT childContract = ArtNFT(childAddress);
         childContract.changeOwner(to);
     }

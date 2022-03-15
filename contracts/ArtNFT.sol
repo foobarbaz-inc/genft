@@ -19,7 +19,7 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
     uint256 price; // This is just the price for minting, it doesn't include the price of inference
 
     // inference parameters
-    uint8 dataType;
+    ChainAI.JobDataType dataType;
 
     mapping (uint256 => string) tokenIdToDataInput;
 
@@ -32,7 +32,7 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
         address owner_,
         address mlCoordinator_,
         uint256 myTokenId_,
-        uint8 dataType_
+        ChainAI.JobDataType dataType_
     ) external {
         require(!initialized, "Already initialized");
         parent = parent_;

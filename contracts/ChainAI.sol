@@ -122,7 +122,7 @@ contract ChainAI {
     }
 
     function startInferenceJob(
-        JobDataType dataType
+        JobDataType dataType,
         string memory modelStorageLocation,
         string memory dataInputStorageLocation,
         uint256 callbackId
@@ -133,14 +133,16 @@ contract ChainAI {
         uint createdTimestamp = block.timestamp;
         
         // make the actual job
+        JobParams memory jobParams = JobParams({
+            id: latestJobId,
+            createdTimestamp: createdTimestamp,
+            status: JobStatus.Created,
+            callbackAddress: msg.sender,
+            callbackId: callbackId
+        });
+
         InferenceJob memory job = InferenceJob({
-            jobParams: {
-                id: latestJobId,
-                createdTimestamp: createdTimestamp,
-                status: JobStatus.Created,
-                callbackAddress: msg.sender,
-                callbackId: callbackId
-            },
+            jobParams: jobParams,
             dataType: dataType,
             modelStorageLocation: modelStorageLocation,
             dataInputStorageLocation: dataInputStorageLocation,
@@ -177,14 +179,16 @@ contract ChainAI {
         uint createdTimestamp = block.timestamp;
         
         // make the actual job
+        JobParams memory jobParams = JobParams({
+            id: latestJobId,
+            createdTimestamp: createdTimestamp,
+            status: JobStatus.Created,
+            callbackAddress: msg.sender,
+            callbackId: callbackId
+        });
+
         TrainingJob memory job = TrainingJob({
-            jobParams: {
-                id: latestJobId,
-                createdTimestamp: createdTimestamp,
-                status: JobStatus.Created,
-                callbackAddress: msg.sender,
-                callbackId: callbackId
-            },
+            jobParams: jobParams,
             dataType: dataType,
             dataZipStorageLocation: dataZipStorageLocation,
             modelStorageLocation: modelStorageLocation,
@@ -212,7 +216,7 @@ contract ChainAI {
             batch_size,
             epochs,
             createdTimestamp
-        });
+        );
     }
 
     function updateJobStatus(
@@ -221,16 +225,21 @@ contract ChainAI {
         string memory resultsLocation
     ) external {
         require(sequencers[msg.sender], "Not a trusted GPU worker");
-
+        
+        JobParams storage jobParams;
         if (job_types[jobId] == JobType.Training) {
             TrainingJob storage job = training_jobs[jobId];
-            job.jobParams.status = jobStatus;
+            jobParams = job.jobParams;
             job.modelOutputStorageLocation = resultsLocation;
-        } else if (job_types[jobId] == JobType.Inference) {
+        } else {
+            // I seem to need to do this because otherwise solidity complains that jobParams
+            // might not be set (if I used else if). Is there a better way to handle this?
+            assert(job_types[jobId] == JobType.Inference);
             InferenceJob storage job = inference_jobs[jobId];
-            job.jobParams.status = jobStatus;
+            jobParams = job.jobParams;
             job.dataOutputStorageLocation = resultsLocation;
         }
+        jobParams.status = jobStatus;
 
         if (jobStatus == JobStatus.Failed) {
             // todo
@@ -238,8 +247,8 @@ contract ChainAI {
             // should the model automatically be restarted?
             emit JobFailed(jobId);
         } else if (jobStatus == JobStatus.Succeeded) {
-            IMLClient client = IMLClient(job.jobParams.callbackAddress);
-            client.setDataLocation(job.jobParams.callbackId, resultsLocation);
+            IMLClient client = IMLClient(jobParams.callbackAddress);
+            client.setDataLocation(jobParams.callbackId, resultsLocation);
             // todo how to handle incorrect interface
             emit JobSucceeded(jobId);
         }
