@@ -16,7 +16,7 @@ describe("ArtNFT", function () {
     expect(await genft.mint(randomPerson.address, "c", "d", 0))
       .to.emit(genft, "ArtNftCreated")
       .to.emit(genft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
+      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, 1, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
   
     // Test
     var childContract = await genft.tokenIdToChildContract(1);
@@ -38,7 +38,7 @@ describe("ArtNFT", function () {
     expect(await genft.mint(randomPerson.address, "c", "d", 0))
       .to.emit(genft, "ArtNftCreated")
       .to.emit(genft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
+      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, 1, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
 
     // Get created ArtNFT
     var childContract = await genft.tokenIdToChildContract(1);
@@ -59,7 +59,7 @@ describe("ArtNFT", function () {
     expect(await childArtNft.connect(randomPerson).mint(randomPerson.address, "e"))
       .to.emit(childArtNft, "Transfer").withArgs(
         '0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAI, "InferenceJobCreated").withArgs(2, 0, "trainedModelLoc", "e", timestamp)
+      .to.emit(chainAI, "InferenceJobCreated").withArgs(2, 0, 1, "trainedModelLoc", "e", timestamp)
   });
   
   it("The prices of the ArtNFT and ChainAI should be set properly", async function () {
@@ -80,7 +80,7 @@ describe("ArtNFT", function () {
     expect(await genft.mint(randomPerson.address, "c", "d", artnftPrice, { value: ethers.utils.parseEther("0.3") }) )
       .to.emit(genft, "ArtNftCreated")
       .to.emit(genft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
+      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, 1, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
 
     // Get created ArtNFT
     var childContract = await genft.tokenIdToChildContract(1);
@@ -106,7 +106,7 @@ describe("ArtNFT", function () {
     expect(await childArtNft.connect(randomPerson).mint(randomPerson.address, "e", { value: ethers.utils.parseEther("1.1") }))
       .to.emit(childArtNft, "Transfer").withArgs(
         '0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAI, "InferenceJobCreated").withArgs(2, 0, "trainedModelLoc", "e", timestamp)
+      .to.emit(chainAI, "InferenceJobCreated").withArgs(2, 0, 1, "trainedModelLoc", "e", timestamp)
 
     // balances should be correct
     expect(await provider.getBalance(childArtNft.address)).to.equal(ethers.utils.parseEther("1.0"));

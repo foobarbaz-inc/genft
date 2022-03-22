@@ -33,31 +33,31 @@ describe("ChainAI", function () {
     const provider = waffle.provider;
     
     // Not enough paid
-    await expect(chainAI.connect(randomPerson).startInferenceJob(0, "a", "b", 1))
+    await expect(chainAI.connect(randomPerson).startInferenceJob(0, 0, "a", "b", 1))
       .to.be.revertedWith("Insufficient payment for inference");
     
     // Enough paid
     var blockNumber = await ethers.provider.getBlockNumber();
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
-    expect(await chainAI.connect(randomPerson).startInferenceJob(0, "a", "b", 1, { value: ethers.utils.parseEther("0.1") }))
-      .to.emit(chainAI, "InferenceJobCreated").withArgs(1, 0, "a", "b", timestamp)
+    expect(await chainAI.connect(randomPerson).startInferenceJob(0, 0, "a", "b", 1, { value: ethers.utils.parseEther("0.1") }))
+      .to.emit(chainAI, "InferenceJobCreated").withArgs(1, 0, 0, "a", "b", timestamp)
     expect(await provider.getBalance(chainAI.address)).to.equal(ethers.utils.parseEther("0.1"));
 
     // Not enough paid
-    await expect(chainAI.connect(randomPerson).startTrainingJob(0, "a", "b", "c", "d", 0, 1, 1, 1, 1))
+    await expect(chainAI.connect(randomPerson).startTrainingJob(0, 0, "a", "b", "c", "d", 0, 1, 1, 1, 1))
       .to.be.revertedWith("Insufficient payment for training");
     
     // Not enough paid
     var blockNumber = await ethers.provider.getBlockNumber();
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
-    await expect(chainAI.connect(randomPerson).startTrainingJob(0, "a", "b", "c", "d", 0, 1, 1, 1, 1, { value: ethers.utils.parseEther("0.1") }))
+    await expect(chainAI.connect(randomPerson).startTrainingJob(0, 0, "a", "b", "c", "d", 0, 1, 1, 1, 1, { value: ethers.utils.parseEther("0.1") }))
       .to.be.revertedWith("Insufficient payment for training");
 
     // Enough paid
     var blockNumber = await ethers.provider.getBlockNumber();
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
-    expect(await chainAI.connect(randomPerson).startTrainingJob(0, "a", "b", "c", "d", 0, 1, 1, 1, 1, { value: ethers.utils.parseEther("0.3") }))
-      .to.emit(chainAI, "TrainingJobCreated").withArgs(2, 0, "a", "b", "c", "d", 0, 1, 1, 1, timestamp)
+    expect(await chainAI.connect(randomPerson).startTrainingJob(0, 0, "a", "b", "c", "d", 0, 1, 1, 1, 1, { value: ethers.utils.parseEther("0.3") }))
+      .to.emit(chainAI, "TrainingJobCreated").withArgs(2, 0, 0, "a", "b", "c", "d", 0, 1, 1, 1, timestamp)
     expect(await provider.getBalance(chainAI.address)).to.equal(ethers.utils.parseEther("0.4"));
   });   
 });

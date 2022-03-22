@@ -77,6 +77,7 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
         uint inferencePrice = mlContract.inferencePrice();
         mlContract.startInferenceJob{value: inferencePrice}(
             dataType,
+            currentTokenId,
             trainedModelStorageLocation,
             dataInputLocation,
             currentTokenId

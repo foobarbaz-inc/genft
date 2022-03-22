@@ -107,6 +107,7 @@ contract GENft is ERC721URIStorage, IMLClient {
         uint trainingPrice = mlContract.trainingPrice();
         mlContract.startTrainingJob{value: trainingPrice}(
             dataType,
+            currentTokenId,
             dataZipStorageLocation,
             modelStorageLocation,
             initFnStorageLocation,
