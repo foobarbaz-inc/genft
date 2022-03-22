@@ -6,11 +6,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "./ChainAI.sol";
 import "./IMLClient.sol";
-import "./ArtNFT.sol"; // todo make this an interface
 
 contract GENft is ERC721URIStorage, IMLClient {
     address private owner;
-    address private referenceChild;
     address public mlCoordinator;
     uint256 currentTokenId;
     uint256 mintPriceToThisContract; // This is just the price of minting, it doesn't include the price of training
@@ -21,8 +19,14 @@ contract GENft is ERC721URIStorage, IMLClient {
     uint256 epochs;
     ChainAI.JobDataType dataType;
     ChainAI.Optimizer optimizer;
-    string modelStorageLocation;
     string initFnStorageLocation;
+
+    struct ModelInfo {
+        string[] modelLocations; // array in case model updates over time
+        uint[] jobIds; // array of jobs associated with this Model
+    }
+
+    mapping (uint => ModelInfo) tokenIdToModelInfo;
 
     function price() public view returns(uint256) {
         ChainAI mlContract = ChainAI(mlCoordinator);
@@ -31,19 +35,13 @@ contract GENft is ERC721URIStorage, IMLClient {
         return(totalPrice);
     }
 
-    mapping (uint256 => string) tokenIdToDataZip;
-    mapping (uint256 => string) tokenIdToLossFn;
-    mapping (uint256 => address) public tokenIdToChildContract;
-
     event ArtNftCreated(address child, address owner);
     event TokenUriSet(uint256 tokenId, string tokenURI);
 
     constructor(
-        address referenceChild_,
         address mlCoordinator_,
         uint price_,
         ChainAI.JobDataType dataType_,
-        string memory modelStorageLocation_,
         string memory initFnStorageLocation_,
         ChainAI.Optimizer optimizer_,
         uint256 learning_rate_x1e8_,
@@ -52,12 +50,10 @@ contract GENft is ERC721URIStorage, IMLClient {
     ) ERC721("GENft", "GEN") {
         owner = msg.sender;
         mlCoordinator = mlCoordinator_;
-        referenceChild = referenceChild_;
         mintPriceToThisContract = price_;
 
         // training params
         dataType = dataType_;
-        modelStorageLocation = modelStorageLocation_;
         initFnStorageLocation = initFnStorageLocation_;
         optimizer = optimizer_;
         learning_rate_x1e8 = learning_rate_x1e8_;
@@ -72,36 +68,19 @@ contract GENft is ERC721URIStorage, IMLClient {
 
     function mint(
         address to,
+        string memory modelStorageLocation,
         string memory dataZipStorageLocation,
-        string memory lossFnStorageLocation,
-        uint256 artNFTPriceToContract
+        string memory lossFnStorageLocation
     ) external payable returns (uint) {
         // check that the payment is enough
         require(msg.value >= price(), "Insufficient payment for minting");
 
         currentTokenId++;
-        // Set the data for the specific GENft
-        tokenIdToDataZip[currentTokenId] = dataZipStorageLocation;
-        tokenIdToLossFn[currentTokenId] = lossFnStorageLocation;
-        
-        // Clone the reference child
-        address childAddress = Clones.clone(referenceChild);
-        ArtNFT childContract = ArtNFT(childAddress);
-        childContract.initialize(
-            address(this),
-            msg.sender,
-            mlCoordinator,
-            artNFTPriceToContract,
-            currentTokenId,
-            dataType
-        );
-        emit ArtNftCreated(childAddress, msg.sender);
-        tokenIdToChildContract[currentTokenId] = childAddress;
 
         // Set the owner of the given NFT properly
         // Need to do this in this order because _beforeTokenTransfer gets called on mint
         _mint(to, currentTokenId);
-        
+
         // Start training
         ChainAI mlContract = ChainAI(mlCoordinator);
         uint trainingPrice = mlContract.trainingPrice();
@@ -124,19 +103,39 @@ contract GENft is ERC721URIStorage, IMLClient {
         uint256 dataId,
         string memory dataLocation
     ) external override {
-        require(msg.sender == mlCoordinator, "Not ML coordinator");
-        _setTokenURI(dataId, dataLocation);
-        emit TokenUriSet(dataId, dataLocation);
+        // if dataId is 0, ignore callback
+        if (dataId != 0) {
+            require(msg.sender == mlCoordinator, "Not ML coordinator");
+            // todo handle setting openSea specific metadata rather than just model location
+            _setTokenURI(dataId, dataLocation);
+            ModelInfo storage modelInfo = tokenIdToModelInfo[dataId];
+            modelInfo.modelLocations.push(dataLocation);
+            emit TokenUriSet(dataId, dataLocation);
+        }
     }
 
-    function _beforeTokenTransfer(
-        address /*from*/,
-        address to,
-        uint256 tokenId
-    ) internal override {
-        address childAddress = tokenIdToChildContract[tokenId];
-        ArtNFT childContract = ArtNFT(childAddress);
-        childContract.changeOwner(to);
+    function run(
+        uint256 tokenId,
+        string memory dataInputLocation
+    ) external payable {
+        // require that only the owner can run the model
+        require(ownerOf(tokenId) == msg.sender, "Not AI owner");
+        string memory trainedModelStorageLocation = tokenURI(tokenId);
+        require(
+            keccak256(abi.encodePacked(trainedModelStorageLocation)) != keccak256(abi.encodePacked("")),
+            "Model not yet trained"
+        );
+        ChainAI mlContract = ChainAI(mlCoordinator);
+        uint inferencePrice = mlContract.inferencePrice();
+        require(msg.value >= inferencePrice, "Insufficient payment for inference");
+        uint jobId = mlContract.startInferenceJob{value: inferencePrice}(
+            dataType,
+            trainedModelStorageLocation,
+            dataInputLocation,
+            0
+        );
+        ModelInfo storage modelInfo = tokenIdToModelInfo[tokenId];
+        modelInfo.jobIds.push(jobId);
     }
 
     function withdraw() external onlyOwner {
