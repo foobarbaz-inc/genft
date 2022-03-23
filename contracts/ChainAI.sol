@@ -80,7 +80,7 @@ contract ChainAI {
         JobParams jobParams;
         JobDataType inputDataType;
         JobDataType outputDataType;
-        string modelStorageLocation;
+        string[] modelStorageLocations;
         string dataInputStorageLocation;
         string dataOutputStorageLocation;
     }
@@ -104,7 +104,7 @@ contract ChainAI {
         uint jobId,
         JobDataType inputDataType,
         JobDataType outputDataType,
-        string modelStorageLocation,
+        string[] modelStorageLocations,
         string dataInputStorageLocation,
         uint createdTimestamp
     );
@@ -125,7 +125,7 @@ contract ChainAI {
     function startInferenceJob(
         JobDataType inputDataType,
         JobDataType outputDataType,
-        string memory modelStorageLocation,
+        string[] memory modelStorageLocations,
         string memory dataInputStorageLocation,
         uint256 callbackId
     ) external payable returns (uint256) {
@@ -147,7 +147,7 @@ contract ChainAI {
             jobParams: jobParams,
             inputDataType: inputDataType,
             outputDataType: outputDataType,
-            modelStorageLocation: modelStorageLocation,
+            modelStorageLocations: modelStorageLocations,
             dataInputStorageLocation: dataInputStorageLocation,
             dataOutputStorageLocation: ""
         });
@@ -159,7 +159,7 @@ contract ChainAI {
             latestJobId,
             inputDataType,
             outputDataType,
-            modelStorageLocation,
+            modelStorageLocations,
             dataInputStorageLocation,
             createdTimestamp
         );
