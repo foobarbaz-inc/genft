@@ -87,7 +87,7 @@ contract GENft is ERC721URIStorage, IMLClient {
         _mint(to, currentTokenId);
 
         // Set the GAN model location
-        StyleModelInfo storage modelInfo = tokenIdToStyleModelInfo[dataId];
+        ModelInfo storage modelInfo = tokenIdToModelInfo[dataId];
         modelInfo.GANModelLocation = GANModelStorageLocation;
 
         // Start training
