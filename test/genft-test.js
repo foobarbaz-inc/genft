@@ -16,7 +16,7 @@ describe("GENft", function () {
     expect(await genft.mint(randomPerson.address, "c", "d", 0))
       .to.emit(genft, "ArtNftCreated")
       .to.emit(genft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
+      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, 1, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
 
     // Test setting model
     expect(await chainAI.connect(sequencer).updateJobStatus(1, 2, "trainedModelLoc"))
@@ -59,7 +59,7 @@ describe("GENft", function () {
     expect(await genft.mint(randomPerson.address, "c", "d", artnftPrice, { value: ethers.utils.parseEther("5.3") }) )
       .to.emit(genft, "ArtNftCreated")
       .to.emit(genft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
+      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, 1, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
 
     // Set model
     expect(await chainAI.connect(sequencer).updateJobStatus(1, 2, "trainedModelLoc"))

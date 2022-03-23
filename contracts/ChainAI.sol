@@ -67,6 +67,7 @@ contract ChainAI {
         JobParams jobParams;
         JobDataType inputDataType;
         Optimizer optimizer;
+        uint256 seed;
         uint256 learning_rate_x1e8;
         uint256 batch_size;
         uint256 epochs;
@@ -81,6 +82,7 @@ contract ChainAI {
         JobParams jobParams;
         JobDataType inputDataType;
         JobDataType outputDataType;
+        uint256 seed;
         string[] modelStorageLocations;
         string dataInputStorageLocation;
         string dataOutputStorageLocation;
@@ -91,6 +93,7 @@ contract ChainAI {
         uint jobId,
         uint8 version,
         JobDataType inputDataType,
+        uint256 seed,
         string dataZipStorageLocation,
         string modelStorageLocation,
         string initFnStorageLocation,
@@ -106,6 +109,7 @@ contract ChainAI {
         uint8 version,
         JobDataType inputDataType,
         JobDataType outputDataType,
+        uint256 seed,
         string[] modelStorageLocations,
         string dataInputStorageLocation,
         uint createdTimestamp
@@ -127,6 +131,7 @@ contract ChainAI {
     function startInferenceJob(
         JobDataType inputDataType,
         JobDataType outputDataType,
+        uint256 seed,
         string[] memory modelStorageLocations,
         string memory dataInputStorageLocation,
         uint256 callbackId
@@ -149,6 +154,7 @@ contract ChainAI {
             jobParams: jobParams,
             inputDataType: inputDataType,
             outputDataType: outputDataType,
+            seed: seed,
             modelStorageLocations: modelStorageLocations,
             dataInputStorageLocation: dataInputStorageLocation,
             dataOutputStorageLocation: ""
@@ -162,6 +168,7 @@ contract ChainAI {
             contractVersion,
             inputDataType,
             outputDataType,
+            seed,
             modelStorageLocations,
             dataInputStorageLocation,
             createdTimestamp
@@ -171,6 +178,7 @@ contract ChainAI {
 
     function startTrainingJob(
         JobDataType inputDataType,
+        uint256 seed,
         string memory dataZipStorageLocation,
         string memory modelStorageLocation,
         string memory initFnStorageLocation,
@@ -198,6 +206,7 @@ contract ChainAI {
         TrainingJob memory job = TrainingJob({
             jobParams: jobParams,
             inputDataType: inputDataType,
+            seed: seed,
             dataZipStorageLocation: dataZipStorageLocation,
             modelStorageLocation: modelStorageLocation,
             initFnStorageLocation: initFnStorageLocation,
@@ -216,6 +225,7 @@ contract ChainAI {
             latestJobId,
             contractVersion,
             inputDataType,
+            seed,
             dataZipStorageLocation,
             modelStorageLocation,
             initFnStorageLocation,
