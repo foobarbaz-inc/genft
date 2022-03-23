@@ -23,8 +23,9 @@ contract GENft is ERC721URIStorage, IMLClient {
     string initFnStorageLocation;
 
     struct ModelInfo {
-        string[] modelLocations; // array in case model updates over time
-        uint[] jobIds; // array of jobs associated with this Model
+        uint[] inferenceJobIds;
+        string styleModelLocation;
+        string GANModelLocation;
     }
 
     mapping (uint => ModelInfo) tokenIdToModelInfo;
@@ -71,7 +72,8 @@ contract GENft is ERC721URIStorage, IMLClient {
 
     function mint(
         address to,
-        string memory modelStorageLocation,
+        string memory uninitStyleModelStorageLocation,
+        string memory GANModelStorageLocation,
         string memory dataZipStorageLocation,
         string memory lossFnStorageLocation
     ) external payable returns (uint) {
@@ -84,14 +86,17 @@ contract GENft is ERC721URIStorage, IMLClient {
         // Need to do this in this order because _beforeTokenTransfer gets called on mint
         _mint(to, currentTokenId);
 
+        // Set the GAN model location
+        StyleModelInfo storage modelInfo = tokenIdToStyleModelInfo[dataId];
+        modelInfo.GANModelLocation = GANModelStorageLocation;
+
         // Start training
         ChainAI mlContract = ChainAI(mlCoordinator);
         uint trainingPrice = mlContract.trainingPrice();
         mlContract.startTrainingJob{value: trainingPrice}(
             inputDataType,
-            outputDataType,
             dataZipStorageLocation,
-            modelStorageLocation,
+            uninitStyleModelStorageLocation,
             initFnStorageLocation,
             lossFnStorageLocation,
             optimizer,
@@ -113,7 +118,7 @@ contract GENft is ERC721URIStorage, IMLClient {
             // todo handle setting openSea specific metadata rather than just model location
             _setTokenURI(dataId, dataLocation);
             ModelInfo storage modelInfo = tokenIdToModelInfo[dataId];
-            modelInfo.modelLocations.push(dataLocation);
+            modelInfo.styleModelLocation = dataLocation;
             emit TokenUriSet(dataId, dataLocation);
         }
     }
@@ -124,22 +129,26 @@ contract GENft is ERC721URIStorage, IMLClient {
     ) external payable {
         // require that only the owner can run the model
         require(ownerOf(tokenId) == msg.sender, "Not AI owner");
-        string memory trainedModelStorageLocation = tokenURI(tokenId);
+        string memory trainedStyleModelStorageLocation = tokenURI(tokenId);
         require(
-            keccak256(abi.encodePacked(trainedModelStorageLocation)) != keccak256(abi.encodePacked("")),
+            keccak256(abi.encodePacked(trainedStyleModelStorageLocation)) != keccak256(abi.encodePacked("")),
             "Model not yet trained"
         );
+
+        // get the GAN model
+        ModelInfo storage modelInfo = tokenIdToModelInfo[tokenId];
+        string memory GANModelLocation = modelInfo.GANModelLocation;
+
         ChainAI mlContract = ChainAI(mlCoordinator);
         uint inferencePrice = mlContract.inferencePrice();
         require(msg.value >= inferencePrice, "Insufficient payment for inference");
         uint jobId = mlContract.startInferenceJob{value: inferencePrice}(
             inputDataType,
             outputDataType,
-            trainedModelStorageLocation,
+            [GANModelLocation, trainedStyleModelStorageLocation],
             dataInputLocation,
             0
         );
-        ModelInfo storage modelInfo = tokenIdToModelInfo[tokenId];
         modelInfo.jobIds.push(jobId);
     }
 

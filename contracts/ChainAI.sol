@@ -64,7 +64,6 @@ contract ChainAI {
     struct TrainingJob {
         JobParams jobParams;
         JobDataType inputDataType;
-        JobDataType outputDataType;
         Optimizer optimizer;
         uint256 learning_rate_x1e8;
         uint256 batch_size;
@@ -89,7 +88,6 @@ contract ChainAI {
     event TrainingJobCreated(
         uint jobId,
         JobDataType inputDataType,
-        JobDataType outputDataType,
         string dataZipStorageLocation,
         string modelStorageLocation,
         string initFnStorageLocation,
@@ -168,7 +166,6 @@ contract ChainAI {
 
     function startTrainingJob(
         JobDataType inputDataType,
-        JobDataType outputDataType,
         string memory dataZipStorageLocation,
         string memory modelStorageLocation,
         string memory initFnStorageLocation,
@@ -196,7 +193,6 @@ contract ChainAI {
         TrainingJob memory job = TrainingJob({
             jobParams: jobParams,
             inputDataType: inputDataType,
-            outputDataType: outputDataType,
             dataZipStorageLocation: dataZipStorageLocation,
             modelStorageLocation: modelStorageLocation,
             initFnStorageLocation: initFnStorageLocation,
@@ -214,7 +210,6 @@ contract ChainAI {
         emit TrainingJobCreated(
             latestJobId,
             inputDataType,
-            outputDataType,
             dataZipStorageLocation,
             modelStorageLocation,
             initFnStorageLocation,
