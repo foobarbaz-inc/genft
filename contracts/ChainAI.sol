@@ -5,6 +5,8 @@ import "./IMLClient.sol";
 
 contract ChainAI {
 
+    uint8 public contractVersion = 0; // workers should be able to reference the contract version
+
     // contract variables
     uint public trainingPrice; // price to run training
     uint public inferencePrice; // price to run inference
@@ -87,6 +89,7 @@ contract ChainAI {
     // event definitions
     event TrainingJobCreated(
         uint jobId,
+        uint8 version,
         JobDataType inputDataType,
         string dataZipStorageLocation,
         string modelStorageLocation,
@@ -100,6 +103,7 @@ contract ChainAI {
     );
     event InferenceJobCreated(
         uint jobId,
+        uint8 version,
         JobDataType inputDataType,
         JobDataType outputDataType,
         string[] modelStorageLocations,
@@ -155,6 +159,7 @@ contract ChainAI {
         job_types[latestJobId] = JobType.Inference;
         emit InferenceJobCreated(
             latestJobId,
+            contractVersion,
             inputDataType,
             outputDataType,
             modelStorageLocations,
@@ -209,6 +214,7 @@ contract ChainAI {
         job_types[latestJobId] = JobType.Training;
         emit TrainingJobCreated(
             latestJobId,
+            contractVersion,
             inputDataType,
             dataZipStorageLocation,
             modelStorageLocation,
