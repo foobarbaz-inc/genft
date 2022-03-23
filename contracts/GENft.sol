@@ -17,7 +17,8 @@ contract GENft is ERC721URIStorage, IMLClient {
     uint256 learning_rate_x1e8;
     uint256 batch_size;
     uint256 epochs;
-    ChainAI.JobDataType dataType;
+    ChainAI.JobDataType inputDataType;
+    ChainAI.JobDataType outputDataType;
     ChainAI.Optimizer optimizer;
     string initFnStorageLocation;
 
@@ -41,7 +42,8 @@ contract GENft is ERC721URIStorage, IMLClient {
     constructor(
         address mlCoordinator_,
         uint price_,
-        ChainAI.JobDataType dataType_,
+        ChainAI.JobDataType inputDataType_,
+        ChainAI.JobDataType outputDataType_,
         string memory initFnStorageLocation_,
         ChainAI.Optimizer optimizer_,
         uint256 learning_rate_x1e8_,
@@ -53,7 +55,8 @@ contract GENft is ERC721URIStorage, IMLClient {
         mintPriceToThisContract = price_;
 
         // training params
-        dataType = dataType_;
+        inputDataType = inputDataType_;
+        outputDataType = outputDataType_;
         initFnStorageLocation = initFnStorageLocation_;
         optimizer = optimizer_;
         learning_rate_x1e8 = learning_rate_x1e8_;
@@ -85,7 +88,8 @@ contract GENft is ERC721URIStorage, IMLClient {
         ChainAI mlContract = ChainAI(mlCoordinator);
         uint trainingPrice = mlContract.trainingPrice();
         mlContract.startTrainingJob{value: trainingPrice}(
-            dataType,
+            inputDataType,
+            outputDataType,
             dataZipStorageLocation,
             modelStorageLocation,
             initFnStorageLocation,
@@ -129,7 +133,8 @@ contract GENft is ERC721URIStorage, IMLClient {
         uint inferencePrice = mlContract.inferencePrice();
         require(msg.value >= inferencePrice, "Insufficient payment for inference");
         uint jobId = mlContract.startInferenceJob{value: inferencePrice}(
-            dataType,
+            inputDataType,
+            outputDataType,
             trainedModelStorageLocation,
             dataInputLocation,
             0

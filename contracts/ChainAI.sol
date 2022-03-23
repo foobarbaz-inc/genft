@@ -30,7 +30,8 @@ contract ChainAI {
 
     enum JobDataType {
         Image,
-        Categorical
+        Categorical,
+        None
     }
 
     // Zack note: these might not be neccessary so I'm not including them now
@@ -62,7 +63,8 @@ contract ChainAI {
 
     struct TrainingJob {
         JobParams jobParams;
-        JobDataType dataType;
+        JobDataType inputDataType;
+        JobDataType outputDataType;
         Optimizer optimizer;
         uint256 learning_rate_x1e8;
         uint256 batch_size;
@@ -76,7 +78,8 @@ contract ChainAI {
 
     struct InferenceJob {
         JobParams jobParams;
-        JobDataType dataType;
+        JobDataType inputDataType;
+        JobDataType outputDataType;
         string modelStorageLocation;
         string dataInputStorageLocation;
         string dataOutputStorageLocation;
@@ -85,7 +88,8 @@ contract ChainAI {
     // event definitions
     event TrainingJobCreated(
         uint jobId,
-        JobDataType dataType,
+        JobDataType inputDataType,
+        JobDataType outputDataType,
         string dataZipStorageLocation,
         string modelStorageLocation,
         string initFnStorageLocation,
@@ -98,7 +102,8 @@ contract ChainAI {
     );
     event InferenceJobCreated(
         uint jobId,
-        JobDataType dataType,
+        JobDataType inputDataType,
+        JobDataType outputDataType,
         string modelStorageLocation,
         string dataInputStorageLocation,
         uint createdTimestamp
@@ -118,7 +123,8 @@ contract ChainAI {
     }
 
     function startInferenceJob(
-        JobDataType dataType,
+        JobDataType inputDataType,
+        JobDataType outputDataType,
         string memory modelStorageLocation,
         string memory dataInputStorageLocation,
         uint256 callbackId
@@ -139,7 +145,8 @@ contract ChainAI {
 
         InferenceJob memory job = InferenceJob({
             jobParams: jobParams,
-            dataType: dataType,
+            inputDataType: inputDataType,
+            outputDataType: outputDataType,
             modelStorageLocation: modelStorageLocation,
             dataInputStorageLocation: dataInputStorageLocation,
             dataOutputStorageLocation: ""
@@ -150,7 +157,8 @@ contract ChainAI {
         job_types[latestJobId] = JobType.Inference;
         emit InferenceJobCreated(
             latestJobId,
-            dataType,
+            inputDataType,
+            outputDataType,
             modelStorageLocation,
             dataInputStorageLocation,
             createdTimestamp
@@ -159,7 +167,8 @@ contract ChainAI {
     }
 
     function startTrainingJob(
-        JobDataType dataType,
+        JobDataType inputDataType,
+        JobDataType outputDataType,
         string memory dataZipStorageLocation,
         string memory modelStorageLocation,
         string memory initFnStorageLocation,
@@ -186,7 +195,8 @@ contract ChainAI {
 
         TrainingJob memory job = TrainingJob({
             jobParams: jobParams,
-            dataType: dataType,
+            inputDataType: inputDataType,
+            outputDataType: outputDataType,
             dataZipStorageLocation: dataZipStorageLocation,
             modelStorageLocation: modelStorageLocation,
             initFnStorageLocation: initFnStorageLocation,
@@ -203,7 +213,8 @@ contract ChainAI {
         job_types[latestJobId] = JobType.Training;
         emit TrainingJobCreated(
             latestJobId,
-            dataType,
+            inputDataType,
+            outputDataType,
             dataZipStorageLocation,
             modelStorageLocation,
             initFnStorageLocation,
