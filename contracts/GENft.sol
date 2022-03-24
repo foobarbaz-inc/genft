@@ -90,6 +90,13 @@ contract GENft is ERC721URIStorage, IMLClient {
         ModelInfo storage modelInfo = tokenIdToModelInfo[currentTokenId];
         modelInfo.GANModelLocation = GANModelStorageLocation;
 
+        // If there is no style, do not do training
+        bytes memory uninitStyleModelStorageLocationBytes = bytes(uninitStyleModelStorageLocation)
+        if (uninitStyleModelStorageLocation.length == 0) {
+            handleNewDataLocation(currentTokenId, "");
+            return currentTokenId;
+        }
+
         // Start training
         ChainAI mlContract = ChainAI(mlCoordinator);
         uint trainingPrice = mlContract.trainingPrice();
@@ -126,12 +133,19 @@ contract GENft is ERC721URIStorage, IMLClient {
         // if dataId is 0, ignore callback
         if (dataId != 0) {
             require(msg.sender == mlCoordinator, "Not ML coordinator");
-            // todo handle setting openSea specific metadata rather than just model location
-            _setTokenURI(dataId, dataLocation);
-            ModelInfo storage modelInfo = tokenIdToModelInfo[dataId];
-            modelInfo.styleModelLocation = dataLocation;
-            emit TokenUriSet(dataId, dataLocation);
+            handleNewDataLocation(dataId, dataLocation);
         }
+    }
+
+    function handleNewDataLocation(
+        uint256 dataId,
+        string memory dataLocation
+    ) internal {
+        // todo handle setting openSea specific metadata rather than just model location
+        _setTokenURI(dataId, dataLocation);
+        ModelInfo storage modelInfo = tokenIdToModelInfo[dataId];
+        modelInfo.styleModelLocation = dataLocation;
+        emit TokenUriSet(dataId, dataLocation);
     }
 
     function run(
