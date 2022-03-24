@@ -87,23 +87,33 @@ contract GENft is ERC721URIStorage, IMLClient {
         _mint(to, currentTokenId);
 
         // Set the GAN model location
-        ModelInfo storage modelInfo = tokenIdToModelInfo[dataId];
+        ModelInfo storage modelInfo = tokenIdToModelInfo[currentTokenId];
         modelInfo.GANModelLocation = GANModelStorageLocation;
 
         // Start training
         ChainAI mlContract = ChainAI(mlCoordinator);
         uint trainingPrice = mlContract.trainingPrice();
+
+        // Create storage locations struct
+        ChainAI.TrainingJobStorageLocs memory storageLocations = ChainAI.TrainingJobStorageLocs({
+            dataZipStorageLocation: dataZipStorageLocation,
+            modelStorageLocation: uninitStyleModelStorageLocation,
+            initFnStorageLocation: initFnStorageLocation,
+            lossFnStorageLocation: lossFnStorageLocation
+        });
+
+        ChainAI.TrainingJobOptimizationParams memory optimParams = ChainAI.TrainingJobOptimizationParams({
+            optimizer: optimizer,
+            learning_rate_x1e8: learning_rate_x1e8,
+            batch_size: batch_size,
+            epochs: epochs
+        });
+
         mlContract.startTrainingJob{value: trainingPrice}(
             inputDataType,
             currentTokenId,
-            dataZipStorageLocation,
-            uninitStyleModelStorageLocation,
-            initFnStorageLocation,
-            lossFnStorageLocation,
-            optimizer,
-            learning_rate_x1e8,
-            batch_size,
-            epochs,
+            storageLocations,
+            optimParams,
             currentTokenId
         );
         return currentTokenId;
@@ -143,14 +153,21 @@ contract GENft is ERC721URIStorage, IMLClient {
         ChainAI mlContract = ChainAI(mlCoordinator);
         uint inferencePrice = mlContract.inferencePrice();
         require(msg.value >= inferencePrice, "Insufficient payment for inference");
+
+        // Need to create the dynamic sized array separately
+        string[] memory model_locs = new string[](2);
+        model_locs[0] = GANModelLocation;
+        model_locs[1] = trainedStyleModelStorageLocation;
+
         uint jobId = mlContract.startInferenceJob{value: inferencePrice}(
             inputDataType,
             outputDataType,
-            [GANModelLocation, trainedStyleModelStorageLocation],
+            modelInfo.inferenceJobIds.length, // seed = number of existing jobs
+            model_locs,
             dataInputLocation,
             0
         );
-        modelInfo.jobIds.push(jobId);
+        modelInfo.inferenceJobIds.push(jobId);
     }
 
     function withdraw() external onlyOwner {

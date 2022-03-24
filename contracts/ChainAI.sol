@@ -63,18 +63,26 @@ contract ChainAI {
         address callbackAddress;
     }
 
-    struct TrainingJob {
-        JobParams jobParams;
-        JobDataType inputDataType;
-        Optimizer optimizer;
-        uint256 seed;
-        uint256 learning_rate_x1e8;
-        uint256 batch_size;
-        uint256 epochs;
+    struct TrainingJobStorageLocs {
         string dataZipStorageLocation;
         string modelStorageLocation;
         string initFnStorageLocation;
         string lossFnStorageLocation;
+    }
+
+    struct TrainingJobOptimizationParams {
+        Optimizer optimizer;
+        uint256 learning_rate_x1e8;
+        uint256 batch_size;
+        uint256 epochs;
+    }
+
+    struct TrainingJob {
+        JobParams jobParams;
+        TrainingJobStorageLocs storageLocations;
+        TrainingJobOptimizationParams optimParams;
+        JobDataType inputDataType;
+        uint256 seed;
         string modelOutputStorageLocation;
     }
 
@@ -94,14 +102,8 @@ contract ChainAI {
         uint8 version,
         JobDataType inputDataType,
         uint256 seed,
-        string dataZipStorageLocation,
-        string modelStorageLocation,
-        string initFnStorageLocation,
-        string lossFnStorageLocation,
-        Optimizer optimizer,
-        uint256 learning_rate_x1e8,
-        uint256 batch_size,
-        uint256 epochs,
+        TrainingJobStorageLocs storageLocations,
+        TrainingJobOptimizationParams optimParams,
         uint createdTimestamp
     );
     event InferenceJobCreated(
@@ -179,14 +181,8 @@ contract ChainAI {
     function startTrainingJob(
         JobDataType inputDataType,
         uint256 seed,
-        string memory dataZipStorageLocation,
-        string memory modelStorageLocation,
-        string memory initFnStorageLocation,
-        string memory lossFnStorageLocation,
-        Optimizer optimizer,
-        uint256 learning_rate_x1e8,
-        uint256 batch_size,
-        uint256 epochs,
+        TrainingJobStorageLocs memory storageLocations,
+        TrainingJobOptimizationParams memory optimParams,
         uint256 callbackId
     ) external payable {
         require(msg.value >= trainingPrice, "Insufficient payment for training");
@@ -207,14 +203,8 @@ contract ChainAI {
             jobParams: jobParams,
             inputDataType: inputDataType,
             seed: seed,
-            dataZipStorageLocation: dataZipStorageLocation,
-            modelStorageLocation: modelStorageLocation,
-            initFnStorageLocation: initFnStorageLocation,
-            lossFnStorageLocation: lossFnStorageLocation,
-            optimizer: optimizer,
-            learning_rate_x1e8: learning_rate_x1e8,
-            batch_size: batch_size,
-            epochs: epochs,
+            storageLocations: storageLocations,
+            optimParams: optimParams,
             modelOutputStorageLocation: ""
         });
 
@@ -226,14 +216,8 @@ contract ChainAI {
             contractVersion,
             inputDataType,
             seed,
-            dataZipStorageLocation,
-            modelStorageLocation,
-            initFnStorageLocation,
-            lossFnStorageLocation,
-            optimizer,
-            learning_rate_x1e8,
-            batch_size,
-            epochs,
+            storageLocations,
+            optimParams,
             createdTimestamp
         );
     }

@@ -13,13 +13,6 @@ async function deployChainAI(trainingPrice, inferencePrice) {
   }
 }
 
-async function deployArtNFT() {
-  const ArtNftFactory = await ethers.getContractFactory("ArtNFT");
-  const artNft = await ArtNftFactory.deploy();
-  await artNft.deployed()
-  return artNft
-}
-
 async function deployGENft(
   referenceChild,
   mlCoordinator,
@@ -60,4 +53,4 @@ async function increase_time(seconds) {
   await network.provider.send("evm_mine");
 }
 
-module.exports = { deployChainAI, deployArtNFT, deployGENft, getSetTokenURI };
+module.exports = { deployChainAI, deployGENft, getSetTokenURI };
