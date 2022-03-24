@@ -6,11 +6,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "./ChainAI.sol";
 import "./IMLClient.sol";
-import "./ArtNFT.sol"; // todo make this an interface
 
 contract GENft is ERC721URIStorage, IMLClient {
     address private owner;
-    address private referenceChild;
     address public mlCoordinator;
     uint256 currentTokenId;
     uint256 mintPriceToThisContract; // This is just the price of minting, it doesn't include the price of training
@@ -19,10 +17,18 @@ contract GENft is ERC721URIStorage, IMLClient {
     uint256 learning_rate_x1e8;
     uint256 batch_size;
     uint256 epochs;
-    ChainAI.JobDataType dataType;
+    ChainAI.JobDataType inputDataType;
+    ChainAI.JobDataType outputDataType;
     ChainAI.Optimizer optimizer;
-    string modelStorageLocation;
     string initFnStorageLocation;
+
+    struct ModelInfo {
+        uint[] inferenceJobIds;
+        string styleModelLocation;
+        string GANModelLocation;
+    }
+
+    mapping (uint => ModelInfo) tokenIdToModelInfo;
 
     function price() public view returns(uint256) {
         ChainAI mlContract = ChainAI(mlCoordinator);
@@ -31,19 +37,14 @@ contract GENft is ERC721URIStorage, IMLClient {
         return(totalPrice);
     }
 
-    mapping (uint256 => string) tokenIdToDataZip;
-    mapping (uint256 => string) tokenIdToLossFn;
-    mapping (uint256 => address) public tokenIdToChildContract;
-
     event ArtNftCreated(address child, address owner);
     event TokenUriSet(uint256 tokenId, string tokenURI);
 
     constructor(
-        address referenceChild_,
         address mlCoordinator_,
         uint price_,
-        ChainAI.JobDataType dataType_,
-        string memory modelStorageLocation_,
+        ChainAI.JobDataType inputDataType_,
+        ChainAI.JobDataType outputDataType_,
         string memory initFnStorageLocation_,
         ChainAI.Optimizer optimizer_,
         uint256 learning_rate_x1e8_,
@@ -52,12 +53,11 @@ contract GENft is ERC721URIStorage, IMLClient {
     ) ERC721("GENft", "GEN") {
         owner = msg.sender;
         mlCoordinator = mlCoordinator_;
-        referenceChild = referenceChild_;
         mintPriceToThisContract = price_;
 
         // training params
-        dataType = dataType_;
-        modelStorageLocation = modelStorageLocation_;
+        inputDataType = inputDataType_;
+        outputDataType = outputDataType_;
         initFnStorageLocation = initFnStorageLocation_;
         optimizer = optimizer_;
         learning_rate_x1e8 = learning_rate_x1e8_;
@@ -72,50 +72,48 @@ contract GENft is ERC721URIStorage, IMLClient {
 
     function mint(
         address to,
+        string memory uninitStyleModelStorageLocation,
+        string memory GANModelStorageLocation,
         string memory dataZipStorageLocation,
-        string memory lossFnStorageLocation,
-        uint256 artNFTPriceToContract
+        string memory lossFnStorageLocation
     ) external payable returns (uint) {
         // check that the payment is enough
         require(msg.value >= price(), "Insufficient payment for minting");
 
         currentTokenId++;
-        // Set the data for the specific GENft
-        tokenIdToDataZip[currentTokenId] = dataZipStorageLocation;
-        tokenIdToLossFn[currentTokenId] = lossFnStorageLocation;
-        
-        // Clone the reference child
-        address childAddress = Clones.clone(referenceChild);
-        ArtNFT childContract = ArtNFT(childAddress);
-        childContract.initialize(
-            address(this),
-            msg.sender,
-            mlCoordinator,
-            artNFTPriceToContract,
-            currentTokenId,
-            dataType
-        );
-        emit ArtNftCreated(childAddress, msg.sender);
-        tokenIdToChildContract[currentTokenId] = childAddress;
 
         // Set the owner of the given NFT properly
         // Need to do this in this order because _beforeTokenTransfer gets called on mint
         _mint(to, currentTokenId);
-        
+
+        // Set the GAN model location
+        ModelInfo storage modelInfo = tokenIdToModelInfo[currentTokenId];
+        modelInfo.GANModelLocation = GANModelStorageLocation;
+
         // Start training
         ChainAI mlContract = ChainAI(mlCoordinator);
         uint trainingPrice = mlContract.trainingPrice();
+
+        // Create storage locations struct
+        ChainAI.TrainingJobStorageLocs memory storageLocations = ChainAI.TrainingJobStorageLocs({
+            dataZipStorageLocation: dataZipStorageLocation,
+            modelStorageLocation: uninitStyleModelStorageLocation,
+            initFnStorageLocation: initFnStorageLocation,
+            lossFnStorageLocation: lossFnStorageLocation
+        });
+
+        ChainAI.TrainingJobOptimizationParams memory optimParams = ChainAI.TrainingJobOptimizationParams({
+            optimizer: optimizer,
+            learning_rate_x1e8: learning_rate_x1e8,
+            batch_size: batch_size,
+            epochs: epochs
+        });
+
         mlContract.startTrainingJob{value: trainingPrice}(
-            dataType,
+            inputDataType,
             currentTokenId,
-            dataZipStorageLocation,
-            modelStorageLocation,
-            initFnStorageLocation,
-            lossFnStorageLocation,
-            optimizer,
-            learning_rate_x1e8,
-            batch_size,
-            epochs,
+            storageLocations,
+            optimParams,
             currentTokenId
         );
         return currentTokenId;
@@ -125,19 +123,51 @@ contract GENft is ERC721URIStorage, IMLClient {
         uint256 dataId,
         string memory dataLocation
     ) external override {
-        require(msg.sender == mlCoordinator, "Not ML coordinator");
-        _setTokenURI(dataId, dataLocation);
-        emit TokenUriSet(dataId, dataLocation);
+        // if dataId is 0, ignore callback
+        if (dataId != 0) {
+            require(msg.sender == mlCoordinator, "Not ML coordinator");
+            // todo handle setting openSea specific metadata rather than just model location
+            _setTokenURI(dataId, dataLocation);
+            ModelInfo storage modelInfo = tokenIdToModelInfo[dataId];
+            modelInfo.styleModelLocation = dataLocation;
+            emit TokenUriSet(dataId, dataLocation);
+        }
     }
 
-    function _beforeTokenTransfer(
-        address /*from*/,
-        address to,
-        uint256 tokenId
-    ) internal override {
-        address childAddress = tokenIdToChildContract[tokenId];
-        ArtNFT childContract = ArtNFT(childAddress);
-        childContract.changeOwner(to);
+    function run(
+        uint256 tokenId,
+        string memory dataInputLocation
+    ) external payable {
+        // require that only the owner can run the model
+        require(ownerOf(tokenId) == msg.sender, "Not AI owner");
+        string memory trainedStyleModelStorageLocation = tokenURI(tokenId);
+        require(
+            keccak256(abi.encodePacked(trainedStyleModelStorageLocation)) != keccak256(abi.encodePacked("")),
+            "Model not yet trained"
+        );
+
+        // get the GAN model
+        ModelInfo storage modelInfo = tokenIdToModelInfo[tokenId];
+        string memory GANModelLocation = modelInfo.GANModelLocation;
+
+        ChainAI mlContract = ChainAI(mlCoordinator);
+        uint inferencePrice = mlContract.inferencePrice();
+        require(msg.value >= inferencePrice, "Insufficient payment for inference");
+
+        // Need to create the dynamic sized array separately
+        string[] memory model_locs = new string[](2);
+        model_locs[0] = GANModelLocation;
+        model_locs[1] = trainedStyleModelStorageLocation;
+
+        uint jobId = mlContract.startInferenceJob{value: inferencePrice}(
+            inputDataType,
+            outputDataType,
+            modelInfo.inferenceJobIds.length, // seed = number of existing jobs
+            model_locs,
+            dataInputLocation,
+            0
+        );
+        modelInfo.inferenceJobIds.push(jobId);
     }
 
     function withdraw() external onlyOwner {

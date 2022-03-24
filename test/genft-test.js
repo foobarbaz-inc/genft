@@ -1,4 +1,4 @@
-const { deployChainAI, deployArtNFT, deployGENft, getSetTokenURI } = require("./utils.js");
+const { deployChainAI, deployGENft, getSetTokenURI } = require("./utils.js");
 const { expect } = require("chai");
 const { ethers, waffle } = require("hardhat");
 
@@ -7,7 +7,6 @@ describe("GENft", function () {
     // Setup
     const { chainAI, deployer, sequencer, randomPerson } = await deployChainAI(0, 0);
     await chainAI.connect(deployer).addSequencer(sequencer.address)
-    const artNft = await deployArtNFT()
     const genft = await deployGENft(artNft.address, chainAI.address, 0, 0, "a", "b", 0, 1, 1, 1)
     var blockNumber = await ethers.provider.getBlockNumber();
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;

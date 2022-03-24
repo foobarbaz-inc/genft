@@ -4,7 +4,9 @@ pragma solidity ^0.8.0;
 import "./IMLClient.sol";
 
 contract ChainAI {
-    
+
+    uint8 public contractVersion = 0; // workers should be able to reference the contract version
+
     // contract variables
     uint public trainingPrice; // price to run training
     uint public inferencePrice; // price to run inference
@@ -30,9 +32,10 @@ contract ChainAI {
 
     enum JobDataType {
         Image,
-        Categorical
+        Categorical,
+        None
     }
-    
+
     // Zack note: these might not be neccessary so I'm not including them now
     // If they become neccessary we can include for a V2
     /*
@@ -60,26 +63,35 @@ contract ChainAI {
         address callbackAddress;
     }
 
-    struct TrainingJob {
-        JobParams jobParams;
-        JobDataType dataType;
-        Optimizer optimizer;
-        uint256 seed;
-        uint256 learning_rate_x1e8;
-        uint256 batch_size;
-        uint256 epochs;
+    struct TrainingJobStorageLocs {
         string dataZipStorageLocation;
         string modelStorageLocation;
         string initFnStorageLocation;
         string lossFnStorageLocation;
+    }
+
+    struct TrainingJobOptimizationParams {
+        Optimizer optimizer;
+        uint256 learning_rate_x1e8;
+        uint256 batch_size;
+        uint256 epochs;
+    }
+
+    struct TrainingJob {
+        JobParams jobParams;
+        TrainingJobStorageLocs storageLocations;
+        TrainingJobOptimizationParams optimParams;
+        JobDataType inputDataType;
+        uint256 seed;
         string modelOutputStorageLocation;
     }
 
     struct InferenceJob {
         JobParams jobParams;
-        JobDataType dataType;
+        JobDataType inputDataType;
+        JobDataType outputDataType;
         uint256 seed;
-        string modelStorageLocation;
+        string[] modelStorageLocations;
         string dataInputStorageLocation;
         string dataOutputStorageLocation;
     }
@@ -87,23 +99,20 @@ contract ChainAI {
     // event definitions
     event TrainingJobCreated(
         uint jobId,
-        JobDataType dataType,
+        uint8 version,
+        JobDataType inputDataType,
         uint256 seed,
-        string dataZipStorageLocation,
-        string modelStorageLocation,
-        string initFnStorageLocation,
-        string lossFnStorageLocation,
-        Optimizer optimizer,
-        uint256 learning_rate_x1e8,
-        uint256 batch_size,
-        uint256 epochs,
+        TrainingJobStorageLocs storageLocations,
+        TrainingJobOptimizationParams optimParams,
         uint createdTimestamp
     );
     event InferenceJobCreated(
         uint jobId,
-        JobDataType dataType,
+        uint8 version,
+        JobDataType inputDataType,
+        JobDataType outputDataType,
         uint256 seed,
-        string modelStorageLocation,
+        string[] modelStorageLocations,
         string dataInputStorageLocation,
         uint createdTimestamp
     );
@@ -122,17 +131,18 @@ contract ChainAI {
     }
 
     function startInferenceJob(
-        JobDataType dataType,
+        JobDataType inputDataType,
+        JobDataType outputDataType,
         uint256 seed,
-        string memory modelStorageLocation,
+        string[] memory modelStorageLocations,
         string memory dataInputStorageLocation,
         uint256 callbackId
-    ) external payable {
+    ) external payable returns (uint256) {
         require(msg.value >= inferencePrice, "Insufficient payment for inference");
 
         latestJobId++;
         uint createdTimestamp = block.timestamp;
-        
+
         // make the actual job
         JobParams memory jobParams = JobParams({
             status: JobStatus.Created,
@@ -144,44 +154,42 @@ contract ChainAI {
 
         InferenceJob memory job = InferenceJob({
             jobParams: jobParams,
-            dataType: dataType,
+            inputDataType: inputDataType,
+            outputDataType: outputDataType,
             seed: seed,
-            modelStorageLocation: modelStorageLocation,
+            modelStorageLocations: modelStorageLocations,
             dataInputStorageLocation: dataInputStorageLocation,
             dataOutputStorageLocation: ""
         });
-        
+
         // save the job and emit the created event
         inference_jobs[latestJobId] = job;
         job_types[latestJobId] = JobType.Inference;
         emit InferenceJobCreated(
             latestJobId,
-            dataType,
+            contractVersion,
+            inputDataType,
+            outputDataType,
             seed,
-            modelStorageLocation,
+            modelStorageLocations,
             dataInputStorageLocation,
             createdTimestamp
         );
+        return latestJobId;
     }
 
     function startTrainingJob(
-        JobDataType dataType,
+        JobDataType inputDataType,
         uint256 seed,
-        string memory dataZipStorageLocation,
-        string memory modelStorageLocation,
-        string memory initFnStorageLocation,
-        string memory lossFnStorageLocation,
-        Optimizer optimizer,
-        uint256 learning_rate_x1e8,
-        uint256 batch_size,
-        uint256 epochs,
+        TrainingJobStorageLocs memory storageLocations,
+        TrainingJobOptimizationParams memory optimParams,
         uint256 callbackId
     ) external payable {
         require(msg.value >= trainingPrice, "Insufficient payment for training");
 
         latestJobId++;
         uint createdTimestamp = block.timestamp;
-        
+
         // make the actual job
         JobParams memory jobParams = JobParams({
             status: JobStatus.Created,
@@ -193,16 +201,10 @@ contract ChainAI {
 
         TrainingJob memory job = TrainingJob({
             jobParams: jobParams,
-            dataType: dataType,
+            inputDataType: inputDataType,
             seed: seed,
-            dataZipStorageLocation: dataZipStorageLocation,
-            modelStorageLocation: modelStorageLocation,
-            initFnStorageLocation: initFnStorageLocation,
-            lossFnStorageLocation: lossFnStorageLocation,
-            optimizer: optimizer,
-            learning_rate_x1e8: learning_rate_x1e8,
-            batch_size: batch_size,
-            epochs: epochs,
+            storageLocations: storageLocations,
+            optimParams: optimParams,
             modelOutputStorageLocation: ""
         });
 
@@ -211,16 +213,11 @@ contract ChainAI {
         job_types[latestJobId] = JobType.Training;
         emit TrainingJobCreated(
             latestJobId,
-            dataType,
+            contractVersion,
+            inputDataType,
             seed,
-            dataZipStorageLocation,
-            modelStorageLocation,
-            initFnStorageLocation,
-            lossFnStorageLocation,
-            optimizer,
-            learning_rate_x1e8,
-            batch_size,
-            epochs,
+            storageLocations,
+            optimParams,
             createdTimestamp
         );
     }
@@ -231,7 +228,7 @@ contract ChainAI {
         string memory resultsLocation
     ) external {
         require(sequencers[msg.sender], "Not a trusted GPU worker");
-        
+
         JobParams storage jobParams;
         if (job_types[jobId] == JobType.Training) {
             TrainingJob storage job = training_jobs[jobId];
