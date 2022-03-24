@@ -14,11 +14,10 @@ async function deployChainAI(trainingPrice, inferencePrice) {
 }
 
 async function deployGENft(
-  referenceChild,
   mlCoordinator,
   price,
-  dataType,
-  modelStorageLocation,
+  inputDataType,
+  outputDataType,
   initFnStorageLocation,
   optimizer,
   learning_rate_x1e8,
@@ -27,11 +26,10 @@ async function deployGENft(
 ) {
   const GENftFactory = await ethers.getContractFactory("GENft");
   const genft = await GENftFactory.deploy(
-    referenceChild,
     mlCoordinator,
     price,
-    dataType,
-    modelStorageLocation,
+    inputDataType,
+    outputDataType,
     initFnStorageLocation,
     optimizer,
     learning_rate_x1e8,

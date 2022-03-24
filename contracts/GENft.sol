@@ -23,12 +23,16 @@ contract GENft is ERC721URIStorage, IMLClient {
     string initFnStorageLocation;
 
     struct ModelInfo {
-        uint[] inferenceJobIds;
         string styleModelLocation;
         string GANModelLocation;
+        uint[] inferenceJobIds;
     }
 
-    mapping (uint => ModelInfo) tokenIdToModelInfo;
+    function getModelInfoJobIds(uint tokenId) public view returns(uint[] memory) {
+        return tokenIdToModelInfo[tokenId].inferenceJobIds;
+    }
+
+    mapping (uint => ModelInfo) public tokenIdToModelInfo;
 
     function price() public view returns(uint256) {
         ChainAI mlContract = ChainAI(mlCoordinator);
@@ -77,8 +81,13 @@ contract GENft is ERC721URIStorage, IMLClient {
         string memory dataZipStorageLocation,
         string memory lossFnStorageLocation
     ) external payable returns (uint) {
+        bytes memory uninitModelLocBytes = bytes(uninitStyleModelStorageLocation);
         // check that the payment is enough
-        require(msg.value >= price(), "Insufficient payment for minting");
+        if (uninitModelLocBytes.length == 0) {
+            require(msg.value >= mintPriceToThisContract, "Insufficient payment for minting");
+        } else {
+            require(msg.value >= price(), "Insufficient payment for minting");
+        }
 
         currentTokenId++;
 
@@ -87,12 +96,16 @@ contract GENft is ERC721URIStorage, IMLClient {
         _mint(to, currentTokenId);
 
         // Set the GAN model location
-        ModelInfo storage modelInfo = tokenIdToModelInfo[currentTokenId];
-        modelInfo.GANModelLocation = GANModelStorageLocation;
+        uint[] memory inferenceJobIds = new uint[](0);
+        ModelInfo memory modelInfo = ModelInfo({
+            styleModelLocation: "training",
+            GANModelLocation: GANModelStorageLocation,
+            inferenceJobIds: inferenceJobIds
+        });
+        tokenIdToModelInfo[currentTokenId] = modelInfo;
 
         // If there is no style, do not do training
-        bytes memory uninitStyleModelStorageLocationBytes = bytes(uninitStyleModelStorageLocation)
-        if (uninitStyleModelStorageLocation.length == 0) {
+        if (uninitModelLocBytes.length == 0) {
             handleNewDataLocation(currentTokenId, "");
             return currentTokenId;
         }
