@@ -90,33 +90,55 @@ contract ChainAI {
 
     // TODO should each model type have a separate inference price?
     function PromptConditionedTextGeneration(
-        uint modelArchitecture,
         string memory modelConfigLocation,
         string memory prompt,
         uint temperature_x1e4,
         uint callbackId,
         uint seed
     ) external payable {
-        // todo (call _startJob w/ appropriate params)
+        _startJob(
+            ModelCategory.PromptConditionedTextGeneration,
+            seed,
+            modelConfigLocation,
+            InputDataLocationType.OnChain,
+            bytes(prompt),
+            OutputDataLocationType.OnChain,
+            OutputDataFormat.Raw
+        )
     }
 
     function TextConditionalImageGeneration(
-        uint modelArchitecture,
         string memory modelConfigLocation,
         string memory prompt,
         uint callbackId,
-        uint seed
+        uint seed,
+        OutputDataFormat outputDataFormat
     ) external payable {
-        // todo (call _startJob w/ appropriate params)
+        _startJob(
+            ModelCategory.PromptConditionedTextGeneration,
+            seed,
+            modelConfigLocation,
+            InputDataLocationType.OnChain,
+            bytes(prompt),
+            OutputDataLocationType.Arweave,
+            outputDataFormat
+        )
     }
 
     function UnconditionalImageGeneration(
-        uint modelArchitecture,
         string memory modelConfigLocation,
         uint callbackId,
         uint seed
     ) external payable {
-        // todo (call _startJob w/ appropriate params)
+        _startJob(
+            ModelCategory.PromptConditionedTextGeneration,
+            seed,
+            modelConfigLocation,
+            InputDataLocationType.OnChain,
+            bytes(prompt),
+            OutputDataLocationType.Arweave,
+            outputDataFormat
+        )
     }
 
     function _startJob(
