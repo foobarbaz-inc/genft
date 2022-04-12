@@ -59,7 +59,7 @@ contract ChainAI {
         InputDataLocationType inputDataLocationType;
         OutputDataLocationType outputDataLocationType;
         OutputDataFormat outputDataFormat;
-        string modelStorageLocation;
+        string modelConfigLocation;
         bytes input;
         bytes output;
     }
@@ -68,7 +68,7 @@ contract ChainAI {
         uint jobId,
         ModelCategory modelCategory,
         uint256 seed,
-        string modelStorageLocation,
+        string modelConfigLocation,
         InputDataLocationType inputDataLocationType,
         bytes input,
         OutputDataLocationType outputDataLocationType,
@@ -91,7 +91,7 @@ contract ChainAI {
     // TODO should each model type have a separate inference price?
     function PromptConditionedTextGeneration(
         uint modelArchitecture,
-        string memory modelStorageLocation,
+        string memory modelConfigLocation,
         string memory prompt,
         uint temperature_x1e4,
         uint callbackId,
@@ -102,7 +102,7 @@ contract ChainAI {
 
     function TextConditionalImageGeneration(
         uint modelArchitecture,
-        string memory modelStorageLocation,
+        string memory modelConfigLocation,
         string memory prompt,
         uint callbackId,
         uint seed
@@ -112,7 +112,7 @@ contract ChainAI {
 
     function UnconditionalImageGeneration(
         uint modelArchitecture,
-        string memory modelStorageLocation,
+        string memory modelConfigLocation,
         uint callbackId,
         uint seed
     ) external payable {
@@ -122,7 +122,7 @@ contract ChainAI {
     function _startJob(
         ModelCategory modelCategory,
         uint256 seed,
-        string memory modelStorageLocation,
+        string memory modelConfigLocation,
         InputDataLocationType inputDataLocationType,
         bytes input,
         OutputDataLocationType outputDataLocationType,
@@ -146,7 +146,7 @@ contract ChainAI {
             jobParams: jobParams,
             modelCategory: modelCategory,
             seed: seed,
-            modelStorageLocation: modelStorageLocation,
+            modelConfigLocation: modelConfigLocation,
             inputDataLocationType: inputDataLocationType,
             input: input,
             outputDataLocationType: outputDataLocationType,
@@ -160,7 +160,7 @@ contract ChainAI {
             latestJobId,
             dataType,
             seed,
-            modelStorageLocation,
+            modelConfigLocation,
             inputDataLocationType,
             input,
             outputDataLocationType,
