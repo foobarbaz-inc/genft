@@ -89,13 +89,13 @@ contract ArtNFT is ERC721URIStorage, IMLClient {
         mintPriceToThisContract = price_;
     }
 
-    function setDataLocation(
-        uint256 dataId,
-        string memory dataLocation
+    function setOutput(
+        uint256 id,
+        string memory location
     ) external override {
         require(msg.sender == mlCoordinator, "Not ML coordinator");
-        _setTokenURI(dataId, dataLocation);
-        emit TokenUriSet(dataId, dataLocation);
+        _setTokenURI(id, location);
+        emit TokenUriSet(id, location);
     }
 
     function changeOwner(

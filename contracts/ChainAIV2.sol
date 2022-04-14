@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./IMLClient.sol";
 
-contract ChainAI {
+contract ChainAIV2 {
 
     // contract variables
     uint public inferencePrice; // price to run inference
@@ -55,22 +55,22 @@ contract ChainAI {
     struct Job {
         JobParams jobParams;
         ModelCategory modelCategory;
-        uint256 seed;
         InputDataLocationType inputDataLocationType;
         OutputDataLocationType outputDataLocationType;
         OutputDataFormat outputDataFormat;
+        bytes seed;
         string modelConfigLocation;
-        bytes input;
-        bytes output;
+        string input;
+        string output;
     }
 
     event JobCreated(
         uint jobId,
         ModelCategory modelCategory,
-        uint256 seed,
+        bytes seed,
         string modelConfigLocation,
         InputDataLocationType inputDataLocationType,
-        bytes input,
+        string input,
         OutputDataLocationType outputDataLocationType,
         OutputDataFormat outputDataFormat,
         uint createdTimestamp
@@ -88,68 +88,16 @@ contract ChainAI {
         _;
     }
 
-    // TODO should each model type have a separate inference price?
-    function PromptConditionedTextGeneration(
-        string memory modelConfigLocation,
-        string memory prompt,
-        uint temperature_x1e4,
-        uint callbackId,
-        uint seed
-    ) external payable {
-        _startJob(
-            ModelCategory.PromptConditionedTextGeneration,
-            seed,
-            modelConfigLocation,
-            InputDataLocationType.OnChain,
-            bytes(prompt),
-            OutputDataLocationType.OnChain,
-            OutputDataFormat.Raw
-        )
-    }
-
-    function TextConditionalImageGeneration(
-        string memory modelConfigLocation,
-        string memory prompt,
-        uint callbackId,
-        uint seed,
-        OutputDataFormat outputDataFormat
-    ) external payable {
-        _startJob(
-            ModelCategory.PromptConditionedTextGeneration,
-            seed,
-            modelConfigLocation,
-            InputDataLocationType.OnChain,
-            bytes(prompt),
-            OutputDataLocationType.Arweave,
-            outputDataFormat
-        )
-    }
-
-    function UnconditionalImageGeneration(
-        string memory modelConfigLocation,
-        uint callbackId,
-        uint seed
-    ) external payable {
-        _startJob(
-            ModelCategory.PromptConditionedTextGeneration,
-            seed,
-            modelConfigLocation,
-            InputDataLocationType.OnChain,
-            bytes(prompt),
-            OutputDataLocationType.Arweave,
-            outputDataFormat
-        )
-    }
-
     function _startJob(
         ModelCategory modelCategory,
-        uint256 seed,
+        bytes memory seed,
+        uint256 callbackId,
         string memory modelConfigLocation,
         InputDataLocationType inputDataLocationType,
-        bytes input,
+        string memory input,
         OutputDataLocationType outputDataLocationType,
         OutputDataFormat outputDataFormat
-    ) external payable {
+    ) internal {
         require(msg.value >= inferencePrice, "Insufficient payment for inference");
 
         latestJobId++;
@@ -180,7 +128,7 @@ contract ChainAI {
         jobs[latestJobId] = job;
         emit JobCreated(
             latestJobId,
-            dataType,
+            modelCategory,
             seed,
             modelConfigLocation,
             inputDataLocationType,
@@ -188,6 +136,62 @@ contract ChainAI {
             outputDataLocationType,
             outputDataFormat,
             createdTimestamp
+        );
+    }
+
+    // TODO should each model type have a separate inference price?
+    function promptConditionedTextGeneration(
+        string memory modelConfigLocation,
+        string memory prompt,
+        uint callbackId,
+        bytes memory seed
+    ) external payable {
+        _startJob(
+            ModelCategory.PromptConditionedTextGeneration,
+            seed,
+            callbackId,
+            modelConfigLocation,
+            InputDataLocationType.OnChain,
+            prompt,
+            OutputDataLocationType.OnChain,
+            OutputDataFormat.Raw
+        );
+    }
+
+    function textConditionalImageGeneration(
+        string memory modelConfigLocation,
+        string memory prompt,
+        uint callbackId,
+        bytes memory seed,
+        OutputDataFormat outputDataFormat
+    ) external payable {
+        _startJob(
+            ModelCategory.PromptConditionedTextGeneration,
+            seed,
+            callbackId,
+            modelConfigLocation,
+            InputDataLocationType.OnChain,
+            prompt,
+            OutputDataLocationType.Arweave,
+            outputDataFormat
+        );
+    }
+
+    function unconditionalImageGeneration(
+        string memory modelConfigLocation,
+        uint callbackId,
+        bytes memory seed,
+        OutputDataFormat outputDataFormat
+    ) external payable {
+        _startJob(
+            ModelCategory.PromptConditionedTextGeneration,
+            seed,
+            callbackId,
+            modelConfigLocation,
+            InputDataLocationType.OnChain,
+            "",
+            OutputDataLocationType.Arweave,
+            outputDataFormat
         );
     }
 
@@ -201,7 +205,7 @@ contract ChainAI {
         JobParams storage jobParams;
         Job storage job = jobs[jobId];
         jobParams = job.jobParams;
-        job.dataOutputStorageLocation = resultsLocation;
+        job.output = resultsLocation;
         jobParams.status = jobStatus;
 
         if (jobStatus == JobStatus.Failed) {
@@ -211,7 +215,7 @@ contract ChainAI {
             emit JobFailed(jobId);
         } else if (jobStatus == JobStatus.Succeeded) {
             IMLClient client = IMLClient(jobParams.callbackAddress);
-            client.setDataLocation(jobParams.callbackId, resultsLocation);
+            client.setOutput(jobParams.callbackId, resultsLocation);
             // todo how to handle incorrect interface
             emit JobSucceeded(jobId);
         }

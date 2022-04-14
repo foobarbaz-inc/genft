@@ -260,7 +260,7 @@ contract ChainAI {
             emit JobFailed(jobId);
         } else if (jobStatus == JobStatus.Succeeded) {
             IMLClient client = IMLClient(jobParams.callbackAddress);
-            client.setDataLocation(jobParams.callbackId, resultsLocation);
+            client.setOutput(jobParams.callbackId, resultsLocation);
             // todo how to handle incorrect interface
             emit JobSucceeded(jobId);
         }
