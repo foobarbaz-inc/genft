@@ -58,9 +58,10 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
             model,
             prompt,
             currentTokenId,
-            abi.encodePacked(msg.sender),
+            abi.encodePacked(to),
             ChainAIV2.OutputDataFormat.NFTMeta
         );
+        tokenIdToDataInput[currentTokenId] = prompt;
         return currentTokenId;
     }
 

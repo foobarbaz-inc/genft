@@ -28,7 +28,7 @@ describe("GENft", function () {
     const { chainAI, deployer, sequencer, randomPerson } = await deployChainAI(0, 0);
     const artNft = await deployArtNFT()
     const genft = await deployGENft(artNft.address, chainAI.address, 0, 0, "", "", 0, 1, 1, 1)
-    await expect(genft.connect(sequencer).setDataLocation(1, ""))
+    await expect(genft.connect(sequencer).setOutput(1, ""))
       .to.be.revertedWith("Not ML coordinator")
   });
 

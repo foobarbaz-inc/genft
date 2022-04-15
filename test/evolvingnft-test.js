@@ -1,26 +1,29 @@
-const { deployChainAI, deployArtNFT, deployGENft, getSetTokenURI } = require("./utils.js");
+const { deployChainAIV2, deployEvolvingNFT, getSetTokenURI } = require("./utils.js");
 const { expect } = require("chai");
 const { ethers, waffle } = require("hardhat");
 
 describe("EvolvingNFT", function () {
-  it("Initializes the ArtNft contract only once", async function () {
+  it("Kicks off a Job when EvolvingNFT minted and transferred", async function () {
     // Setup
-    const { chainAI, deployer, sequencer, randomPerson } = await deployChainAI(0, 0);
-    await chainAI.connect(deployer).addSequencer(sequencer.address)
-    const artNft = await deployArtNFT()
-    const genft = await deployGENft(artNft.address, chainAI.address, 0, 0, "a", "b", 0, 1, 1, 1)
+    const { chainAIv2, deployer, sequencer, randomPerson } = await deployChainAIV2(0);
+    await chainAIv2.connect(deployer).addSequencer(sequencer.address)
+    const evolvingNft = await deployEvolvingNFT(
+      deployer.address, chainAIv2.address, 0, 0, "arweave://gpt-j")
     var blockNumber = await ethers.provider.getBlockNumber();
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
 
-    // Mint GENft
-    expect(await genft.mint(randomPerson.address, "c", "d", 0))
-      .to.emit(genft, "ArtNftCreated")
-      .to.emit(genft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAI, "TrainingJobCreated").withArgs(1, 0, 1, "c", "a", "b", "d", 0, 1, 1, 1, timestamp)
+    // Mint EvolvingNft
+    expect(await evolvingNft.connect(randomPerson).mint(randomPerson.address, "hello my name is sam"))
+      .to.emit(evolvingNft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
+      .to.emit(chainAIv2, "JobCreated").withArgs(
+        1, 2, randomPerson.address.toLowerCase(), "arweave://gpt-j", 2,
+        "hello my name is sam", 0, 1, timestamp)
 
-    // Test
-    var childContract = await genft.tokenIdToChildContract(1);
-    var childArtNft = new ethers.Contract(childContract, artNft.interface, deployer);
-    await expect(childArtNft.connect(deployer).initialize(deployer.address, deployer.address, deployer.address, 0, 1, 0))
-      .to.be.revertedWith("Already initialized")
+    // Re run inference upon a transfer
+    expect(await evolvingNft.connect(randomPerson).transferFrom(randomPerson.address, sequencer.address, 1))
+      .to.emit(evolvingNft, "Transfer").withArgs(randomPerson.address, sequencer.address, 1)
+      .to.emit(chainAIv2, "JobCreated").withArgs(
+        2, 2, sequencer.address.toLowerCase(), "arweave://gpt-j", 2,
+        "hello my name is sam", 0, 1, timestamp + 1)
   });
+});
