@@ -3,7 +3,7 @@ const { expect } = require("chai");
 const { ethers, waffle } = require("hardhat");
 
 describe("EvolvingNFT", function () {
-  it("Kicks off a Job when EvolvingNFT minted and transferred", async function () {
+  it("Kicks off a Job when EvolvingNFT minted and transferred, tokenURI set correctly", async function () {
     // Setup
     const { chainAIv2, deployer, sequencer, randomPerson } = await deployChainAIV2(0);
     await chainAIv2.connect(deployer).addSequencer(sequencer.address)
@@ -19,11 +19,21 @@ describe("EvolvingNFT", function () {
         1, 2, randomPerson.address.toLowerCase(), "arweave://gpt-j", 2,
         "hello my name is sam", 0, 1, timestamp)
 
+    // ChainAI can set the output upon job completion
+    expect(await chainAIv2.connect(sequencer).updateJobStatus(1, 2, "arweave://nft"))
+      .to.emit(chainAIv2, "JobSucceeded").withArgs(1)
+      .to.emit(evolvingNft, "TokenUriSet").withArgs(1, "arweave://nft")
+
     // Re run inference upon a transfer
     expect(await evolvingNft.connect(randomPerson).transferFrom(randomPerson.address, sequencer.address, 1))
       .to.emit(evolvingNft, "Transfer").withArgs(randomPerson.address, sequencer.address, 1)
       .to.emit(chainAIv2, "JobCreated").withArgs(
         2, 2, sequencer.address.toLowerCase(), "arweave://gpt-j", 2,
-        "hello my name is sam", 0, 1, timestamp + 1)
+        "hello my name is sam", 0, 1, timestamp + 2)
+
+        // ChainAI can set the output upon job completion
+        expect(await chainAIv2.connect(sequencer).updateJobStatus(2, 2, "arweave://nft2"))
+          .to.emit(chainAIv2, "JobSucceeded").withArgs(2)
+          .to.emit(evolvingNft, "TokenUriSet").withArgs(1, "arweave://nft2")
   });
 });
