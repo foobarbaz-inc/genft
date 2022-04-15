@@ -6,6 +6,8 @@ typechain
 
 *~
 *.swp
+*.parcel-cache
+*/dist/*
 
 #Hardhat files
 cache
