@@ -34,13 +34,13 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         ChainAIV2.ModelCategory modelCategory_,
         string memory model_
 
-      ) ERC721("EvolvingNFT", "EVO") {
+    ) ERC721("EvolvingNFT", "EVO") {
           owner = owner_;
           mlCoordinator = mlCoordinator_;
           mintPriceToThisContract = price_;
           modelCategory = modelCategory_;
           model = model_;
-      }
+    }
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Not the owner");
@@ -102,5 +102,9 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
     function withdraw() external onlyOwner {
         (bool success,) = payable(owner).call{value: address(this).balance}("");
         require(success, "Withdraw failed");
+    }
+
+    function updateModel(string memory newModel) external onlyOwner {
+        model = newModel;
     }
 }
