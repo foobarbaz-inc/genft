@@ -166,7 +166,7 @@ contract ChainAIV2 {
         OutputDataFormat outputDataFormat
     ) external payable {
         _startJob(
-            ModelCategory.PromptConditionedTextGeneration,
+            ModelCategory.TextConditionalImageGeneration,
             seed,
             callbackId,
             modelConfigLocation,
@@ -184,7 +184,7 @@ contract ChainAIV2 {
         OutputDataFormat outputDataFormat
     ) external payable {
         _startJob(
-            ModelCategory.PromptConditionedTextGeneration,
+            ModelCategory.UnconditionalImageGeneration,
             seed,
             callbackId,
             modelConfigLocation,
