@@ -11,10 +11,11 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
 
     address private owner;
     address public mlCoordinator;
-    uint256 currentTokenId;
+    uint256 public currentTokenId;
     uint256 mintPriceToThisContract; // This is just the price of minting, it doesn't include the price of inference
     ChainAIV2.ModelCategory modelCategory;
     string public model;
+    string public loadingImg;
 
     function price() public view returns(uint256) {
         ChainAIV2 mlContract = ChainAIV2(mlCoordinator);
@@ -62,6 +63,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
             ChainAIV2.OutputDataFormat.NFTMeta
         );
         tokenIdToDataInput[currentTokenId] = prompt;
+        _setTokenURI(currentTokenId, loadingImg);
         return currentTokenId;
     }
 
@@ -102,6 +104,10 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
     function withdraw() external onlyOwner {
         (bool success,) = payable(owner).call{value: address(this).balance}("");
         require(success, "Withdraw failed");
+    }
+
+    function setLoadingImage(string memory newLoadingImg) external onlyOwner {
+        loadingImg = newLoadingImg;
     }
 
     function updateModel(string memory newModel) external onlyOwner {
