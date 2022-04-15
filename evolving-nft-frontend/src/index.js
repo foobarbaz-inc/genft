@@ -6,8 +6,8 @@ import ChainAIV2JSON from '../../artifacts/contracts/ChainAIV2.sol/ChainAIV2.jso
 const provider = new ethers.providers.Web3Provider(window.ethereum)
 const signer = provider.getSigner()
 
-const evolvingNftAddress = '0xDAFf287e2aFD377514bB420bEFA26224d461adf2'
-const chainAIaddress = '0x48864A4eD5e5410D4f1944b8FD7452827da05AAE'
+const evolvingNftAddress = '0x676C7ef6C3CEf347166d06937F71d71Cb2ae7617'
+const chainAIaddress = '0xa6A5AC698a4c7ec23A0c95682EbF19847Ce33B85'
 const contract = new ethers.Contract(evolvingNftAddress, EvolvingNFTJSON.abi, provider);
 const chainAIcontract = new ethers.Contract(chainAIaddress, ChainAIV2JSON.abi, provider);
 // Read on-chain data when clicking a button
