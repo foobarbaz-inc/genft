@@ -88,7 +88,7 @@ showNfts.addEventListener("click", async () => {
   for (var i = 0; i < tokenIds.length; i++) {
     console.log("fetching URI for id ", tokenIds[i])
     uri = await contract.connect(signer).tokenURI(tokenIds[i])
-    $('#nftGallery').append('<div class="img_holder"><img src='+uri+'/></div>');
+    $('#nftGallery').append('<div class="img_holder"><span>tokenId: '+tokenIds[i].toString()+'</span><div class="clear"></div><img src='+uri+'/></div>');
     console.log('uri ', uri)
     tokenUris.push(uri)
   }
