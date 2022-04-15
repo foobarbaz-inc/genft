@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 
 interface IMLClient {
 
-    function setDataLocation(
-        uint256 dataId,
-        string memory dataLocation
+    function setOutput(
+        uint256 id,
+        string memory location
     ) external;
 
 }

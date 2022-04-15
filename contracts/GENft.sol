@@ -83,7 +83,7 @@ contract GENft is ERC721URIStorage, IMLClient {
         // Set the data for the specific GENft
         tokenIdToDataZip[currentTokenId] = dataZipStorageLocation;
         tokenIdToLossFn[currentTokenId] = lossFnStorageLocation;
-        
+
         // Clone the reference child
         address childAddress = Clones.clone(referenceChild);
         ArtNFT childContract = ArtNFT(childAddress);
@@ -101,7 +101,7 @@ contract GENft is ERC721URIStorage, IMLClient {
         // Set the owner of the given NFT properly
         // Need to do this in this order because _beforeTokenTransfer gets called on mint
         _mint(to, currentTokenId);
-        
+
         // Start training
         ChainAI mlContract = ChainAI(mlCoordinator);
         uint trainingPrice = mlContract.trainingPrice();
@@ -121,13 +121,13 @@ contract GENft is ERC721URIStorage, IMLClient {
         return currentTokenId;
     }
 
-    function setDataLocation(
-        uint256 dataId,
-        string memory dataLocation
+    function setOutput(
+        uint256 id,
+        string memory location
     ) external override {
         require(msg.sender == mlCoordinator, "Not ML coordinator");
-        _setTokenURI(dataId, dataLocation);
-        emit TokenUriSet(dataId, dataLocation);
+        _setTokenURI(id, location);
+        emit TokenUriSet(id, location);
     }
 
     function _beforeTokenTransfer(

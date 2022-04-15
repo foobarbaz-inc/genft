@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./IMLClient.sol";
 
 contract ChainAI {
-    
+
     // contract variables
     uint public trainingPrice; // price to run training
     uint public inferencePrice; // price to run inference
@@ -32,7 +32,7 @@ contract ChainAI {
         Image,
         Categorical
     }
-    
+
     // Zack note: these might not be neccessary so I'm not including them now
     // If they become neccessary we can include for a V2
     /*
@@ -49,6 +49,12 @@ contract ChainAI {
     enum Optimizer {
         Adam,
         SGD
+    }
+
+    enum DataInputType {
+        Arweave,
+        TheGraph,
+        OnChain
     }
 
     // job struct definitions
@@ -80,8 +86,8 @@ contract ChainAI {
         JobDataType dataType;
         uint256 seed;
         string modelStorageLocation;
-        string dataInputStorageLocation;
-        string dataOutputStorageLocation;
+        string dataInputStorageLocation; // can we use a DataInput object to make this encapsulate onchain & offchain data?
+        string dataOutputStorageLocation; // same thought here
     }
 
     // event definitions
@@ -132,7 +138,7 @@ contract ChainAI {
 
         latestJobId++;
         uint createdTimestamp = block.timestamp;
-        
+
         // make the actual job
         JobParams memory jobParams = JobParams({
             status: JobStatus.Created,
@@ -150,7 +156,7 @@ contract ChainAI {
             dataInputStorageLocation: dataInputStorageLocation,
             dataOutputStorageLocation: ""
         });
-        
+
         // save the job and emit the created event
         inference_jobs[latestJobId] = job;
         job_types[latestJobId] = JobType.Inference;
@@ -181,7 +187,7 @@ contract ChainAI {
 
         latestJobId++;
         uint createdTimestamp = block.timestamp;
-        
+
         // make the actual job
         JobParams memory jobParams = JobParams({
             status: JobStatus.Created,
@@ -231,7 +237,7 @@ contract ChainAI {
         string memory resultsLocation
     ) external {
         require(sequencers[msg.sender], "Not a trusted GPU worker");
-        
+
         JobParams storage jobParams;
         if (job_types[jobId] == JobType.Training) {
             TrainingJob storage job = training_jobs[jobId];
@@ -254,7 +260,7 @@ contract ChainAI {
             emit JobFailed(jobId);
         } else if (jobStatus == JobStatus.Succeeded) {
             IMLClient client = IMLClient(jobParams.callbackAddress);
-            client.setDataLocation(jobParams.callbackId, resultsLocation);
+            client.setOutput(jobParams.callbackId, resultsLocation);
             // todo how to handle incorrect interface
             emit JobSucceeded(jobId);
         }
