@@ -12,9 +12,9 @@ async function main() {
   console.log("ChainAIV2 address:", chainAIv2.address);
 
   const EvolvingNftFactory = await hre.ethers.getContractFactory("EvolvingNFT");
-  const evolvingNft = await EvolvingNftFactory.deploy(deployer.address, chain.address, 0, 0, "");
+  const evolvingNft = await EvolvingNftFactory.deploy(deployer.address, chainAIv2.address, 0, 0, "");
 
-  console.log("GENft address:", genft.address);
+  console.log("EvolvingNFT address:", evolvingNft.address);
 }
 
 main()
