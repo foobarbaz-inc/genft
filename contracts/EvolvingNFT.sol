@@ -33,7 +33,8 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         address mlCoordinator_,
         uint256 price_,
         ChainAIV2.ModelCategory modelCategory_,
-        string memory model_
+        string memory model_,
+        string memory loadingImg_
 
     ) ERC721("EvolvingNFT", "EVO") {
           owner = owner_;
@@ -41,6 +42,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
           mintPriceToThisContract = price_;
           modelCategory = modelCategory_;
           model = model_;
+          loadingImg = loadingImg_;
     }
 
     modifier onlyOwner() {

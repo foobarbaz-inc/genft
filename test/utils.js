@@ -38,7 +38,8 @@ async function deployEvolvingNFT(
   mlCoordinator,
   price,
   modelCategory,
-  model
+  model,
+  loadingImg
 ) {
   const EvolvingNftFactory = await ethers.getContractFactory("EvolvingNFT");
   const evolvingNft = await EvolvingNftFactory.deploy(
@@ -46,7 +47,8 @@ async function deployEvolvingNFT(
     mlCoordinator,
     price,
     modelCategory,
-    model
+    model,
+    loadingImg
   );
   await evolvingNft.deployed()
   return evolvingNft

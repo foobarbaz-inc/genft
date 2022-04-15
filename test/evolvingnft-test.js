@@ -8,7 +8,7 @@ describe("EvolvingNFT", function () {
     const { chainAIv2, deployer, sequencer, randomPerson } = await deployChainAIV2(0);
     await chainAIv2.connect(deployer).addSequencer(sequencer.address)
     const evolvingNft = await deployEvolvingNFT(
-      deployer.address, chainAIv2.address, 0, 0, "arweave://gpt-j")
+      deployer.address, chainAIv2.address, 0, 0, "arweave://gpt-j", "arweave://loading")
     var blockNumber = await ethers.provider.getBlockNumber();
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
 
