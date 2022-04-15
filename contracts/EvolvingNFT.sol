@@ -62,7 +62,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
             prompt,
             currentTokenId,
             abi.encodePacked(to),
-            ChainAIV2.OutputDataFormat.Raw
+            ChainAIV2.OutputDataFormat.NFTMeta
         );
         tokenIdToDataInput[currentTokenId] = prompt;
         _setTokenURI(currentTokenId, loadingImg);
@@ -98,8 +98,9 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
                 tokenIdToDataInput[currentTokenId],
                 tokenId,
                 abi.encodePacked(to), // use recipient address as seed for new generation
-                ChainAIV2.OutputDataFormat.Raw
+                ChainAIV2.OutputDataFormat.NFTMeta
             );
+            _setTokenURI(currentTokenId, loadingImg);
         }
     }
 
