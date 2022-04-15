@@ -11,10 +11,11 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
 
     address private owner;
     address public mlCoordinator;
-    uint256 currentTokenId;
+    uint256 public currentTokenId;
     uint256 mintPriceToThisContract; // This is just the price of minting, it doesn't include the price of inference
     ChainAIV2.ModelCategory modelCategory;
     string public model;
+    string public loadingImg;
 
     function price() public view returns(uint256) {
         ChainAIV2 mlContract = ChainAIV2(mlCoordinator);
@@ -32,7 +33,8 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         address mlCoordinator_,
         uint256 price_,
         ChainAIV2.ModelCategory modelCategory_,
-        string memory model_
+        string memory model_,
+        string memory loadingImg_
 
     ) ERC721("EvolvingNFT", "EVO") {
           owner = owner_;
@@ -40,6 +42,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
           mintPriceToThisContract = price_;
           modelCategory = modelCategory_;
           model = model_;
+          loadingImg = loadingImg_;
     }
 
     modifier onlyOwner() {
@@ -59,9 +62,10 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
             prompt,
             currentTokenId,
             abi.encodePacked(to),
-            ChainAIV2.OutputDataFormat.NFTMeta
+            ChainAIV2.OutputDataFormat.Raw
         );
         tokenIdToDataInput[currentTokenId] = prompt;
+        _setTokenURI(currentTokenId, loadingImg);
         return currentTokenId;
     }
 
@@ -94,7 +98,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
                 tokenIdToDataInput[currentTokenId],
                 tokenId,
                 abi.encodePacked(to), // use recipient address as seed for new generation
-                ChainAIV2.OutputDataFormat.NFTMeta
+                ChainAIV2.OutputDataFormat.Raw
             );
         }
     }
@@ -102,6 +106,10 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
     function withdraw() external onlyOwner {
         (bool success,) = payable(owner).call{value: address(this).balance}("");
         require(success, "Withdraw failed");
+    }
+
+    function setLoadingImage(string memory newLoadingImg) external onlyOwner {
+        loadingImg = newLoadingImg;
     }
 
     function updateModel(string memory newModel) external onlyOwner {
