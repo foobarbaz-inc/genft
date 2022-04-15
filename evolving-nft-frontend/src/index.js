@@ -27,8 +27,8 @@ async function fetchedOwnedTokenIds() {
   var numTokensOwned = await contract.connect(signer).balanceOf(signer.getAddress());
   var numTokens = 0
   var tokensOwned = []
-  //var totalSupply = await contract.currentTokenId()
-  var totalSupply = 4;
+  var totalSupply = await contract.currentTokenId()
+  //var totalSupply = 4;
   var address = await signer.getAddress()
   for (var i = 1; i <= totalSupply; i++) {
     var owner = await contract.connect(signer).ownerOf(i)
@@ -84,9 +84,11 @@ showNfts.addEventListener("click", async () => {
   var tokenIds = await fetchedOwnedTokenIds()
   console.log("tokens owned", tokenIds)
   tokenUris = []
+  $('#nftGallery').empty();
   for (var i = 0; i < tokenIds.length; i++) {
     console.log("fetching URI for id ", tokenIds[i])
     uri = await contract.connect(signer).tokenURI(tokenIds[i])
+    $('#nftGallery').append('<div class="img_holder"><img src='+uri+'/></div>');
     console.log('uri ', uri)
     tokenUris.push(uri)
   }

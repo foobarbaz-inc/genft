@@ -1,5 +1,31 @@
+<head>
 <title>Evolving NFT</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script type="module" src="./index.js"></script>
+<style>
 
+#nftGallery {
+    width: 1600px;
+    margin: 10px auto;
+}
+
+.img_holder {
+    float: left;
+    margin: 10px;
+}
+
+.img_holder img {
+    width: 300px;
+}
+
+.clear {
+    clear: both;
+}
+
+</style>
+</head>
+
+<body>
 <h1>Evolving NFT</h1>
 
 <p><b>You have:   </b><span id="valueOutput">Loading...</span></p>
@@ -8,7 +34,8 @@
 <input type="text" id="input">
 <button id="submit">Mint</button>
 <button id="showNfts">Show my NFTs!</button>
-<span id="nftGallery"></span>
+<div id="nftGallery"></div>
+<div class="clear"></div>
 <p><span id="errorCode"></span></p>
 <p></p>
 <p></p>
@@ -16,5 +43,4 @@
 <p>Enter the token ID to send:</p><input type="text" id="tokenId">
 <p>Enter the wallet address to send it to:</p><input type="text" id="address">
 <button id="transferSubmit">Transfer</button>
-
-<script type="module" src="./index.js"></script>
+</body>
