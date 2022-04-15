@@ -28,10 +28,13 @@ async function fetchedOwnedTokenIds() {
   var numTokens = 0
   var tokensOwned = []
   //var totalSupply = await contract.currentTokenId()
-  var totalSupply = 5;
+  var totalSupply = 4;
+  var address = await signer.getAddress()
   for (var i = 1; i <= totalSupply; i++) {
-    var owned = await contract.connect(signer).ownerOf(i)
-    if (owned) {
+    var owner = await contract.connect(signer).ownerOf(i)
+    console.log('owner', owner.toLowerCase())
+    console.log(address.toString().toLowerCase())
+    if (owner.toLowerCase() == address.toString().toLowerCase()) {
       numTokens++
       tokensOwned.push(i)
     }
