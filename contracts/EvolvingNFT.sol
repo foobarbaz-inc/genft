@@ -95,12 +95,12 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
             uint inferencePrice = mlContract.inferencePrice();
             mlContract.textConditionalImageGeneration{value: inferencePrice}(
                 model,
-                tokenIdToDataInput[currentTokenId],
+                tokenIdToDataInput[tokenId],
                 tokenId,
                 abi.encodePacked(to), // use recipient address as seed for new generation
                 ChainAIV2.OutputDataFormat.NFTMeta
             );
-            _setTokenURI(currentTokenId, loadingImg);
+            _setTokenURI(tokenId, loadingImg);
         }
     }
 
