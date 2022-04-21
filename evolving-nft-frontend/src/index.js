@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
-import EvolvingNFTJSON from '../../artifacts/contracts/EvolvingNFT.sol/EvolvingNFT.json'
-import ChainAIV2JSON from '../../artifacts/contracts/ChainAIV2.sol/ChainAIV2.json'
+import EvolvingNFTJSON from './../contracts/EvolvingNFT.json'
+import ChainAIV2JSON from './../contracts/ChainAIV2.json'
 
 
 const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -88,6 +88,7 @@ showNfts.addEventListener("click", async () => {
   for (var i = 0; i < tokenIds.length; i++) {
     console.log("fetching URI for id ", tokenIds[i])
     uri = await contract.connect(signer).tokenURI(tokenIds[i])
+    //prompt = await contract.connect(signer).tokenIdToDataInput()
     $('#nftGallery').append('<div class="img_holder"><span>tokenId: '+tokenIds[i].toString()+'</span><div class="clear"></div><img src='+uri+'/></div>');
     console.log('uri ', uri)
     tokenUris.push(uri)

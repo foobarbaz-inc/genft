@@ -58,11 +58,11 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         ChainAIV2 mlContract = ChainAIV2(mlCoordinator);
         uint inferencePrice = mlContract.inferencePrice();
         mlContract.textConditionalImageGeneration{value: inferencePrice}(
-            model,
-            prompt,
-            currentTokenId,
-            abi.encodePacked(to),
-            ChainAIV2.OutputDataFormat.NFTMeta
+            model, // URI of model to use
+            prompt, // text prompt passed in
+            currentTokenId, // current token ID acts as "callback ID for this job"
+            abi.encodePacked(to), // this is the random seed passed in (wallet address)
+            ChainAIV2.OutputDataFormat.NFTMeta // tells the worker to put the output in NFT format
         );
         tokenIdToDataInput[currentTokenId] = prompt;
         _setTokenURI(currentTokenId, loadingImg);
@@ -94,11 +94,11 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
             ChainAIV2 mlContract = ChainAIV2(mlCoordinator);
             uint inferencePrice = mlContract.inferencePrice();
             mlContract.textConditionalImageGeneration{value: inferencePrice}(
-                model,
-                tokenIdToDataInput[currentTokenId],
-                tokenId,
+                model, // URI of model to use
+                tokenIdToDataInput[currentTokenId], // text prompt passed in
+                tokenId, // token ID acts as "callback ID for this job"
                 abi.encodePacked(to), // use recipient address as seed for new generation
-                ChainAIV2.OutputDataFormat.NFTMeta
+                ChainAIV2.OutputDataFormat.NFTMeta // tells the worker to put the output in NFT format
             );
             _setTokenURI(currentTokenId, loadingImg);
         }
