@@ -95,7 +95,7 @@ showNfts.addEventListener("click", async () => {
   }
 })
 
-var filter = {
+const filter = {
   address: evolvingNftAddress,
   topics: [
     // the name of the event, parentheses containing the data type of each event, no spaces
