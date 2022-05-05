@@ -83,7 +83,7 @@ transferSubmit.addEventListener("click", async () => {
 showNfts.addEventListener("click", async () => {
   var tokenIds = await fetchedOwnedTokenIds()
   console.log("tokens owned", tokenIds)
-  tokenUris = []
+  var tokenUris = []
   $('#nftGallery').empty();
   for (var i = 0; i < tokenIds.length; i++) {
     console.log("fetching URI for id ", tokenIds[i])
