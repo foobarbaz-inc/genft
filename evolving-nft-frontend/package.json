@@ -1,8 +1,10 @@
 {
-  "name": "frontend",
+  "name": "evolving-nft",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "start": "node index.js",
+  "dev": "npx parcel ./src/index.html --no-cache",
+  "build": "parcel build ./src/index.html --dist-dir build",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
