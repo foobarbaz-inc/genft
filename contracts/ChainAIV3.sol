@@ -57,6 +57,8 @@ contract ChainAIV3 {
     event JobFailed(uint jobId);
     event JobSucceeded(uint jobId);
 
+    event ModelAdded(address model);
+
     constructor() {
         owner = msg.sender;
     }
@@ -146,6 +148,7 @@ contract ChainAIV3 {
 
     function addModel(address model) external onlyOwner {
         models[model] = true;
+        emit ModelAdded(model);
     }
 
     function removeModel(address model) external onlyOwner {
