@@ -5,7 +5,7 @@ import "./DataTypes.sol";
 import "./Model.sol";
 import "./IMLClient.sol";
 
-contract ChainAIV3 {
+contract ChainAIV2 {
 
     // contract variables
     uint latestJobId; // keep track of model runs
