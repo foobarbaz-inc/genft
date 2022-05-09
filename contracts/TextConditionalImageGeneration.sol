@@ -29,7 +29,7 @@ contract TextConditionalImageGeneration is Model {
         DataTypes.OutputDataFormat outputDataFormat
     ) external payable {
         require(msg.value == inferencePrice, "Incorrect price");
-        ChainAIV3 chainAI = ChainAIV3(oracle);
+        ChainAIV2 chainAI = ChainAIV2(oracle);
         chainAI.startJob(
             seed,
             callbackId,
