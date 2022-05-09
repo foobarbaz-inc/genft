@@ -4,22 +4,21 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "./ChainAIV2.sol";
+import "./DataTypes.sol";
+import "./TextConditionalImageGeneration.sol";
 import "./IMLClient.sol";
 
 contract EvolvingNFT is ERC721URIStorage, IMLClient {
 
     address private owner;
-    address public mlCoordinator;
+    address public model;
     uint256 public currentTokenId;
     uint256 mintPriceToThisContract; // This is just the price of minting, it doesn't include the price of inference
-    ChainAIV2.ModelCategory modelCategory;
-    string public model;
     string public loadingImg;
 
     function price() public view returns(uint256) {
-        ChainAIV2 mlContract = ChainAIV2(mlCoordinator);
-        uint inferencePrice = mlContract.inferencePrice();
+        TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
+        uint inferencePrice = modelContract.inferencePrice();
         uint256 totalPrice = mintPriceToThisContract + inferencePrice;
         return(totalPrice);
     }
@@ -30,19 +29,15 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
 
     constructor(
         address owner_,
-        address mlCoordinator_,
+        address model_,
         uint256 price_,
-        ChainAIV2.ModelCategory modelCategory_,
-        string memory model_,
         string memory loadingImg_
 
     ) ERC721("EvolvingNFT", "EVO") {
-          owner = owner_;
-          mlCoordinator = mlCoordinator_;
-          mintPriceToThisContract = price_;
-          modelCategory = modelCategory_;
-          model = model_;
-          loadingImg = loadingImg_;
+        owner = owner_;
+        model = model_;
+        mintPriceToThisContract = price_;
+        loadingImg = loadingImg_;
     }
 
     modifier onlyOwner() {
@@ -55,14 +50,13 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         require(msg.value >= price(), "Insufficient payment for minting");
         currentTokenId++;
         _mint(to, currentTokenId);
-        ChainAIV2 mlContract = ChainAIV2(mlCoordinator);
-        uint inferencePrice = mlContract.inferencePrice();
-        mlContract.textConditionalImageGeneration{value: inferencePrice}(
-            model, // URI of model to use
+        TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
+        uint inferencePrice = modelContract.inferencePrice();
+        modelContract.run{value: inferencePrice}(
             prompt, // text prompt passed in
             currentTokenId, // current token ID acts as "callback ID for this job"
             abi.encodePacked(to), // this is the random seed passed in (wallet address)
-            ChainAIV2.OutputDataFormat.NFTMeta // tells the worker to put the output in NFT format
+            DataTypes.OutputDataFormat.NFTMeta // tells the worker to put the output in NFT format
         );
         tokenIdToDataInput[currentTokenId] = prompt;
         _setTokenURI(currentTokenId, loadingImg);
@@ -77,7 +71,9 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         uint256 id,
         string memory location
     ) external override {
-        require(msg.sender == mlCoordinator, "Not ML coordinator");
+        TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
+        address oracle = modelContract.oracle();
+        require(msg.sender == oracle, "Not oracle");
         _setTokenURI(id, location);
         emit TokenUriSet(id, location);
     }
@@ -91,14 +87,13 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         if (from != address(0) && to != address(0)) {
             // todo figure out where to make this payable,
             // so that inferencePrice doesn't come from contract balance
-            ChainAIV2 mlContract = ChainAIV2(mlCoordinator);
-            uint inferencePrice = mlContract.inferencePrice();
-            mlContract.textConditionalImageGeneration{value: inferencePrice}(
-                model, // URI of model to use
+            TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
+            uint inferencePrice = modelContract.inferencePrice();
+            modelContract.run{value: inferencePrice}(
                 tokenIdToDataInput[currentTokenId], // text prompt passed in
                 tokenId, // token ID acts as "callback ID for this job"
                 abi.encodePacked(to), // use recipient address as seed for new generation
-                ChainAIV2.OutputDataFormat.NFTMeta // tells the worker to put the output in NFT format
+                DataTypes.OutputDataFormat.NFTMeta // tells the worker to put the output in NFT format
             );
             _setTokenURI(currentTokenId, loadingImg);
         }
@@ -111,9 +106,5 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
 
     function setLoadingImage(string memory newLoadingImg) external onlyOwner {
         loadingImg = newLoadingImg;
-    }
-
-    function updateModel(string memory newModel) external onlyOwner {
-        model = newModel;
     }
 }

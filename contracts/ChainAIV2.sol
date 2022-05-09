@@ -1,15 +1,17 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
+import "./DataTypes.sol";
+import "./Model.sol";
 import "./IMLClient.sol";
 
-contract ChainAIV2 {
+contract ChainAIV3 {
 
     // contract variables
-    uint public inferencePrice; // price to run inference
     uint latestJobId; // keep track of model runs
     address owner; // used for adding and removing addresses of trusted GPU workers
 
+    mapping (address => bool) public models;
     mapping (address => bool) public sequencers;
     mapping (uint => Job) public jobs;
 
@@ -18,29 +20,6 @@ contract ChainAIV2 {
         Created,
         Failed,
         Succeeded
-    }
-
-    enum ModelCategory {
-        TextConditionalImageGeneration,
-        UnconditionalImageGeneration,
-        PromptConditionedTextGeneration
-    }
-
-    enum InputDataLocationType {
-        Arweave,
-        TheGraph,
-        OnChain
-    }
-
-    enum OutputDataLocationType {
-        Arweave,
-        TheGraph,
-        OnChain
-    }
-
-    enum OutputDataFormat {
-        Raw,
-        NFTMeta
     }
 
     // job struct definitions
@@ -54,33 +33,34 @@ contract ChainAIV2 {
 
     struct Job {
         JobParams jobParams;
-        ModelCategory modelCategory;
-        InputDataLocationType inputDataLocationType;
-        OutputDataLocationType outputDataLocationType;
-        OutputDataFormat outputDataFormat;
+        DataTypes.InputDataLocationType inputDataLocationType;
+        DataTypes.OutputDataLocationType outputDataLocationType;
+        DataTypes.OutputDataFormat outputDataFormat;
+        uint256 modelVersion;
+        address model;
         bytes seed;
-        string modelConfigLocation;
         string input;
         string output;
     }
 
     event JobCreated(
         uint jobId,
-        ModelCategory modelCategory,
+        string modelCategory,
         bytes seed,
         string modelConfigLocation,
-        InputDataLocationType inputDataLocationType,
+        DataTypes.InputDataLocationType inputDataLocationType,
         string input,
-        OutputDataLocationType outputDataLocationType,
-        OutputDataFormat outputDataFormat,
+        DataTypes.OutputDataLocationType outputDataLocationType,
+        DataTypes.OutputDataFormat outputDataFormat,
         uint createdTimestamp
     );
     event JobFailed(uint jobId);
     event JobSucceeded(uint jobId);
 
-    constructor(uint inferencePrice_) {
+    event ModelAdded(address model);
+
+    constructor() {
         owner = msg.sender;
-        inferencePrice = inferencePrice_;
     }
 
     modifier onlyOwner {
@@ -88,20 +68,21 @@ contract ChainAIV2 {
         _;
     }
 
-    function _startJob(
-        ModelCategory modelCategory,
+    function startJob(
         bytes memory seed,
         uint256 callbackId,
-        string memory modelConfigLocation,
-        InputDataLocationType inputDataLocationType,
+        address callbackAddress,
+        DataTypes.InputDataLocationType inputDataLocationType,
         string memory input,
-        OutputDataLocationType outputDataLocationType,
-        OutputDataFormat outputDataFormat
-    ) internal {
-        require(msg.value >= inferencePrice, "Insufficient payment for inference");
+        DataTypes.OutputDataLocationType outputDataLocationType,
+        DataTypes.OutputDataFormat outputDataFormat
+    ) external payable {
+        require(models[msg.sender], "Only model contract allowed to call");
 
         latestJobId++;
         uint createdTimestamp = block.timestamp;
+
+        Model model = Model(msg.sender);
 
         // make the actual job
         JobParams memory jobParams = JobParams({
@@ -109,14 +90,14 @@ contract ChainAIV2 {
             id: latestJobId,
             createdTimestamp: createdTimestamp,
             callbackId: callbackId,
-            callbackAddress: msg.sender
+            callbackAddress: callbackAddress
         });
 
         Job memory job = Job({
             jobParams: jobParams,
-            modelCategory: modelCategory,
             seed: seed,
-            modelConfigLocation: modelConfigLocation,
+            modelVersion: model.latestModelVersionNum(),
+            model: msg.sender,
             inputDataLocationType: inputDataLocationType,
             input: input,
             outputDataLocationType: outputDataLocationType,
@@ -128,70 +109,14 @@ contract ChainAIV2 {
         jobs[latestJobId] = job;
         emit JobCreated(
             latestJobId,
-            modelCategory,
+            model.modelCategory(),
             seed,
-            modelConfigLocation,
+            model.getModelLocation(),
             inputDataLocationType,
             input,
             outputDataLocationType,
             outputDataFormat,
             createdTimestamp
-        );
-    }
-
-    // TODO should each model type have a separate inference price?
-    function promptConditionedTextGeneration(
-        string memory modelConfigLocation,
-        string memory prompt,
-        uint callbackId,
-        bytes memory seed
-    ) external payable {
-        _startJob(
-            ModelCategory.PromptConditionedTextGeneration,
-            seed,
-            callbackId,
-            modelConfigLocation,
-            InputDataLocationType.OnChain,
-            prompt,
-            OutputDataLocationType.OnChain,
-            OutputDataFormat.Raw
-        );
-    }
-
-    function textConditionalImageGeneration(
-        string memory modelConfigLocation,
-        string memory prompt,
-        uint callbackId,
-        bytes memory seed,
-        OutputDataFormat outputDataFormat
-    ) external payable {
-        _startJob(
-            ModelCategory.TextConditionalImageGeneration,
-            seed,
-            callbackId,
-            modelConfigLocation,
-            InputDataLocationType.OnChain,
-            prompt,
-            OutputDataLocationType.Arweave,
-            outputDataFormat
-        );
-    }
-
-    function unconditionalImageGeneration(
-        string memory modelConfigLocation,
-        uint callbackId,
-        bytes memory seed,
-        OutputDataFormat outputDataFormat
-    ) external payable {
-        _startJob(
-            ModelCategory.UnconditionalImageGeneration,
-            seed,
-            callbackId,
-            modelConfigLocation,
-            InputDataLocationType.OnChain,
-            "",
-            OutputDataLocationType.Arweave,
-            outputDataFormat
         );
     }
 
@@ -221,20 +146,20 @@ contract ChainAIV2 {
         }
     }
 
+    function addModel(address model) external onlyOwner {
+        models[model] = true;
+        emit ModelAdded(model);
+    }
+
+    function removeModel(address model) external onlyOwner {
+        models[model] = false;
+    }
+
     function addSequencer(address sequencer) external onlyOwner {
         sequencers[sequencer] = true;
     }
 
     function removeSequencer(address sequencer) external onlyOwner {
         sequencers[sequencer] = false;
-    }
-
-    function updateInferencePrice(uint price) external onlyOwner {
-        inferencePrice = price;
-    }
-
-    function withdraw() external onlyOwner {
-        (bool success,) = payable(owner).call{value: address(this).balance}("");
-        require(success, "Withdraw failed");
     }
 }

@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "./ChainAIV3.sol";
+import "./ChainAIV2.sol";
 import "./DataTypes.sol";
 import "./Model.sol";
 
