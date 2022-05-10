@@ -50,6 +50,10 @@ async function go() {
   console.log("Evolving NFT loading")
   valueOutput.innerText = await fetchOwnedTokenCount() + " Evolving NFTs"
   //valueOutput.innerText = "0 Evolving NFTs"
+  // fetch model modelConfigLocation
+  var modelLocation = await contract.connect(signer).model();
+  console.log("model location");
+  console.log(modelLocation);
 }
 
 async function connectToMetamask() {

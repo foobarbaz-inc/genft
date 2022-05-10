@@ -10,16 +10,18 @@ contract TextConditionalImageGeneration is Model {
     constructor(
         address owner_,
         address oracleAdmin_,
+        address oracle_,
         bool upgradeable_,
         uint256 inferencePrice_,
         string memory modelLocation_
     ) Model(
         owner_,
         oracleAdmin_,
+        oracle_,
         upgradeable_,
         inferencePrice_,
         modelLocation_,
-        "TextConditionalImageGeneration"
+        DataTypes.ModelCategory.TextConditionalImageGeneration
     ){}
 
     function run(

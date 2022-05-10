@@ -8,6 +8,12 @@ library DataTypes {
         OnChain
     }
 
+    enum ModelCategory {
+        TextConditionalImageGeneration,
+        UnconditionalImageGeneration,
+        PromptConditionedTextGeneration
+    }
+
     enum OutputDataLocationType {
         Arweave,
         TheGraph,

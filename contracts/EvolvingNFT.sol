@@ -18,7 +18,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
 
     function price() public view returns(uint256) {
         TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
-        uint inferencePrice = modelContract.inferencePrice();
+        uint inferencePrice = modelContract.price();
         uint256 totalPrice = mintPriceToThisContract + inferencePrice;
         return(totalPrice);
     }
@@ -51,7 +51,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         currentTokenId++;
         _mint(to, currentTokenId);
         TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
-        uint inferencePrice = modelContract.inferencePrice();
+        uint inferencePrice = modelContract.price();
         modelContract.run{value: inferencePrice}(
             prompt, // text prompt passed in
             currentTokenId, // current token ID acts as "callback ID for this job"
@@ -88,7 +88,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
             // todo figure out where to make this payable,
             // so that inferencePrice doesn't come from contract balance
             TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
-            uint inferencePrice = modelContract.inferencePrice();
+            uint inferencePrice = modelContract.price();
             modelContract.run{value: inferencePrice}(
                 tokenIdToDataInput[currentTokenId], // text prompt passed in
                 tokenId, // token ID acts as "callback ID for this job"

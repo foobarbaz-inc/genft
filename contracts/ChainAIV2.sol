@@ -3,12 +3,14 @@ pragma solidity ^0.8.0;
 
 import "./DataTypes.sol";
 import "./Model.sol";
+import "./IChainAIV2.sol";
 import "./IMLClient.sol";
 
-contract ChainAIV2 {
+contract ChainAIV2 is IChainAIV2 {
 
     // contract variables
-    uint latestJobId; // keep track of model runs
+    uint private price; // accessible thru inferencePrice()
+    uint public latestJobId; // keep track of model runs
     address owner; // used for adding and removing addresses of trusted GPU workers
 
     mapping (address => bool) public models;
@@ -45,7 +47,7 @@ contract ChainAIV2 {
 
     event JobCreated(
         uint jobId,
-        string modelCategory,
+        DataTypes.ModelCategory modelCategory,
         bytes seed,
         string modelConfigLocation,
         DataTypes.InputDataLocationType inputDataLocationType,
@@ -59,7 +61,8 @@ contract ChainAIV2 {
 
     event ModelAdded(address model);
 
-    constructor() {
+    constructor(uint inferencePrice_) {
+        price = inferencePrice_;
         owner = msg.sender;
     }
 
@@ -161,5 +164,19 @@ contract ChainAIV2 {
 
     function removeSequencer(address sequencer) external onlyOwner {
         sequencers[sequencer] = false;
+    }
+
+    function updateInferencePrice(uint256 newPrice) external onlyOwner {
+        price = newPrice;
+    }
+
+    function inferencePrice() external override view returns (uint256) {
+        return price;
+    }
+
+    function withdraw() external onlyOwner {
+        require(msg.sender == owner, "Only owner");
+        (bool success,) = payable(owner).call{value: address(this).balance}("");
+        require(success, "Withdraw to owner failed");
     }
 }

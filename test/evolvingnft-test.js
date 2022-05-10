@@ -1,4 +1,4 @@
-const { deployChainAIV2, deployEvolvingNFT, getSetTokenURI } = require("./utils.js");
+const { deployChainAIV2, deployEvolvingNFT, deployTextConditionalImageGeneration, getSetTokenURI } = require("./utils.js");
 const { expect } = require("chai");
 const { ethers, waffle } = require("hardhat");
 
@@ -7,8 +7,12 @@ describe("EvolvingNFT", function () {
     // Setup
     const { chainAIv2, deployer, sequencer, randomPerson } = await deployChainAIV2(0);
     await chainAIv2.connect(deployer).addSequencer(sequencer.address)
+    const textConditionalImageGeneration = await deployTextConditionalImageGeneration(
+      deployer.address, deployer.address, chainAIv2.address, true, 0, "arweave://gpt-j"
+    )
+    await chainAIv2.connect(deployer).addModel(textConditionalImageGeneration.address)
     const evolvingNft = await deployEvolvingNFT(
-      deployer.address, chainAIv2.address, 0, 0, "arweave://gpt-j", "arweave://loading")
+      deployer.address, textConditionalImageGeneration.address, 0, "arweave://loading")
     var blockNumber = await ethers.provider.getBlockNumber();
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
 
@@ -16,7 +20,7 @@ describe("EvolvingNFT", function () {
     expect(await evolvingNft.connect(randomPerson).mint(randomPerson.address, "hello my name is sam"))
       .to.emit(evolvingNft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
       .to.emit(chainAIv2, "JobCreated").withArgs(
-        1, 2, randomPerson.address.toLowerCase(), "arweave://gpt-j", 2,
+        1, 0, randomPerson.address.toLowerCase(), "arweave://gpt-j", 2,
         "hello my name is sam", 0, 1, timestamp)
 
     // ChainAI can set the output upon job completion
@@ -28,7 +32,7 @@ describe("EvolvingNFT", function () {
     expect(await evolvingNft.connect(randomPerson).transferFrom(randomPerson.address, sequencer.address, 1))
       .to.emit(evolvingNft, "Transfer").withArgs(randomPerson.address, sequencer.address, 1)
       .to.emit(chainAIv2, "JobCreated").withArgs(
-        2, 2, sequencer.address.toLowerCase(), "arweave://gpt-j", 2,
+        2, 0, sequencer.address.toLowerCase(), "arweave://gpt-j", 2,
         "hello my name is sam", 0, 1, timestamp + 2)
 
         // ChainAI can set the output upon job completion

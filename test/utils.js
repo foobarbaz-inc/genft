@@ -26,6 +26,26 @@ async function deployChainAIV2(inferencePrice) {
   }
 }
 
+async function deployTextConditionalImageGeneration(
+  owner,
+  oracleAdmin,
+  oracle,
+  upgradeable,
+  inferencePrice,
+  modelLocation
+) {
+  const TextConditionalImageGenerationFactory = await ethers.getContractFactory("TextConditionalImageGeneration")
+  const textConditionalImageGeneration = await TextConditionalImageGenerationFactory.deploy(
+    owner,
+    oracleAdmin,
+    oracle,
+    upgradeable,
+    inferencePrice,
+    modelLocation
+  )
+  return textConditionalImageGeneration
+}
+
 async function deployArtNFT() {
   const ArtNftFactory = await ethers.getContractFactory("ArtNFT");
   const artNft = await ArtNftFactory.deploy();
@@ -35,19 +55,15 @@ async function deployArtNFT() {
 
 async function deployEvolvingNFT(
   owner,
-  mlCoordinator,
-  price,
-  modelCategory,
   model,
+  price,
   loadingImg
 ) {
   const EvolvingNftFactory = await ethers.getContractFactory("EvolvingNFT");
   const evolvingNft = await EvolvingNftFactory.deploy(
     owner,
-    mlCoordinator,
-    price,
-    modelCategory,
     model,
+    price,
     loadingImg
   );
   await evolvingNft.deployed()
@@ -94,4 +110,4 @@ async function increase_time(seconds) {
   await network.provider.send("evm_mine");
 }
 
-module.exports = { deployChainAI, deployChainAIV2, deployArtNFT, deployEvolvingNFT, deployGENft, getSetTokenURI };
+module.exports = { deployChainAI, deployChainAIV2, deployArtNFT, deployEvolvingNFT, deployGENft, getSetTokenURI, deployTextConditionalImageGeneration };
