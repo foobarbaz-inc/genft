@@ -4,11 +4,12 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./DataTypes.sol";
 import "./TextConditionalImageGeneration.sol";
 import "./IMLClient.sol";
 
-contract EvolvingNFT is ERC721URIStorage, IMLClient {
+contract EvolvingNFT is ERC721, ERC721Enumerable, ERC721URIStorage, IMLClient {
 
     address private owner;
     address public model;
@@ -23,7 +24,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         return(totalPrice);
     }
 
-    mapping (uint256 => string) tokenIdToDataInput;
+    mapping (uint256 => string) public tokenIdToDataInput;
 
     event TokenUriSet(uint256 tokenId, string tokenURI);
 
@@ -82,7 +83,7 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
         address from,
         address to,
         uint256 tokenId
-    ) internal virtual override {
+    ) internal virtual override (ERC721, ERC721Enumerable){
         // ignore minting & burning cases
         if (from != address(0) && to != address(0)) {
             // todo figure out where to make this payable,
@@ -97,6 +98,20 @@ contract EvolvingNFT is ERC721URIStorage, IMLClient {
             );
             _setTokenURI(currentTokenId, loadingImg);
         }
+    }
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override (ERC721, ERC721URIStorage) returns (string memory) {
+        return ERC721URIStorage.tokenURI(tokenId);
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC721Enumerable, ERC721) returns (bool) {
+        return ERC721Enumerable.supportsInterface(interfaceId) || ERC721.supportsInterface(interfaceId);
     }
 
     function withdraw() external onlyOwner {
