@@ -73,7 +73,7 @@ transferSubmit.addEventListener("click", async () => {
   }
 })
 
-showNfts.addEventListener("click", async () => {
+async function refreshNftGallery() {
   var tokenIds = await fetchedOwnedTokenIds()
   console.log("tokens owned", tokenIds)
   var tokenUris = []
@@ -87,6 +87,10 @@ showNfts.addEventListener("click", async () => {
     console.log('uri ', uri)
     tokenUris.push(uri)
   }
+}
+
+showNfts.addEventListener("click", async () => {
+  await refreshNftGallery();
 })
 
 const filter = {
@@ -94,10 +98,11 @@ const filter = {
   topics: [
     // the name of the event, parentheses containing the data type of each event, no spaces
     ethers.utils.id("Transfer(address,address,uint256)"),
-
+    ethers.utils.id("TokenUriSet(uint256,string)")
   ]
 }
 provider.on(filter, async () => {
   valueOutput.innerText = await fetchOwnedTokenCount() + " Evolving NFTs"
+  await refreshNftGallery();
 })
 }
