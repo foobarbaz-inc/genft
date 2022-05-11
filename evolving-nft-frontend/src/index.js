@@ -6,8 +6,8 @@ import ChainAIV2JSON from './../contracts/ChainAIV2.json'
 const provider = new ethers.providers.Web3Provider(window.ethereum)
 const signer = provider.getSigner()
 
-const evolvingNftAddress = '0x5Dd4e1943e24A8e47FaBF4bD6317fE5Fa525c4Dc'
-const chainAIaddress = '0x85Ee7AdC9d37b46dDA67A9797A985B3131D46f7E'
+const evolvingNftAddress = '0x845115B5272443908a3bc883024aA792F5084e55'
+const chainAIaddress = '0x2AA101B3734e9868F4AD0cB8e97D291bA4E7dD58'
 const contract = new ethers.Contract(evolvingNftAddress, EvolvingNFTJSON.abi, provider);
 const chainAIcontract = new ethers.Contract(chainAIaddress, ChainAIV2JSON.abi, provider);
 // Read on-chain data when clicking a button
@@ -50,6 +50,10 @@ async function go() {
   console.log("Evolving NFT loading")
   valueOutput.innerText = await fetchOwnedTokenCount() + " Evolving NFTs"
   //valueOutput.innerText = "0 Evolving NFTs"
+  // fetch model modelConfigLocation
+  var modelLocation = await contract.connect(signer).model();
+  console.log("model location");
+  console.log(modelLocation);
 }
 
 async function connectToMetamask() {
