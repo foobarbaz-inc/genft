@@ -53,6 +53,7 @@ async function connectToMetamask() {
     console.log("Not signed in")
     await provider.send("eth_requestAccounts", [])
   }
+}
 
 submit.addEventListener("click", async () => {
   console.log("input: ", input.value)
@@ -93,16 +94,25 @@ showNfts.addEventListener("click", async () => {
   await refreshNftGallery();
 })
 
-const filter = {
+const transferFilter = {
   address: evolvingNftAddress,
   topics: [
     // the name of the event, parentheses containing the data type of each event, no spaces
-    ethers.utils.id("Transfer(address,address,uint256)"),
+    ethers.utils.id("Transfer(address,address,uint256)")
+  ]
+}
+provider.on(transferFilter, async () => {
+  valueOutput.innerText = await fetchOwnedTokenCount() + " Evolving NFTs"
+  await refreshNftGallery()
+})
+
+const tokenUriSetFilter = {
+  address: evolvingNftAddress,
+  topics: [
+    // the name of the event, parentheses containing the data type of each event, no spaces
     ethers.utils.id("TokenUriSet(uint256,string)")
   ]
 }
-provider.on(filter, async () => {
-  valueOutput.innerText = await fetchOwnedTokenCount() + " Evolving NFTs"
-  await refreshNftGallery();
+provider.on(tokenUriSetFilter, async () => {
+  await refreshNftGallery()
 })
-}
