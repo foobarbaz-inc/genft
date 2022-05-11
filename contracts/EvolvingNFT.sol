@@ -84,6 +84,7 @@ contract EvolvingNFT is ERC721, ERC721Enumerable, ERC721URIStorage, IMLClient {
         address to,
         uint256 tokenId
     ) internal virtual override (ERC721, ERC721Enumerable){
+        ERC721Enumerable._beforeTokenTransfer(from, to, tokenId);
         // ignore minting & burning cases
         if (from != address(0) && to != address(0)) {
             // todo figure out where to make this payable,
