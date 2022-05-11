@@ -6,7 +6,7 @@ import ChainAIV2JSON from './../contracts/ChainAIV2.json'
 const provider = new ethers.providers.Web3Provider(window.ethereum)
 const signer = provider.getSigner()
 
-const evolvingNftAddress = '0x845115B5272443908a3bc883024aA792F5084e55'
+const evolvingNftAddress = '0x8F8758858137a6FAb6c2001d930d690fe037BA18'
 const chainAIaddress = '0x2AA101B3734e9868F4AD0cB8e97D291bA4E7dD58'
 const contract = new ethers.Contract(evolvingNftAddress, EvolvingNFTJSON.abi, provider);
 const chainAIcontract = new ethers.Contract(chainAIaddress, ChainAIV2JSON.abi, provider);
@@ -24,23 +24,12 @@ async function fetchOwnedTokenCount() {
 }
 
 async function fetchedOwnedTokenIds() {
-  var numTokensOwned = await contract.connect(signer).balanceOf(signer.getAddress());
-  var numTokens = 0
+  var address = await signer.getAddress();
+  var numTokensOwned = await contract.connect(signer).balanceOf(address);
   var tokensOwned = []
-  var totalSupply = await contract.currentTokenId()
-  //var totalSupply = 4;
-  var address = await signer.getAddress()
-  for (var i = 1; i <= totalSupply; i++) {
-    var owner = await contract.connect(signer).ownerOf(i)
-    console.log('owner', owner.toLowerCase())
-    console.log(address.toString().toLowerCase())
-    if (owner.toLowerCase() == address.toString().toLowerCase()) {
-      numTokens++
-      tokensOwned.push(i)
-    }
-    if (numTokens == numTokensOwned) {
-      break;
-    }
+  for (var i = 0; i < numTokensOwned; i++) {
+    var tokenId = await contract.tokenOfOwnerByIndex(address, i);
+    tokensOwned.push(tokenId);
   }
   return tokensOwned;
 }
@@ -64,6 +53,7 @@ async function connectToMetamask() {
     console.log("Not signed in")
     await provider.send("eth_requestAccounts", [])
   }
+}
 
 submit.addEventListener("click", async () => {
   console.log("input: ", input.value)
@@ -84,30 +74,45 @@ transferSubmit.addEventListener("click", async () => {
   }
 })
 
-showNfts.addEventListener("click", async () => {
+async function refreshNftGallery() {
   var tokenIds = await fetchedOwnedTokenIds()
   console.log("tokens owned", tokenIds)
   var tokenUris = []
   $('#nftGallery').empty();
   for (var i = 0; i < tokenIds.length; i++) {
     console.log("fetching URI for id ", tokenIds[i])
-    var uri = await contract.connect(signer).tokenURI(tokenIds[i])
+    var uri = await contract.tokenURI(tokenIds[i])
+    var prompt = await contract.tokenIdToDataInput(tokenIds[i])
     //prompt = await contract.connect(signer).tokenIdToDataInput()
-    $('#nftGallery').append('<div class="img_holder"><span>tokenId: '+tokenIds[i].toString()+'</span><div class="clear"></div><img src='+uri+'/></div>');
+    $('#nftGallery').append('<div class="img_holder"><span>tokenId: '+tokenIds[i].toString()+'</span><br><span>prompt: '+prompt+'</span><br><div class="clear"></div><img src='+uri+'/></div>');
     console.log('uri ', uri)
     tokenUris.push(uri)
   }
+}
+
+showNfts.addEventListener("click", async () => {
+  await refreshNftGallery();
 })
 
-const filter = {
+const transferFilter = {
   address: evolvingNftAddress,
   topics: [
     // the name of the event, parentheses containing the data type of each event, no spaces
-    ethers.utils.id("Transfer(address,address,uint256)"),
-
+    ethers.utils.id("Transfer(address,address,uint256)")
   ]
 }
-provider.on(filter, async () => {
+provider.on(transferFilter, async () => {
   valueOutput.innerText = await fetchOwnedTokenCount() + " Evolving NFTs"
+  await refreshNftGallery()
 })
+
+const tokenUriSetFilter = {
+  address: evolvingNftAddress,
+  topics: [
+    // the name of the event, parentheses containing the data type of each event, no spaces
+    ethers.utils.id("TokenUriSet(uint256,string)")
+  ]
 }
+provider.on(tokenUriSetFilter, async () => {
+  await refreshNftGallery()
+})
