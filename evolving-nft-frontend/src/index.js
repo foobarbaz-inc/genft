@@ -43,6 +43,7 @@ async function go() {
   var modelLocation = await contract.connect(signer).model();
   console.log("model location");
   console.log(modelLocation);
+  await refreshNftGallery()
 }
 
 async function connectToMetamask() {
