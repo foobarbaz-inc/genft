@@ -1,0 +1,203 @@
+/* fold Sam's CSS */
+
+
+#nftGallery {
+  width: 1600px;
+  margin: 10px auto;
+}
+
+.img_holder {
+  float: left;
+  margin: 10px;
+  text-align: center;
+}
+
+.img_holder img {
+  width: 300px;
+}
+
+.clear {
+  clear: both;
+}
+/* end fold */
+
+/* fold: Element Type Styling */
+
+body {
+  font-family: 'Source Code Pro', monospace;
+  text-align: left;
+}
+
+h1 {
+  /* font-family: 'Montserrat', sans-serif; */
+  font-size: 3.5rem;
+  line-height: 1.5;
+  font-weight: 900;
+}
+
+h2 {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+hr {
+  color: white;
+}
+
+/* end fold */
+
+/* fold: Containers */
+
+.container-fluid {
+  padding: 7% 15%;
+}
+
+/* end fold */
+
+/* fold: Sections */
+
+.colored-section {
+  background-color: #943bdc;
+  color: white;
+}
+
+.white-section {
+  background-color: white;
+}
+
+.dark-section {
+  background-color: #1a1a1a;
+  color: #943bdc;
+}
+
+.light-section {
+  background-color: #B680E1;
+  color: white;
+}
+
+.light-grey-section {
+  background-color: #f4f4f4;
+}
+
+/* end fold */
+
+/* fold: Navigation Area */
+
+.navbar {
+  padding-bottom: 2.5rem;
+}
+
+.navbar-brand {
+  font-size: 1.2rem;
+}
+
+.nav-link {
+  font-size: 1.2;
+  /* font-weight: 100; */
+}
+
+.nav-link:hover {
+  color: #943bdc;
+}
+
+.nav-item {
+  padding: 0 18px;
+}
+/* end fold */
+
+/* fold: Title Area */
+
+#title .container-fluid {
+  padding: 3% 15% 7%;
+}
+
+.title-text {
+  padding-top: 2rem;
+  text-align: left;
+}
+
+.title-subtext {
+  text-align: left;
+}
+
+
+@media (max-width: 1260px) {
+
+  .title-text {
+    text-align: center;
+  }
+
+  .title-subtext {
+    text-align: center;
+  }
+}
+
+/* end fold */
+
+/* fold: Minting */
+
+#minting .container-fluid {
+  text-align: center;
+  padding: 5% 20%;
+}
+
+.minting-item {
+  padding: 1rem 0;
+}
+
+.mint-button:hover {
+  background-color: #943bdc;
+}
+
+/* end fold */
+
+/* fold: Gallery */
+
+#gallery .container-fluid {
+  padding: 3% 15%;
+}
+
+.gallery-header {
+  font-weight: 900;
+}
+
+.small-header {
+  color: white;
+  font-size: 1.2rem;
+}
+
+
+/* end fold */
+
+/* fold: Footer */
+
+#footer {
+  text-align: center;
+}
+
+#footer .container-fluid {
+  padding: 3% 15%;
+}
+
+.copyright-text {
+  font-size: .8rem;
+  color: #8f8f8f;
+  line-height: 3rem;
+}
+
+.footer-link {
+  color: white;
+  margin: .5rem;
+}
+
+.footer-link:hover {
+  color: #943bdc;
+}
+
+
+
+/* end fold */
