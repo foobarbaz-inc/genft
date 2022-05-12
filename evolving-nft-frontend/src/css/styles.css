@@ -1,25 +1,3 @@
-/* fold Sam's CSS */
-
-
-#nftGallery {
-  width: 1600px;
-  margin: 10px auto;
-}
-
-.img_holder {
-  float: left;
-  margin: 10px;
-  text-align: center;
-}
-
-.img_holder img {
-  width: 300px;
-}
-
-.clear {
-  clear: both;
-}
-/* end fold */
 
 /* fold: Element Type Styling */
 
@@ -32,7 +10,7 @@ h1 {
   /* font-family: 'Montserrat', sans-serif; */
   font-size: 3.5rem;
   line-height: 1.5;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 h2 {
@@ -70,7 +48,7 @@ hr {
 }
 
 .dark-section {
-  background-color: #1a1a1a;
+  background-color: #222222;
   color: #943bdc;
 }
 
@@ -80,7 +58,7 @@ hr {
 }
 
 .light-grey-section {
-  background-color: #f4f4f4;
+  background-color: #4e4d4d;
 }
 
 /* end fold */
@@ -96,7 +74,7 @@ hr {
 }
 
 .nav-link {
-  font-size: 1.2;
+  font-size: .8rem;
   /* font-weight: 100; */
 }
 
@@ -118,10 +96,15 @@ hr {
 .title-text {
   padding-top: 2rem;
   text-align: left;
+  font-size: 3rem;
 }
 
 .title-subtext {
   text-align: left;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.6;
+  width: 70%;
 }
 
 
@@ -133,6 +116,7 @@ hr {
 
   .title-subtext {
     text-align: center;
+    width: 100%;
   }
 }
 
@@ -149,6 +133,12 @@ hr {
   padding: 1rem 0;
 }
 
+.minting-title {
+  font-weight: 700;
+  line-height: 1.6
+
+}
+
 .mint-button:hover {
   background-color: #943bdc;
 }
@@ -161,8 +151,10 @@ hr {
   padding: 3% 15%;
 }
 
+/* gallery header  */
 .gallery-header {
   font-weight: 900;
+  margin-bottom: 5rem;
 }
 
 .small-header {
@@ -170,6 +162,92 @@ hr {
   font-size: 1.2rem;
 }
 
+/* gallery item */
+.carousel-cell {
+  padding: 0 50px 100px 20px;
+}
+
+.carousel-cell img {
+  padding: 20px 0;
+  width: 300px;
+}
+
+/* gallery item text and styling */
+
+.vertical-line {
+  border-left: thin solid #4e4d4d;
+}
+
+.token-id {
+  color: white;
+  font-size: 3rem;
+  line-height: .8;
+}
+
+.cell-text {
+  width: 300px;
+}
+
+.send-button {
+  cursor: pointer;
+  color: white;
+  font-size: .8rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.toggle-btn {
+  position: relative;
+  display: block;
+  color: white;
+  width: 300px;
+  text-decoration: none;
+  margin-bottom: 5px;
+  font-size: .9rem;
+  cursor: pointer;
+}
+
+.arrow {
+  position: absolute;
+  top: 10px;
+  left: 150px;
+}
+
+.arrow::before,
+.arrow::after {
+  position: relative;
+  content: '';
+  display: block;
+  width: 10px;
+  height: 1px;
+  background: white;
+  transition: 0.3s ease-in-out;
+}
+
+.arrow::before {
+  transform: rotate(45deg);
+}
+
+.arrow::after {
+  left: 6px;
+  top: -1px;
+  transform: rotate(-45deg);
+}
+.toggle-btn.active .arrow::before {
+  transform: rotate(-45deg);
+}
+
+.toggle-btn.active .arrow::after {
+  transform: rotate(45deg);
+}
+
+/* gallery unknown */
+
+.clear {
+  clear: both;
+}
 
 /* end fold */
 
