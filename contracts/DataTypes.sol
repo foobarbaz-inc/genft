@@ -11,7 +11,8 @@ library DataTypes {
     enum ModelCategory {
         TextConditionalImageGeneration,
         UnconditionalImageGeneration,
-        PromptConditionedTextGeneration
+        PromptConditionedTextGeneration,
+        RLAgent
     }
 
     enum OutputDataLocationType {
