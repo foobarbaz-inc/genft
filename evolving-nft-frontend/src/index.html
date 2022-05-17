@@ -1,47 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
 <head>
-<title>Evolving NFT</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script type="module" src="./index.js"></script>
-<style>
+  <meta charset="utf-8">
+  <title>Evolving NFT</title>
 
-#nftGallery {
-    width: 1600px;
-    margin: 10px auto;
-}
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
-.img_holder {
-    float: left;
-    margin: 10px;
-    text-align: center;
-}
+  <!-- Google Fonts: Monserrat 400, 900; Source Code Pro 200, 200i, 300, 300i, 400, 900 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&family=Source+Code+Pro:ital,wght@0,200;0,300;0,400;0,700;0,900;1,200;1,300&display=swap" rel="stylesheet">
 
-.img_holder img {
-    width: 300px;
-}
+  <!-- Font Awesome Icon Kit -->
+  <script src="https://kit.fontawesome.com/adc4be7b70.js" crossorigin="anonymous"></script>
 
-.clear {
-    clear: both;
-}
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
 
-</style>
+  <!-- flickity -->
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+  <!-- JavaScript -->
+  <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+
+
 </head>
 
 <body>
-<h1>Evolving NFT</h1>
 
-<p><b>You have:   </b><span id="valueOutput">Loading...</span></p>
-<p> Use your creativity! Pass in a text prompt to mint an AI-generated image, using your wallet address as a random seed.</p>
-<p> This NFT is uniquely your own -- when you transfer the image, it will be regenerated using the recipient's wallet address. </p>
-<input type="text" id="input">
-<button id="submit">Mint</button>
-<button id="showNfts">Show my NFTs!</button>
-<div id="nftGallery"></div>
-<div class="clear"></div>
-<p><span id="errorCode"></span></p>
-<p></p>
-<p></p>
-<p><b>Send your NFT to a friend and see what art they get!</b></p>
-<p>Enter the token ID to send:</p><input type="text" id="tokenId">
-<p>Enter the wallet address to send it to:</p><input type="text" id="address">
-<button id="transferSubmit">Transfer</button>
+  <section class="colored-section" id="title">
+
+    <div class="container-fluid title-container">
+
+      <!-- Nav Bar -->
+
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand">buffalo labs</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse1" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse1">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#footer">mint</a></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#gallery">my GenFTs</a></a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Title -->
+
+      <div class="row title-area">
+        <div class="col-lg-12">
+          <h1 class="title-text">Evolving NFTs</h1>
+          <h3 class="title-subtext">
+            Ask the AI to mint you an image! It will make it uniquely yours, using your wallet address
+            as a random seed. If you transfer it to a friend, the AI will remake it to suit them (and their wallet address)!
+          </h3>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Minting -->
+
+  <section class="white-section" id="minting">
+
+    <div class="container-fluid">
+
+      <div class="minting-item">
+        <h2 class="minting-title">What would you like the AI to make?</h2>
+      </div>
+
+      <div class="minting-item">
+        <input type="text" id="input">
+        <button class="mint-button" id="submit">Mint</button>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- NFT Gallery -->
+
+  <section class="dark-section" id="gallery">
+
+    <div class="container-fluid">
+
+      <h3 class="small-header">gallery</h3>
+      <hr>
+      <h2 class="gallery-header">My GenFTs</h2>
+
+      <div id="nftGallery" class="main-carousel" data-flickity='{ "freeScroll": true, "contain": true, "prevNextButtons": false, "pageDots": false }'>
+        <!-- fold Template HTML for NFT Holder -->
+        <!-- <div class="carousel-cell vertical-line">
+          <p class="token-id-title">tokenId: </p>
+          <h1 class="token-id">0</h1>
+          <img src="css/dog-img.jpg" alt="">
+          <p class="cell-text">A cow playing in a video arcade. A little longer. </p>
+          <p class="toggle-btn">
+            Send To A Friend
+            <span class="arrow"></span>
+          </p>
+          <div class="send-slider hidden">
+            <p class="cell-text">Enter the wallet address to transfer and see what they get!</p>
+            <input type="text" id="address">
+            <button id="transferSubmit">Transfer</button>
+          </div>
+          <div class="clear">
+          </div>
+        </div> -->
+        <!-- end fold -->
+      </div>
+
+      <div class="clear"></div>
+      <p><span id="errorCode"></span></p>
+
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+
+  <section class="dark-section" id="footer">
+
+    <div class="container-fluid">
+
+      <a class="footer-link" href="https://twitter.com/"><i class="fa-brands fa-twitter"></i></a>
+      <p class="copyright-text">© Copyright Buffalo Labs</p>
+
+    </div>
+
+  </section>
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- Our js scripts -->
+  <script type="module" src="./index.js"></script>
+  <script src="frontend-mechanics.js" charset="utf-8"></script>
+
 </body>
+
+</html>

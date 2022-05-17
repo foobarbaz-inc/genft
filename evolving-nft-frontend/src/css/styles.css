@@ -1,0 +1,281 @@
+
+/* fold: Element Type Styling */
+
+body {
+  font-family: 'Source Code Pro', monospace;
+  text-align: left;
+}
+
+h1 {
+  /* font-family: 'Montserrat', sans-serif; */
+  font-size: 3.5rem;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+hr {
+  color: white;
+}
+
+/* end fold */
+
+/* fold: Containers */
+
+.container-fluid {
+  padding: 7% 15%;
+}
+
+/* end fold */
+
+/* fold: Sections */
+
+.colored-section {
+  background-color: #943bdc;
+  color: white;
+}
+
+.white-section {
+  background-color: white;
+}
+
+.dark-section {
+  background-color: #222222;
+  color: #943bdc;
+}
+
+.light-section {
+  background-color: #B680E1;
+  color: white;
+}
+
+.light-grey-section {
+  background-color: #4e4d4d;
+}
+
+/* end fold */
+
+/* fold: Navigation Area */
+
+.navbar {
+  padding-bottom: 2.5rem;
+}
+
+.navbar-brand {
+  font-size: 1.2rem;
+}
+
+.nav-link {
+  font-size: .8rem;
+  /* font-weight: 100; */
+}
+
+.nav-link:hover {
+  color: #943bdc;
+}
+
+.nav-item {
+  padding: 0 18px;
+}
+/* end fold */
+
+/* fold: Title Area */
+
+#title .container-fluid {
+  padding: 3% 15% 7%;
+}
+
+.title-text {
+  padding-top: 2rem;
+  text-align: left;
+  font-size: 3rem;
+}
+
+.title-subtext {
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.6;
+  width: 70%;
+}
+
+
+@media (max-width: 1260px) {
+
+  .title-text {
+    text-align: center;
+  }
+
+  .title-subtext {
+    text-align: center;
+    width: 100%;
+  }
+}
+
+/* end fold */
+
+/* fold: Minting */
+
+#minting .container-fluid {
+  text-align: center;
+  padding: 5% 20%;
+}
+
+.minting-item {
+  padding: 1rem 0;
+}
+
+.minting-title {
+  font-weight: 700;
+  line-height: 1.6
+
+}
+
+.mint-button:hover {
+  background-color: #943bdc;
+}
+
+/* end fold */
+
+/* fold: Gallery */
+
+#gallery .container-fluid {
+  padding: 3% 15%;
+}
+
+/* gallery header  */
+.gallery-header {
+  font-weight: 900;
+  margin-bottom: 5rem;
+}
+
+.small-header {
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* gallery item */
+.carousel-cell {
+  padding: 0 50px 100px 20px;
+}
+
+.carousel-cell img {
+  padding: 20px 0;
+  width: 300px;
+}
+
+/* gallery item text and styling */
+
+.vertical-line {
+  border-left: thin solid #4e4d4d;
+}
+
+.token-id {
+  color: white;
+  font-size: 3rem;
+  line-height: .8;
+}
+
+.cell-text {
+  width: 300px;
+}
+
+.send-button {
+  cursor: pointer;
+  color: white;
+  font-size: .8rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.toggle-btn {
+  position: relative;
+  display: block;
+  color: white;
+  width: 300px;
+  text-decoration: none;
+  margin-bottom: 5px;
+  font-size: .9rem;
+  cursor: pointer;
+}
+
+.arrow {
+  position: absolute;
+  top: 10px;
+  left: 150px;
+}
+
+.arrow::before,
+.arrow::after {
+  position: relative;
+  content: '';
+  display: block;
+  width: 10px;
+  height: 1px;
+  background: white;
+  transition: 0.3s ease-in-out;
+}
+
+.arrow::before {
+  transform: rotate(45deg);
+}
+
+.arrow::after {
+  left: 6px;
+  top: -1px;
+  transform: rotate(-45deg);
+}
+.toggle-btn.active .arrow::before {
+  transform: rotate(-45deg);
+}
+
+.toggle-btn.active .arrow::after {
+  transform: rotate(45deg);
+}
+
+/* gallery unknown */
+
+.clear {
+  clear: both;
+}
+
+/* end fold */
+
+/* fold: Footer */
+
+#footer {
+  text-align: center;
+}
+
+#footer .container-fluid {
+  padding: 3% 15%;
+}
+
+.copyright-text {
+  font-size: .8rem;
+  color: #8f8f8f;
+  line-height: 3rem;
+}
+
+.footer-link {
+  color: white;
+  margin: .5rem;
+}
+
+.footer-link:hover {
+  color: #943bdc;
+}
+
+
+
+/* end fold */

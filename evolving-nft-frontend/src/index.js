@@ -80,12 +80,17 @@ async function refreshNftGallery() {
   console.log("tokens owned", tokenIds)
   var tokenUris = []
   $('#nftGallery').empty();
+  if (tokenIds.length === 0)
+  {
+    $('.gallery-header').text("No NFTs - mint one!");
+    console.log("this is triggering");
+  }
   for (var i = 0; i < tokenIds.length; i++) {
     console.log("fetching URI for id ", tokenIds[i])
     var uri = await contract.tokenURI(tokenIds[i])
     var prompt = await contract.tokenIdToDataInput(tokenIds[i])
     //prompt = await contract.connect(signer).tokenIdToDataInput()
-    $('#nftGallery').append('<div class="img_holder"><span>tokenId: '+tokenIds[i].toString()+'</span><br><span>prompt: '+prompt+'</span><br><div class="clear"></div><img src='+uri+'/></div>');
+    addGalleryItem(tokenIds[i].toString(),uri,prompt);
     console.log('uri ', uri)
     tokenUris.push(uri)
   }
