@@ -126,7 +126,7 @@ contract ChainAIV2 is IChainAIV2 {
     function updateJobStatus(
         uint jobId,
         JobStatus jobStatus,
-        string memory resultsLocation
+        bytes memory results
     ) external {
         require(sequencers[msg.sender], "Not a trusted GPU worker");
 
@@ -142,10 +142,12 @@ contract ChainAIV2 is IChainAIV2 {
             // should the model automatically be restarted?
             emit JobFailed(jobId);
         } else if (jobStatus == JobStatus.Succeeded) {
-            IMLClient client = IMLClient(jobParams.callbackAddress);
+            bytes memory calldata = abi.encodeWithSelector(jobParams.callbackFunction, jobParams.callbackId, results)
+            (bool success,) = client.call(calldata)
+            /* IMLClient client = IMLClient(jobParams.callbackAddress);
             client.setOutput(jobParams.callbackId, resultsLocation);
             // todo how to handle incorrect interface
-            emit JobSucceeded(jobId);
+            emit JobSucceeded(jobId); */
         }
     }
 
