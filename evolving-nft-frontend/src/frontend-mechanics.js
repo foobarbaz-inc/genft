@@ -1,7 +1,7 @@
 
 
 function addGalleryItem (tokenId, uri, promptText) {
-  $('#nftGallery').append(createGalleryItem(tokenIds[i].toString(),uri,prompt));
+  $('#nftGallery').append(createGalleryItem(tokenId.toString(),uri,prompt));
 
   $('.toggle-btn' + tokenId).on('click', function() {
     $(this).toggleClass('active');

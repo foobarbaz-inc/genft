@@ -37,7 +37,7 @@ async function fetchedOwnedTokenIds() {
 async function go() {
   await connectToMetamask()
   console.log("Evolving NFT loading")
-  valueOutput.innerText = await fetchOwnedTokenCount() + " Evolving NFTs"
+  // valueOutput.innerText = await fetchOwnedTokenCount() + " Evolving NFTs"
   //valueOutput.innerText = "0 Evolving NFTs"
   // fetch model modelConfigLocation
   var modelLocation = await contract.connect(signer).model();
@@ -65,15 +65,15 @@ submit.addEventListener("click", async () => {
   }
 })
 
-transferSubmit.addEventListener("click", async () => {
-  console.log("tokenID: ", tokenId.value)
-  console.log("address: ", address.value)
-  try {
-    await contract.connect(signer).transferFrom(signer.getAddress(), address.value, tokenId.value)
-  } catch (error) {
-    console.log(error)
-  }
-})
+// transferSubmit.addEventListener("click", async () => {
+//   console.log("tokenID: ", tokenId.value)
+//   console.log("address: ", address.value)
+//   try {
+//     await contract.connect(signer).transferFrom(signer.getAddress(), address.value, tokenId.value)
+//   } catch (error) {
+//     console.log(error)
+//   }
+// })
 
 async function refreshNftGallery() {
   var tokenIds = await fetchedOwnedTokenIds()
@@ -96,9 +96,9 @@ async function refreshNftGallery() {
   }
 }
 
-showNfts.addEventListener("click", async () => {
-  await refreshNftGallery();
-})
+// showNfts.addEventListener("click", async () => {
+//   await refreshNftGallery();
+// })
 
 const transferFilter = {
   address: evolvingNftAddress,
