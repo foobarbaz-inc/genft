@@ -27,6 +27,7 @@ contract TextConditionalImageGeneration is Model {
     function run(
         string memory prompt,
         uint callbackId,
+        bytes4 callbackFunction,
         bytes memory seed,
         DataTypes.OutputDataFormat outputDataFormat
     ) external payable {
@@ -36,6 +37,7 @@ contract TextConditionalImageGeneration is Model {
             seed,
             callbackId,
             msg.sender,
+            callbackFunction,
             DataTypes.InputDataLocationType.OnChain,
             prompt,
             DataTypes.OutputDataLocationType.Arweave,

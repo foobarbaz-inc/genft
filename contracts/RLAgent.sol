@@ -23,13 +23,17 @@ contract RLAgent is Model {
         DataTypes.ModelCategory.RLAgent
     ){}
 
-    function run(uint256 gameId) external payable {
+    function run(
+        uint256 gameId,
+        bytes4 callbackFunction
+    ) external payable {
         require(msg.value == inferencePrice, "Incorrect price");
         ChainAIV2 chainAI = ChainAIV2(oracle);
         chainAI.startJob(
             abi.encodePacked(msg.sender),
             gameId,
             msg.sender,
+            callbackFunction,
             DataTypes.InputDataLocationType.OnChain,
             "",
             DataTypes.OutputDataLocationType.OnChain,

@@ -7,9 +7,8 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./DataTypes.sol";
 import "./TextConditionalImageGeneration.sol";
-import "./IMLClient.sol";
 
-contract EvolvingNFT is ERC721, ERC721Enumerable, ERC721URIStorage, IMLClient {
+contract EvolvingNFT is ERC721, ERC721Enumerable, ERC721URIStorage {
 
     address private owner;
     address public model;
@@ -56,6 +55,7 @@ contract EvolvingNFT is ERC721, ERC721Enumerable, ERC721URIStorage, IMLClient {
         modelContract.run{value: inferencePrice}(
             prompt, // text prompt passed in
             currentTokenId, // current token ID acts as "callback ID for this job"
+            this.setOutput.selector, // this is the callback function selector
             abi.encodePacked(to), // this is the random seed passed in (wallet address)
             DataTypes.OutputDataFormat.NFTMeta // tells the worker to put the output in NFT format
         );
@@ -71,7 +71,7 @@ contract EvolvingNFT is ERC721, ERC721Enumerable, ERC721URIStorage, IMLClient {
     function setOutput(
         uint256 id,
         string memory location
-    ) external override {
+    ) external {
         TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
         address oracle = modelContract.oracle();
         require(msg.sender == oracle, "Not oracle");
@@ -94,6 +94,7 @@ contract EvolvingNFT is ERC721, ERC721Enumerable, ERC721URIStorage, IMLClient {
             modelContract.run{value: inferencePrice}(
                 tokenIdToDataInput[currentTokenId], // text prompt passed in
                 tokenId, // token ID acts as "callback ID for this job"
+                this.setOutput.selector, // this is the callback function selector
                 abi.encodePacked(to), // use recipient address as seed for new generation
                 DataTypes.OutputDataFormat.NFTMeta // tells the worker to put the output in NFT format
             );

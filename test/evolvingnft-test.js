@@ -24,7 +24,8 @@ describe("EvolvingNFT", function () {
         "hello my name is sam", 0, 1, timestamp)
 
     // ChainAI can set the output upon job completion
-    expect(await chainAIv2.connect(sequencer).updateJobStatus(1, 2, "arweave://nft"))
+    console.log(ethers.utils.formatBytes32String("arweave://nft"))
+    expect(await chainAIv2.connect(sequencer).updateJobStatus(1, 2, ethers.utils.formatBytes32String("arweave://nft")))
       .to.emit(chainAIv2, "JobSucceeded").withArgs(1)
       .to.emit(evolvingNft, "TokenUriSet").withArgs(1, "arweave://nft")
 
@@ -35,9 +36,10 @@ describe("EvolvingNFT", function () {
         2, 0, sequencer.address.toLowerCase(), "arweave://gpt-j", 2,
         "hello my name is sam", 0, 1, timestamp + 2)
 
-        // ChainAI can set the output upon job completion
-        expect(await chainAIv2.connect(sequencer).updateJobStatus(2, 2, "arweave://nft2"))
-          .to.emit(chainAIv2, "JobSucceeded").withArgs(2)
-          .to.emit(evolvingNft, "TokenUriSet").withArgs(1, "arweave://nft2")
+    // ChainAI can set the output upon job completion
+    console.log(ethers.utils.formatBytes32String("arweave://nft2"))
+    expect(await chainAIv2.connect(sequencer).updateJobStatus(2, 2, ethers.utils.formatBytes32String("arweave://nft2")))
+      .to.emit(chainAIv2, "JobSucceeded").withArgs(2)
+      .to.emit(evolvingNft, "TokenUriSet").withArgs(1, "arweave://nft2")
   });
 });

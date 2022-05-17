@@ -172,7 +172,7 @@ contract TicTacToe {
         game.status = newGameStatus;
         if ((game.status == GameStatus.InProgress) && (game.playerTwo == model)) {
             RLAgent agent = RLAgent(model);
-            agent.run(game.id);
+            agent.run(game.id, this.move.selector);
         }
         return game.status;
     }

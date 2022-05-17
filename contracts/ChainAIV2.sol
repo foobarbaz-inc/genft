@@ -31,6 +31,7 @@ contract ChainAIV2 is IChainAIV2 {
         uint createdTimestamp;
         uint256 callbackId;
         address callbackAddress;
+        bytes4 callbackFunction;
     }
 
     struct Job {
@@ -42,7 +43,7 @@ contract ChainAIV2 is IChainAIV2 {
         address model;
         bytes seed;
         string input;
-        string output;
+        bytes output;
     }
 
     event JobCreated(
@@ -75,6 +76,7 @@ contract ChainAIV2 is IChainAIV2 {
         bytes memory seed,
         uint256 callbackId,
         address callbackAddress,
+        bytes4 callbackFunction,
         DataTypes.InputDataLocationType inputDataLocationType,
         string memory input,
         DataTypes.OutputDataLocationType outputDataLocationType,
@@ -93,7 +95,8 @@ contract ChainAIV2 is IChainAIV2 {
             id: latestJobId,
             createdTimestamp: createdTimestamp,
             callbackId: callbackId,
-            callbackAddress: callbackAddress
+            callbackAddress: callbackAddress,
+            callbackFunction: callbackFunction
         });
 
         Job memory job = Job({
@@ -123,6 +126,7 @@ contract ChainAIV2 is IChainAIV2 {
         );
     }
 
+    // todo add different methods for different result types
     function updateJobStatus(
         uint jobId,
         JobStatus jobStatus,
@@ -133,7 +137,7 @@ contract ChainAIV2 is IChainAIV2 {
         JobParams storage jobParams;
         Job storage job = jobs[jobId];
         jobParams = job.jobParams;
-        job.output = resultsLocation;
+        job.output = results;
         jobParams.status = jobStatus;
 
         if (jobStatus == JobStatus.Failed) {
@@ -142,12 +146,10 @@ contract ChainAIV2 is IChainAIV2 {
             // should the model automatically be restarted?
             emit JobFailed(jobId);
         } else if (jobStatus == JobStatus.Succeeded) {
-            bytes memory calldata = abi.encodeWithSelector(jobParams.callbackFunction, jobParams.callbackId, results)
-            (bool success,) = client.call(calldata)
-            /* IMLClient client = IMLClient(jobParams.callbackAddress);
-            client.setOutput(jobParams.callbackId, resultsLocation);
-            // todo how to handle incorrect interface
-            emit JobSucceeded(jobId); */
+            bytes memory args = abi.encodeWithSelector(
+                jobParams.callbackFunction, jobParams.callbackId, results);
+            (bool success,) = jobParams.callbackAddress.call(args);
+            require(success, "Callback failed");
         }
     }
 
