@@ -65,20 +65,20 @@ submit.addEventListener("click", async () => {
   }
 })
 
-// transferSubmit.addEventListener("click", async () => {
-//   console.log("tokenID: ", tokenId.value)
-//   console.log("address: ", address.value)
-//   try {
-//     await contract.connect(signer).transferFrom(signer.getAddress(), address.value, tokenId.value)
-//   } catch (error) {
-//     console.log(error)
-//   }
-// })
+transferSubmit.addEventListener("click", async () => {
+  console.log("tokenID: ", tokenId.value)
+  console.log("address: ", address.value)
+  try {
+    await contract.connect(signer).transferFrom(signer.getAddress(), address.value, tokenId.value)
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 async function refreshNftGallery() {
-  var tokenIds = await fetchedOwnedTokenIds()
-  console.log("tokens owned", tokenIds)
-  var tokenUris = []
+  var tokenIds = await fetchedOwnedTokenIds();
+  console.log("tokens owned", tokenIds);
+  var tokenUris = [];
   $('#nftGallery').empty();
   if (tokenIds.length === 0)
   {

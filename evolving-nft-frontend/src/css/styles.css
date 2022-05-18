@@ -143,6 +143,11 @@ hr {
   background-color: #943bdc;
 }
 
+.mint-form {
+  width: 50%;
+  display: inline-block;
+}
+
 /* end fold */
 
 /* fold: Gallery */
@@ -164,12 +169,12 @@ hr {
 
 /* gallery item */
 .carousel-cell {
-  padding: 0 50px 100px 20px;
+  margin-bottom: 2rem;
 }
 
 .carousel-cell img {
   padding: 20px 0;
-  width: 300px;
+  width: 100%;
 }
 
 /* gallery item text and styling */
@@ -185,7 +190,11 @@ hr {
 }
 
 .cell-text {
-  width: 300px;
+  width: 100%;
+}
+
+.transfer-form {
+  margin-bottom: 20px;
 }
 
 .send-button {
