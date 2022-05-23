@@ -46,17 +46,20 @@ contract ChainAIV2 is IChainAIV2 {
         bytes output;
     }
 
-    event JobCreated(
+    /* event JobCreated(
         uint jobId,
         DataTypes.ModelCategory modelCategory,
         bytes seed,
         string modelConfigLocation,
         DataTypes.InputDataLocationType inputDataLocationType,
         string input,
+        bytes4 callbackFunction,
+        uint256 callbackId,
         DataTypes.OutputDataLocationType outputDataLocationType,
         DataTypes.OutputDataFormat outputDataFormat,
         uint createdTimestamp
-    );
+    ); */
+    event JobCreated(Job job);
     event JobFailed(uint jobId);
     event JobSucceeded(uint jobId);
 
@@ -113,31 +116,34 @@ contract ChainAIV2 is IChainAIV2 {
 
         // save the job and emit the created event
         jobs[latestJobId] = job;
-        emit JobCreated(
+        /* emit JobCreated(
             latestJobId,
             model.modelCategory(),
             seed,
             model.getModelLocation(),
             inputDataLocationType,
             input,
+            callbackFunction,
+            callbackId,
             outputDataLocationType,
             outputDataFormat,
             createdTimestamp
-        );
+        ); */
+        emit JobCreated(job);
     }
 
     // todo add different methods for different result types
     function updateJobStatus(
         uint jobId,
         JobStatus jobStatus,
-        bytes memory results
+        bytes memory callbackData
     ) external {
         require(sequencers[msg.sender], "Not a trusted GPU worker");
 
         JobParams storage jobParams;
         Job storage job = jobs[jobId];
         jobParams = job.jobParams;
-        job.output = results;
+        job.output = callbackData;
         jobParams.status = jobStatus;
 
         if (jobStatus == JobStatus.Failed) {
@@ -146,9 +152,7 @@ contract ChainAIV2 is IChainAIV2 {
             // should the model automatically be restarted?
             emit JobFailed(jobId);
         } else if (jobStatus == JobStatus.Succeeded) {
-            bytes memory args = abi.encodeWithSelector(
-                jobParams.callbackFunction, jobParams.callbackId, results);
-            (bool success,) = jobParams.callbackAddress.call(args);
+            (bool success,) = jobParams.callbackAddress.call(callbackData);
             require(success, "Callback failed");
         }
     }

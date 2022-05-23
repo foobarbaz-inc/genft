@@ -17,11 +17,13 @@ describe("EvolvingNFT", function () {
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
 
     // Mint EvolvingNft
+    //var callbackFxn = 
     expect(await evolvingNft.connect(randomPerson).mint(randomPerson.address, "hello my name is sam"))
       .to.emit(evolvingNft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAIv2, "JobCreated").withArgs(
-        1, 0, randomPerson.address.toLowerCase(), "arweave://gpt-j", 2,
-        "hello my name is sam", 0, 1, timestamp)
+      .to.emit(chainAIv2, "JobCreated").withArgs([[0, 1, timestamp, 1, evolvingNftAddress, ], 1, 0, randomPerson.address.toLowerCase()])
+      // .to.emit(chainAIv2, "JobCreated").withArgs(
+      //   1, 0, randomPerson.address.toLowerCase(), "arweave://gpt-j", 2,
+      //   "hello my name is sam", 0, 1, timestamp)
 
     // ChainAI can set the output upon job completion
     console.log(ethers.utils.formatBytes32String("arweave://nft"))
