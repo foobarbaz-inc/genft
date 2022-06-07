@@ -2,10 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "./ChainAIV2.sol";
-import "./DataTypes.sol";
 import "./Model.sol";
 
-contract TextConditionalImageGeneration is Model {
+contract RLAgent is Model {
 
     constructor(
         address owner_,
@@ -21,27 +20,25 @@ contract TextConditionalImageGeneration is Model {
         upgradeable_,
         inferencePrice_,
         modelLocation_,
-        DataTypes.ModelCategory.TextConditionalImageGeneration
+        DataTypes.ModelCategory.RLAgent
     ){}
 
     function run(
-        string memory prompt,
-        uint callbackId,
-        bytes4 callbackFunction,
-        bytes memory seed,
-        DataTypes.OutputDataFormat outputDataFormat
+        uint256 gameId,
+        bytes4 callbackFunction
     ) external payable {
         require(msg.value == inferencePrice, "Incorrect price");
         ChainAIV2 chainAI = ChainAIV2(oracle);
         chainAI.startJob(
-            seed,
-            callbackId,
+            abi.encodePacked(msg.sender),
+            gameId,
             msg.sender,
             callbackFunction,
             DataTypes.InputDataLocationType.OnChain,
-            prompt,
-            DataTypes.OutputDataLocationType.Arweave,
-            outputDataFormat
+            "",
+            DataTypes.OutputDataLocationType.OnChain,
+            DataTypes.OutputDataFormat.Raw
         );
     }
+
 }

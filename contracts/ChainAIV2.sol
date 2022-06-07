@@ -5,6 +5,7 @@ import "./DataTypes.sol";
 import "./Model.sol";
 import "./IChainAIV2.sol";
 import "./IMLClient.sol";
+import "hardhat/console.sol";
 
 contract ChainAIV2 is IChainAIV2 {
 
@@ -31,6 +32,7 @@ contract ChainAIV2 is IChainAIV2 {
         uint createdTimestamp;
         uint256 callbackId;
         address callbackAddress;
+        bytes4 callbackFunction;
     }
 
     struct Job {
@@ -42,7 +44,7 @@ contract ChainAIV2 is IChainAIV2 {
         address model;
         bytes seed;
         string input;
-        string output;
+        bytes output;
     }
 
     event JobCreated(
@@ -52,6 +54,8 @@ contract ChainAIV2 is IChainAIV2 {
         string modelConfigLocation,
         DataTypes.InputDataLocationType inputDataLocationType,
         string input,
+        bytes4 callbackFunction,
+        uint256 callbackId,
         DataTypes.OutputDataLocationType outputDataLocationType,
         DataTypes.OutputDataFormat outputDataFormat,
         uint createdTimestamp
@@ -75,6 +79,7 @@ contract ChainAIV2 is IChainAIV2 {
         bytes memory seed,
         uint256 callbackId,
         address callbackAddress,
+        bytes4 callbackFunction,
         DataTypes.InputDataLocationType inputDataLocationType,
         string memory input,
         DataTypes.OutputDataLocationType outputDataLocationType,
@@ -93,7 +98,8 @@ contract ChainAIV2 is IChainAIV2 {
             id: latestJobId,
             createdTimestamp: createdTimestamp,
             callbackId: callbackId,
-            callbackAddress: callbackAddress
+            callbackAddress: callbackAddress,
+            callbackFunction: callbackFunction
         });
 
         Job memory job = Job({
@@ -111,29 +117,32 @@ contract ChainAIV2 is IChainAIV2 {
         // save the job and emit the created event
         jobs[latestJobId] = job;
         emit JobCreated(
-            latestJobId,
+            job.jobParams.id,
             model.modelCategory(),
-            seed,
+            job.seed,
             model.getModelLocation(),
-            inputDataLocationType,
-            input,
-            outputDataLocationType,
-            outputDataFormat,
-            createdTimestamp
+            job.inputDataLocationType,
+            job.input,
+            job.jobParams.callbackFunction,
+            job.jobParams.callbackId,
+            job.outputDataLocationType,
+            job.outputDataFormat,
+            job.jobParams.createdTimestamp
         );
     }
 
+    // todo add different methods for different result types
     function updateJobStatus(
         uint jobId,
         JobStatus jobStatus,
-        string memory resultsLocation
+        bytes memory callbackData
     ) external {
         require(sequencers[msg.sender], "Not a trusted GPU worker");
 
         JobParams storage jobParams;
         Job storage job = jobs[jobId];
         jobParams = job.jobParams;
-        job.output = resultsLocation;
+        job.output = callbackData;
         jobParams.status = jobStatus;
 
         if (jobStatus == JobStatus.Failed) {
@@ -142,9 +151,8 @@ contract ChainAIV2 is IChainAIV2 {
             // should the model automatically be restarted?
             emit JobFailed(jobId);
         } else if (jobStatus == JobStatus.Succeeded) {
-            IMLClient client = IMLClient(jobParams.callbackAddress);
-            client.setOutput(jobParams.callbackId, resultsLocation);
-            // todo how to handle incorrect interface
+            (bool success,) = jobParams.callbackAddress.call(callbackData);
+            require(success, "Callback failed");
             emit JobSucceeded(jobId);
         }
     }
