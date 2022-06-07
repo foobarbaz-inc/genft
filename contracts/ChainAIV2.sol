@@ -5,6 +5,7 @@ import "./DataTypes.sol";
 import "./Model.sol";
 import "./IChainAIV2.sol";
 import "./IMLClient.sol";
+import "hardhat/console.sol";
 
 contract ChainAIV2 is IChainAIV2 {
 
@@ -46,7 +47,7 @@ contract ChainAIV2 is IChainAIV2 {
         bytes output;
     }
 
-    /* event JobCreated(
+    event JobCreated(
         uint jobId,
         DataTypes.ModelCategory modelCategory,
         bytes seed,
@@ -58,8 +59,7 @@ contract ChainAIV2 is IChainAIV2 {
         DataTypes.OutputDataLocationType outputDataLocationType,
         DataTypes.OutputDataFormat outputDataFormat,
         uint createdTimestamp
-    ); */
-    event JobCreated(Job job);
+    );
     event JobFailed(uint jobId);
     event JobSucceeded(uint jobId);
 
@@ -116,20 +116,19 @@ contract ChainAIV2 is IChainAIV2 {
 
         // save the job and emit the created event
         jobs[latestJobId] = job;
-        /* emit JobCreated(
-            latestJobId,
+        emit JobCreated(
+            job.jobParams.id,
             model.modelCategory(),
-            seed,
+            job.seed,
             model.getModelLocation(),
-            inputDataLocationType,
-            input,
-            callbackFunction,
-            callbackId,
-            outputDataLocationType,
-            outputDataFormat,
-            createdTimestamp
-        ); */
-        emit JobCreated(job);
+            job.inputDataLocationType,
+            job.input,
+            job.jobParams.callbackFunction,
+            job.jobParams.callbackId,
+            job.outputDataLocationType,
+            job.outputDataFormat,
+            job.jobParams.createdTimestamp
+        );
     }
 
     // todo add different methods for different result types
@@ -154,6 +153,7 @@ contract ChainAIV2 is IChainAIV2 {
         } else if (jobStatus == JobStatus.Succeeded) {
             (bool success,) = jobParams.callbackAddress.call(callbackData);
             require(success, "Callback failed");
+            emit JobSucceeded(jobId);
         }
     }
 

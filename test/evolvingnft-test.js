@@ -17,17 +17,19 @@ describe("EvolvingNFT", function () {
     var timestamp = (await ethers.provider.getBlock(blockNumber)).timestamp + 1;
 
     // Mint EvolvingNft
-    //var callbackFxn = 
+    //var callbackFxn =
     expect(await evolvingNft.connect(randomPerson).mint(randomPerson.address, "hello my name is sam"))
       .to.emit(evolvingNft, "Transfer").withArgs('0x0000000000000000000000000000000000000000', randomPerson.address, 1)
-      .to.emit(chainAIv2, "JobCreated").withArgs([[0, 1, timestamp, 1, evolvingNftAddress, ], 1, 0, randomPerson.address.toLowerCase()])
-      // .to.emit(chainAIv2, "JobCreated").withArgs(
-      //   1, 0, randomPerson.address.toLowerCase(), "arweave://gpt-j", 2,
-      //   "hello my name is sam", 0, 1, timestamp)
+      //.to.emit(chainAIv2, "JobCreated").withArgs([[0, 1, timestamp, 1, evolvingNft.address], 1, 0, randomPerson.address.toLowerCase()])
+      .to.emit(chainAIv2, "JobCreated").withArgs(
+        1, 0, randomPerson.address.toLowerCase(), "arweave://gpt-j", 2,
+        "hello my name is sam", "0x40002107", 1, 0, 1, timestamp)
 
     // ChainAI can set the output upon job completion
-    console.log(ethers.utils.formatBytes32String("arweave://nft"))
-    expect(await chainAIv2.connect(sequencer).updateJobStatus(1, 2, ethers.utils.formatBytes32String("arweave://nft")))
+    var abiCoder = ethers.utils.defaultAbiCoder;
+    var result = abiCoder.encode(['uint256', 'string'], [1, "arweave://nft"]);
+    var calldata = ethers.utils.solidityPack(['bytes4', 'bytes'], [0x40002107, result])
+    expect(await chainAIv2.connect(sequencer).updateJobStatus(1, 2, calldata))
       .to.emit(chainAIv2, "JobSucceeded").withArgs(1)
       .to.emit(evolvingNft, "TokenUriSet").withArgs(1, "arweave://nft")
 
@@ -36,11 +38,13 @@ describe("EvolvingNFT", function () {
       .to.emit(evolvingNft, "Transfer").withArgs(randomPerson.address, sequencer.address, 1)
       .to.emit(chainAIv2, "JobCreated").withArgs(
         2, 0, sequencer.address.toLowerCase(), "arweave://gpt-j", 2,
-        "hello my name is sam", 0, 1, timestamp + 2)
+        "hello my name is sam", "0x40002107", 1, 0, 1, timestamp + 2)
 
     // ChainAI can set the output upon job completion
-    console.log(ethers.utils.formatBytes32String("arweave://nft2"))
-    expect(await chainAIv2.connect(sequencer).updateJobStatus(2, 2, ethers.utils.formatBytes32String("arweave://nft2")))
+    var abiCoder = ethers.utils.defaultAbiCoder;
+    var result = abiCoder.encode(['uint256', 'string'], [1, "arweave://nft2"]);
+    var calldata2 = ethers.utils.solidityPack(['bytes4', 'bytes'], [0x40002107, result])
+    expect(await chainAIv2.connect(sequencer).updateJobStatus(2, 2, calldata2))
       .to.emit(chainAIv2, "JobSucceeded").withArgs(2)
       .to.emit(evolvingNft, "TokenUriSet").withArgs(1, "arweave://nft2")
   });
