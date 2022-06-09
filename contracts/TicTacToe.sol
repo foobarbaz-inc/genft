@@ -31,16 +31,17 @@ contract TicTacToe {
         PlayerTwoWin
     }
 
-    mapping (uint256 => Game) games;
+    mapping (uint256 => Game) public games;
 
     event GameCreated(uint256 gameId, address creator);
     event GameJoined(uint256 gameId, address joiner);
     event Move(uint256 gameId, address mover, uint256 xLoc, uint256 yLoc, string symbol);
     event GameOver(uint256 gameId, GameStatus gameStatus);
 
-    constructor(address model_) {
+    constructor(address model_, uint256 gameCost_) {
         owner = msg.sender;
         model = model_;
+        gameCost = gameCost_;
         playerOneSymbol = 'X';
         playerTwoSymbol = 'O';
     }
@@ -71,6 +72,7 @@ contract TicTacToe {
         Game storage game = games[gameId];
         require(game.playerTwo == address(0), "Game already started");
         if (autoplay) {
+            require(msg.sender == address(this), "Cannot choose autoplay");
             game.playerTwo = model;
             game.playerToMove = game.playerOne;
             game.status = GameStatus.InProgress;
@@ -89,10 +91,12 @@ contract TicTacToe {
             if ((game.board[i][0] != 0) && (game.board[i][0] == game.board[i][1]) && (game.board[i][1] == game.board[i][2])) {
                 if (game.board[i][0] == 1) {
                     GameStatus status = GameStatus.PlayerOneWin;
+                    game.winner = game.playerOne;
                     emit GameOver(game.id, status);
                     return status;
                 } else {
                     GameStatus status = GameStatus.PlayerTwoWin;
+                    game.winner = game.playerTwo;
                     emit GameOver(game.id, status);
                     return status;
                 }
@@ -103,10 +107,12 @@ contract TicTacToe {
             if ((game.board[0][i] != 0) && (game.board[0][i] == game.board[1][i]) && (game.board[1][i] == game.board[2][i])) {
                 if (game.board[0][i] == 1) {
                     GameStatus status = GameStatus.PlayerOneWin;
+                    game.winner = game.playerOne;
                     emit GameOver(game.id, status);
                     return status;
                 } else {
                     GameStatus status = GameStatus.PlayerTwoWin;
+                    game.winner = game.playerTwo;
                     emit GameOver(game.id, status);
                     return status;
                 }
@@ -116,10 +122,12 @@ contract TicTacToe {
         if ((game.board[0][0] != 0) && (game.board[0][0] == game.board[1][1]) && (game.board[1][1] == game.board[2][2])) {
             if (game.board[0][0] == 1) {
                 GameStatus status = GameStatus.PlayerOneWin;
+                game.winner = game.playerOne;
                 emit GameOver(game.id, status);
                 return status;
             } else {
                 GameStatus status = GameStatus.PlayerTwoWin;
+                game.winner = game.playerTwo;
                 emit GameOver(game.id, status);
                 return status;
             }
@@ -127,10 +135,12 @@ contract TicTacToe {
         if ((game.board[0][2] != 0) && (game.board[0][2] == game.board[1][1]) && (game.board[1][1] == game.board[2][0])) {
             if (game.board[0][2] == 1) {
                 GameStatus status = GameStatus.PlayerOneWin;
+                game.winner = game.playerOne;
                 emit GameOver(game.id, status);
                 return status;
             } else {
                 GameStatus status = GameStatus.PlayerTwoWin;
+                game.winner = game.playerTwo;
                 emit GameOver(game.id, status);
                 return status;
             }
@@ -175,5 +185,14 @@ contract TicTacToe {
             agent.run(game.id, this.move.selector);
         }
         return game.status;
+    }
+
+    // if you won a game, you can withdraw 2x gameCost
+    // todo audit, this is probably insecure
+    function withdraw(uint256 gameId) external {
+        Game storage game = games[gameId];
+        require(game.winner == msg.sender, "Not eligible for prize");
+        (bool success,) = game.winner.call{value: 2 * gameCost}("");
+        require(success, "Payment failed");
     }
 }

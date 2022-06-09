@@ -46,6 +46,27 @@ async function deployTextConditionalImageGeneration(
   return textConditionalImageGeneration
 }
 
+async function deployRLAgent(
+  owner,
+  oracleAdmin,
+  oracle,
+  upgradeable,
+  inferencePrice,
+  modelLocation
+) {
+  const RLAgentFactory = await ethers.getContractFactory("RLAgent")
+  const rlAgent = await RLAgentFactory.deploy(
+    owner,
+    oracleAdmin,
+    oracle,
+    upgradeable,
+    inferencePrice,
+    modelLocation
+  )
+  await rlAgent.deployed()
+  return rlAgent
+}
+
 async function deployArtNFT() {
   const ArtNftFactory = await ethers.getContractFactory("ArtNFT");
   const artNft = await ArtNftFactory.deploy();
@@ -68,6 +89,19 @@ async function deployEvolvingNFT(
   );
   await evolvingNft.deployed()
   return evolvingNft
+}
+
+async function deployTicTacToe(
+  model,
+  price
+) {
+  const TicTacToeFactory = await ethers.getContractFactory("TicTacToe");
+  const tictactoe = await TicTacToeFactory.deploy(
+    model,
+    price
+  )
+  await tictactoe.deployed()
+  return tictactoe
 }
 
 async function deployGENft(
@@ -110,4 +144,8 @@ async function increase_time(seconds) {
   await network.provider.send("evm_mine");
 }
 
-module.exports = { deployChainAI, deployChainAIV2, deployArtNFT, deployEvolvingNFT, deployGENft, getSetTokenURI, deployTextConditionalImageGeneration };
+module.exports = { deployChainAI,
+  deployChainAIV2, deployArtNFT, deployEvolvingNFT,
+  deployGENft, getSetTokenURI, deployTextConditionalImageGeneration,
+  deployTicTacToe, deployRLAgent
+};

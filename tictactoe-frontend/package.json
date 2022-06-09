@@ -1,0 +1,21 @@
+{
+  "name": "evolving-nft",
+  "version": "1.0.0",
+  "description": "",
+  "start": "node index.js",
+  "dev": "npx parcel ./src/index.html --no-cache",
+  "build": "parcel build ./src/index.html --dist-dir build",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^2.2.0",
+    "process": "^0.11.10"
+  },
+  "dependencies": {
+    "ethers": "^5.5.3"
+  }
+}
