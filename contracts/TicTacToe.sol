@@ -165,7 +165,12 @@ contract TicTacToe {
         Game storage game = games[gameId];
         require(game.status == GameStatus.InProgress, "Game not in progress");
         // add if statement to allow callback to come from oracle
-        require(game.playerToMove == msg.sender, "Not your turn");
+        if (game.playerToMove == model) {
+            RLAgent agent = RLAgent(model);
+            require(agent.oracle() == msg.sender, "Not your turn");
+        } else {
+            require(game.playerToMove == msg.sender, "Not your turn");
+        }
         require(((xLoc <= 2) && (yLoc <= 2)), "Out of bounds move");
         require(game.board[xLoc][yLoc] == 0, "Spot already taken");
         if (msg.sender == game.playerOne) {
