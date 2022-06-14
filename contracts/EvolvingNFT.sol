@@ -70,13 +70,14 @@ contract EvolvingNFT is ERC721, ERC721Enumerable, ERC721URIStorage {
 
     function setOutput(
         uint256 id,
-        string memory location
+        bytes memory location
     ) external {
         TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
         address oracle = modelContract.oracle();
         require(msg.sender == oracle, "Not oracle");
-        _setTokenURI(id, location);
-        emit TokenUriSet(id, location);
+        string memory locationStr = abi.decode(location, (string));
+        _setTokenURI(id, locationStr);
+        emit TokenUriSet(id, locationStr);
     }
 
     function _beforeTokenTransfer(

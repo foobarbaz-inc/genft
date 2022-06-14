@@ -102,6 +102,10 @@ viewGame.addEventListener("click", async () => {
   await refreshGameGallery(parseInt(inputGameId2.value));
 })
 
+function makeMove(xLoc, yLoc) {
+  var abiCoder = ethers.utils.defaultAbiCoder;
+  return abiCoder.encode(['uint256', 'uint256'], [xLoc, yLoc]);
+}
 
 async function refreshGameGallery(gameId) {
   var game = await contract.games(gameId);
@@ -130,7 +134,10 @@ async function refreshGameGallery(gameId) {
       console.log("xLoc: ", xLoc.value);
       console.log("yLoc: ", yLoc.value);
       try {
-        await contract.connect(signer).move(gameId, parseInt(xLoc.value), parseInt(yLoc.value));
+        var xLoc = parseInt(xLoc.value);
+        var yLoc = parseInt(yLoc.value);
+        var move = makeMove(xLoc, yLoc);
+        await contract.connect(signer).move(gameId, move);
       } catch (error) {
         console.log(error)
       }
