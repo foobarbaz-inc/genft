@@ -1,0 +1,42 @@
+<head>
+<title>AI TicTacToe</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script type="module" src="./index.js"></script>
+<style>
+
+#nftGallery {
+    width: 1600px;
+    margin: 10px auto;
+}
+
+.img_holder {
+    float: left;
+    margin: 10px;
+    text-align: center;
+}
+
+.img_holder img {
+    width: 300px;
+}
+
+.clear {
+    clear: both;
+}
+
+</style>
+</head>
+
+<body>
+<h1>AI TicTacToe</h1>
+
+<p><b>Available Games:   </b><span id="valueOutput">Loading...</span></p>
+<p> Start a new game, or join one started by a friend! </p>
+<p> Challenge our on-chain AI and see if you can beat it. </p>
+<input type="text" id="inputGameId">
+<button id="joinGame">Join Game</button><br><br>
+<input type="text" id="inputGameId2">
+<button id="viewGame">Return To Game</button><br><br>
+<button id="startGame">Start New Game</button>
+<div id="gameGallery"></div>
+<div class="clear"></div>
+</body>

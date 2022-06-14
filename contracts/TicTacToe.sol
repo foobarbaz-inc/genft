@@ -9,15 +9,15 @@ contract TicTacToe {
     address private owner;
     address public model;
     uint256 gameCost;
-    uint256 latestGameId;
+    uint256 public latestGameId;
     string public playerOneSymbol;
     string public playerTwoSymbol;
 
     struct Game {
         uint256 id;
+        uint256 playerToMove;
         address playerOne; // player one will play X
         address playerTwo; // player two will play O
-        address playerToMove;
         address winner;
         uint256[3][3] board;
         GameStatus status;
@@ -51,6 +51,10 @@ contract TicTacToe {
         _;
     }
 
+    function getGameBoard(uint256 gameId) external view validGame(gameId) returns (uint256[3][3] memory) {
+        return games[gameId].board;
+    }
+
     function createGame(bool autoplay) external payable returns (uint256){
         require(msg.value == gameCost, "Remit game cost");
         latestGameId++;
@@ -74,12 +78,12 @@ contract TicTacToe {
         if (autoplay) {
             require(msg.sender == address(this), "Cannot choose autoplay");
             game.playerTwo = model;
-            game.playerToMove = game.playerOne;
+            game.playerToMove = 1;
             game.status = GameStatus.InProgress;
             emit GameJoined(gameId, model);
         } else {
             game.playerTwo = msg.sender;
-            game.playerToMove = game.playerOne;
+            game.playerToMove = 1;
             game.status = GameStatus.InProgress;
             emit GameJoined(gameId, msg.sender);
         }
@@ -165,22 +169,26 @@ contract TicTacToe {
         Game storage game = games[gameId];
         require(game.status == GameStatus.InProgress, "Game not in progress");
         // add if statement to allow callback to come from oracle
-        if (game.playerToMove == model) {
-            RLAgent agent = RLAgent(model);
-            require(agent.oracle() == msg.sender, "Not your turn");
+        if (game.playerToMove == 1) {
+            require(game.playerOne == msg.sender, "Not your turn");
         } else {
-            require(game.playerToMove == msg.sender, "Not your turn");
+            if (game.playerTwo == model) {
+                RLAgent agent = RLAgent(model);
+                require(agent.oracle() == msg.sender, "Not your turn");
+            } else {
+                require(game.playerTwo == msg.sender, "Not your turn");
+            }
         }
         require(((xLoc <= 2) && (yLoc <= 2)), "Out of bounds move");
         require(game.board[xLoc][yLoc] == 0, "Spot already taken");
-        if (msg.sender == game.playerOne) {
+        if (game.playerToMove == 1) {
             game.board[xLoc][yLoc] = 1;
             emit Move(gameId, msg.sender, xLoc, yLoc, playerOneSymbol);
-            game.playerToMove = game.playerTwo;
+            game.playerToMove = 2;
         } else {
             game.board[xLoc][yLoc] = 2;
             emit Move(gameId, msg.sender, xLoc, yLoc, playerTwoSymbol);
-            game.playerToMove = game.playerOne;
+            game.playerToMove = 1;
         }
         // now check if the game ends
         GameStatus newGameStatus = _checkGameEnd(game);
