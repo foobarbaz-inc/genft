@@ -163,8 +163,7 @@ contract TicTacToe {
 
     function move(
         uint256 gameId,
-        uint256 xLoc,
-        uint256 yLoc
+        bytes memory location
     ) external validGame(gameId) returns (GameStatus){
         Game storage game = games[gameId];
         require(game.status == GameStatus.InProgress, "Game not in progress");
@@ -179,6 +178,7 @@ contract TicTacToe {
                 require(game.playerTwo == msg.sender, "Not your turn");
             }
         }
+        (uint256 xLoc, uint256 yLoc) = abi.decode(location, (uint256, uint256));
         require(((xLoc <= 2) && (yLoc <= 2)), "Out of bounds move");
         require(game.board[xLoc][yLoc] == 0, "Spot already taken");
         if (game.playerToMove == 1) {

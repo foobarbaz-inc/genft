@@ -54,8 +54,6 @@ contract ChainAIV2 is IChainAIV2 {
         string modelConfigLocation,
         DataTypes.InputDataLocationType inputDataLocationType,
         string input,
-        bytes4 callbackFunction,
-        uint256 callbackId,
         DataTypes.OutputDataLocationType outputDataLocationType,
         DataTypes.OutputDataFormat outputDataFormat,
         uint createdTimestamp
@@ -123,8 +121,6 @@ contract ChainAIV2 is IChainAIV2 {
             model.getModelLocation(),
             job.inputDataLocationType,
             job.input,
-            job.jobParams.callbackFunction,
-            job.jobParams.callbackId,
             job.outputDataLocationType,
             job.outputDataFormat,
             job.jobParams.createdTimestamp
@@ -151,7 +147,8 @@ contract ChainAIV2 is IChainAIV2 {
             // should the model automatically be restarted?
             emit JobFailed(jobId);
         } else if (jobStatus == JobStatus.Succeeded) {
-            (bool success,) = jobParams.callbackAddress.call(callbackData);
+            bytes memory newCalldata = abi.encodeWithSelector(jobParams.callbackFunction, jobParams.callbackId, callbackData);
+            (bool success,) = jobParams.callbackAddress.call(newCalldata);
             require(success, "Callback failed");
             emit JobSucceeded(jobId);
         }
