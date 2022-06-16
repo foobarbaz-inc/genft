@@ -9,19 +9,27 @@ This is a proof of concept for an oracle which allows Solidity developers to eas
 
 ## Code Organization
 
-The most up to date version of the oracle code is in ChainAIV2.sol. This contract acts as an interface between the on-chain clients of the oracle and the off-chain inference evaluation ecosystem. It collects payment for jobs, emits an event to start the off-chain inference process, and receives updates from the off-chain sequencer when the job is complete (or if it has failed). It then handles calling the client callback function with the appropriate arguments.
+All smart contracts are in the directory packages/contracts/. The most up to date version of the oracle code is in ChainAIV2.sol. This contract acts as an interface between the on-chain clients of the oracle and the off-chain inference evaluation ecosystem. It collects payment for jobs, emits an event to start the off-chain inference process, and receives updates from the off-chain sequencer when the job is complete (or if it has failed). It then handles calling the client callback function with the appropriate arguments.
 
 Model.sol is the base class for models uploaded to the platform. A model owner will define a specific subclass or instantiate one that already exists (see the example TextConditionalImageGeneration.sol that can be used for models that take text prompts and a random seed and output images, like VQGAN + CLIP or diffusion models). Model owners can set their price, and get paid when inference is run in addition to the oracle fee.
 
 EvolvingNFT.sol is an example of a project using the oracle to run inference. The mint() and _beforeTokenTransfer() functions include a call to TextConditionalImageGeneration.run(), which triggers inference from the oracle when an NFT is minted or transferred to a new owner.
 
-## Compile
-`npx hardhat compile`
+> install and start your Hardhat chain:
 
-## Test
-`npx hardhat test`
+```bash
+yarn install
+yarn chain
+```
 
-## Deploy to Rinkeby
-`export ALCHEMY_API_KEY=$ALCHEMY_API_KEY`
-`export RINKEBY_PRIVATE_KEY=$RINKEBY_PRIVATE_KEY`
-`npx hardhat run scripts/deploy-chainaiv2-and-evolving-nft.js --network rinkeby`
+> in a second terminal window, start your frontend:
+
+```bash
+yarn start
+```
+
+> in a third terminal window,  deploy your contract:
+
+```bash
+yarn deploy
+```

@@ -1,0 +1,11 @@
+type Job @entity {
+  id: ID!
+  modelCategory: Int! # uint8
+  seed: Bytes!
+  modelConfigLocation: String!
+  inputDataLocationType: Int!
+  input: String!
+  outputDataLocationType: Int!
+  outputDataFormat: Int!
+  createdTimestamp: BigInt!
+}
