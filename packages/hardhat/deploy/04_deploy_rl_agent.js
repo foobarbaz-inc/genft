@@ -17,23 +17,19 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  console.log("Deployer address: ", deployer)
+  const ChainAIV2 = await ethers.getContract("ChainAIV2", deployer);
+  // get ChainAIV2 most recent address
+  console.log("ChainAIV2 address: ", ChainAIV2.address)
+  console.log("deployer address: ", deployer)
 
-  await deploy("ChainAIV2", {
+  await deploy("RLAgent", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: [ 0 ],
+    args: [ deployer, deployer, ChainAIV2.address, true, 0, "" ],
     log: true,
     waitConfirmations: 1
   });
-
-  // Getting a previously deployed contract
-  const ChainAIV2 = await ethers.getContract("ChainAIV2", deployer);
-  // add deployer to be an approved sequencer
-  const deployerWallet = ethers.provider.getSigner()
-  var txn = await ChainAIV2.connect(deployerWallet).addSequencer("0xDf7eF8c27a6D19429B0320056ee8753Eb9a35463");
-  await txn.wait();
-  console.log("Added sequencer to oracle:", txn);
+  
   /*  await YourContract.setPurpose("Hello");
 
     To take ownership of yourContract using the ownable library uncomment next line and add the

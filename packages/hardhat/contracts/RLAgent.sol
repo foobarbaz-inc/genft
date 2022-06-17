@@ -29,13 +29,15 @@ contract RLAgent is Model {
     ) external payable {
         require(msg.value == inferencePrice, "Incorrect price");
         ChainAIV2 chainAI = ChainAIV2(oracle);
+        // create the input prompt for the model, which is the address and game ID
+        bytes memory input = abi.encode(msg.sender, gameId);
         chainAI.startJob(
             abi.encodePacked(msg.sender),
             gameId,
             msg.sender,
             callbackFunction,
             DataTypes.InputDataLocationType.OnChain,
-            "",
+            input,
             DataTypes.OutputDataLocationType.OnChain,
             DataTypes.OutputDataFormat.Raw
         );

@@ -33,13 +33,14 @@ contract TextConditionalImageGeneration is Model {
     ) external payable {
         require(msg.value == inferencePrice, "Incorrect price");
         ChainAIV2 chainAI = ChainAIV2(oracle);
+        bytes memory input = abi.encode(prompt);
         chainAI.startJob(
             seed,
             callbackId,
             msg.sender,
             callbackFunction,
             DataTypes.InputDataLocationType.OnChain,
-            prompt,
+            input,
             DataTypes.OutputDataLocationType.Arweave,
             outputDataFormat
         );

@@ -6,7 +6,7 @@ dataSources:
     name: ChainAIV2
     network: rinkeby
     source:
-      address: "0xD54C1f63601cDEcA4553E5C90fD68D1ECc2351a9"
+      address: "0x09abd805173Ca8bbbe031A7c8E1558cDba7E8F36"
       abi: ChainAIV2
       startBlock: 10505997
     mapping:
@@ -19,6 +19,6 @@ dataSources:
         - name: ChainAIV2
           file: ./abis/rinkeby_ChainAIV2.json
       eventHandlers:
-        - event: JobCreated(uint256,uint8,bytes,string,uint8,string,uint8,uint8,uint256)
+        - event: JobCreated(uint256,uint8,bytes,string,uint8,bytes,uint8,uint8,uint256)
           handler: handleJobCreated
       file: ./src/mapping.ts
