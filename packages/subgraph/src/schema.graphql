@@ -4,7 +4,7 @@ type Job @entity {
   seed: Bytes!
   modelConfigLocation: String!
   inputDataLocationType: Int!
-  input: String!
+  input: Bytes!
   outputDataLocationType: Int!
   outputDataFormat: Int!
   createdTimestamp: BigInt!
