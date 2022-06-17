@@ -29,7 +29,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const ChainAIV2 = await ethers.getContract("ChainAIV2", deployer);
   // add deployer to be an approved sequencer
   const deployerWallet = ethers.provider.getSigner()
-  var txn = await ChainAIV2.connect(deployerWallet).addSequencer(deployer);
+  var txn = await ChainAIV2.connect(deployerWallet).addSequencer("0xDf7eF8c27a6D19429B0320056ee8753Eb9a35463");
   await txn.wait();
   console.log("Added sequencer to oracle:", txn);
   /*  await YourContract.setPurpose("Hello");

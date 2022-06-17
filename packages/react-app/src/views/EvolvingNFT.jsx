@@ -2,13 +2,13 @@ import { Button, Card, DatePicker, Divider, Image, Input, List, Progress, Slider
 import React, { useCallback, useState, useEffect } from "react";
 import { utils } from "ethers";
 import { useContractReader } from "eth-hooks";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 import { SyncOutlined } from "@ant-design/icons";
 
 import { Address, Balance, Events } from "../components";
 
 
 export default function EvolvingNFT({
-  purpose,
   address,
   mainnetProvider,
   localProvider,
@@ -22,24 +22,6 @@ export default function EvolvingNFT({
   const [nftNum, setNftNum] = useState(0);
   const [nfts, setNfts] = useState([]);
 
-  //const nftNum = useContractReader(readContracts, "EvolvingNFT", "balanceOf", [address ?? '']);
-  //setNftNum(numTokensOwned);
-  // readContracts.EvolvingNFT.balanceOf(address ?? '').then(
-  //   setNftNum(res);
-  //   console.log("NFT num: ", nftNum);
-  // );
-  //console.log("NFT num: ", nftNum);
-
-  // var tokenNum = readContracts.EvolvingNFT.balanceOf(address ?? '');
-  // var tokensOwned = [];
-  // for (var i = 0; i < tokenNum; i++) {
-  //   var tokenId = readContracts.EvolvingNFT.tokenOfOwnerByIndex(address ?? '', i);
-  //   var uri = readContracts.EvolvingNFT.tokenURI(tokenId);
-  //   var tokenPrompt = readContracts.EvolvingNFT.tokenIdToDataInput(tokenId);
-  //   tokensOwned.push({"uri": uri, "tokenPrompt": tokenPrompt, "tokenId": tokenId})
-  // }
-  // console.log("NFTs owned: ", tokensOwned);
-  // setNfts(tokensOwned);
 
   const refreshNfts = useCallback(async () => {
     try {
@@ -60,9 +42,11 @@ export default function EvolvingNFT({
     }
   }, [])
 
+  const tokenUriSetEvents = useEventListener(readContracts, "EvolvingNFT", "TokenUriSet", localProvider, 0);
+
   useEffect(() => {
     refreshNfts();
-  }, []);
+  }, [tokenUriSetEvents]);
 
   return (
     <div>
@@ -72,7 +56,7 @@ export default function EvolvingNFT({
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 64 }}>
         <h2>Evolving NFT:</h2>
         <Divider />
-        <div style={{ margin: 8 }}>
+        <div style={{ margin: "auto", width: 400 }}>
           <Input
             onChange={e => {
               setPrompt(e.target.value);
@@ -100,6 +84,7 @@ export default function EvolvingNFT({
               });
               console.log("awaiting metamask/web3 confirm result...", result);
               console.log(await result);
+              refreshNfts();
             }}
           >
             Mint with a prompt!
@@ -121,7 +106,7 @@ export default function EvolvingNFT({
             </List.Item>
           )}
         />
-        Evolving NFT Contract Address:
+        Evolving NFT Contract Address:   
         <Address
           address={readContracts && readContracts.EvolvingNFT ? readContracts.EvolvingNFT.address : null}
           ensProvider={mainnetProvider}
@@ -129,14 +114,6 @@ export default function EvolvingNFT({
         />
         <Divider />
       </div>
-      <Events
-        contracts={readContracts}
-        contractName="EvolvingNFT"
-        eventName="Transfer"
-        localProvider={localProvider}
-        mainnetProvider={mainnetProvider}
-        startBlock={1}
-      />
     </div>
   );
 }
