@@ -43,7 +43,7 @@ contract ChainAIV2 is IChainAIV2 {
         uint256 modelVersion;
         address model;
         bytes seed;
-        string input;
+        bytes input;
         bytes output;
     }
 
@@ -53,7 +53,7 @@ contract ChainAIV2 is IChainAIV2 {
         bytes seed,
         string modelConfigLocation,
         DataTypes.InputDataLocationType inputDataLocationType,
-        string input,
+        bytes input,
         DataTypes.OutputDataLocationType outputDataLocationType,
         DataTypes.OutputDataFormat outputDataFormat,
         uint createdTimestamp
@@ -79,7 +79,7 @@ contract ChainAIV2 is IChainAIV2 {
         address callbackAddress,
         bytes4 callbackFunction,
         DataTypes.InputDataLocationType inputDataLocationType,
-        string memory input,
+        bytes memory input,
         DataTypes.OutputDataLocationType outputDataLocationType,
         DataTypes.OutputDataFormat outputDataFormat
     ) external payable {
