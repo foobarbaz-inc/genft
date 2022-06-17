@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, EvolvingNFT, Hints, Subgraph } from "./views";
+import { Home, ExampleUI, EvolvingNFT, Hints, INFTCreator, Subgraph, TicTacToe } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -311,6 +311,32 @@ function App(props) {
             readContracts={readContracts}
           />
         </Route>
+        <Route path="/tictactoe">
+          <EvolvingNFT
+            address={address}
+            userSigner={userSigner}
+            mainnetProvider={mainnetProvider}
+            localProvider={localProvider}
+            yourLocalBalance={yourLocalBalance}
+            price={price}
+            tx={tx}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+          />
+        </Route>
+        <Route path="/inftcreator">
+          <INFTCreator
+            address={address}
+            userSigner={userSigner}
+            mainnetProvider={mainnetProvider}
+            localProvider={localProvider}
+            yourLocalBalance={yourLocalBalance}
+            price={price}
+            tx={tx}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+          />
+        </Route>
         <Route exact path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components
@@ -319,6 +345,33 @@ function App(props) {
             */}
           <Contract
               name="EvolvingNFT"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+          />
+          <Contract
+              name="EvolvingNFT2"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+          />
+          <Contract
+              name="TicTacToe"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+          />
+          <Contract
+              name="RLAgent"
               price={price}
               signer={userSigner}
               provider={localProvider}
