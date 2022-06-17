@@ -55,7 +55,6 @@ export default function INFTCreator({
       */}
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 64 }}>
         <h2>iNFT Creator:</h2>
-        <h4>Imagine an image of a tree that changes dynamically with the seasons, or allows you to add birds, or pick apples from it, with imagery that auto-updates to reflect the change in state. Or a car, which you can take on multiple types of terrain, re-paint, or crash. All this is now possible using the power of generative modeling to dynamically create imagery. Use the latest in generative ML to create your own interactive NFT with dynamic, stateful art.</h4>
         <Divider />
         <div style={{ margin: "auto", width: 400 }}>
           <Input

@@ -64,6 +64,23 @@ contract EvolvingNFT is ERC721, ERC721Enumerable, ERC721URIStorage {
         return currentTokenId;
     }
 
+    function evolve(uint256 tokenId, string memory prompt) external payable returns (uint) {
+        require(ownerOf(tokenId) == msg.sender, "Not owner");
+        require(msg.value >= price(), "Insufficient payment for evolving");
+        TextConditionalImageGeneration modelContract = TextConditionalImageGeneration(model);
+        uint inferencePrice = modelContract.price();
+        modelContract.run{value: inferencePrice}(
+            prompt, // text prompt passed in
+            tokenId, // current token ID acts as "callback ID for this job"
+            this.setOutput.selector, // this is the callback function selector
+            abi.encodePacked(msg.sender), // this is the random seed passed in (wallet address)
+            DataTypes.OutputDataFormat.NFTMeta // tells the worker to put the output in NFT format
+        );
+        tokenIdToDataInput[tokenId] = prompt;
+        _setTokenURI(tokenId, loadingImg);
+        return currentTokenId;
+    }
+
     function setMintPriceToThisContract(uint256 price_) external onlyOwner {
         mintPriceToThisContract = price_;
     }
