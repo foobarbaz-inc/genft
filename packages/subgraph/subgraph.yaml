@@ -1,4 +1,4 @@
-specVersion: 0.0.2
+specVersion: 0.0.4
 schema:
   file: ./src/schema.graphql
 dataSources:
@@ -6,7 +6,7 @@ dataSources:
     name: ChainAIV2
     network: rinkeby
     source:
-      address: "0x0c083303B9B46C1c2D74419e4b2E51293b89fD3A"
+      address: "0xD54C1f63601cDEcA4553E5C90fD68D1ECc2351a9"
       abi: ChainAIV2
       startBlock: 10505997
     mapping:

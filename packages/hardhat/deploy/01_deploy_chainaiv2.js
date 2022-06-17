@@ -27,6 +27,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // Getting a previously deployed contract
   const ChainAIV2 = await ethers.getContract("ChainAIV2", deployer);
+  // add deployer to be an approved sequencer
+  const deployerWallet = ethers.provider.getSigner()
+  var txn = await ChainAIV2.connect(deployerWallet).addSequencer(deployer);
+  await txn.wait();
+  console.log("Added sequencer to oracle:", txn);
   /*  await YourContract.setPurpose("Hello");
 
     To take ownership of yourContract using the ownable library uncomment next line and add the
