@@ -74,7 +74,7 @@ module.exports = {
       */
     },
     rinkeby: {
-      url: "https://eth-rinkeby.alchemyapi.io/v2/HueAAp5afF0YDUItvO1acuGLD3frSZGs", 
+      url: "https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_API_KEY}", // <---- YOUR INFURA ID! (or it won't work)
       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
       accounts: {
         mnemonic: mnemonic(),
