@@ -312,7 +312,7 @@ function App(props) {
           />
         </Route>
         <Route path="/tictactoe">
-          <EvolvingNFT
+          <TicTacToe
             address={address}
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
