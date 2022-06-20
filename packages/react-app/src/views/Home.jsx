@@ -15,7 +15,10 @@ function Home({ yourLocalBalance, readContracts }) {
   return (
     <div>
       <div style={{ margin: 32 }}>
-        Welcome to the Buffalo Labs demo. Here we have 3 example projects using the Buffalo ML oracle -- EvolvingNFT, AI TicTacToe, and iNFT Creator.
+        Welcome to the Buffalo Labs demo.
+      </div>
+      <div style ={{ margin: 32 }}>
+        Here we showcase an example project using the Buffalo Labs ML oracle -- EvolvingNFT, the first generative art project making use of an on-chain model. In iNFTCreator, see how you can use the Buffalo Solidity SDK to make your own generative art NFT project.
       </div>
     </div>
   );
