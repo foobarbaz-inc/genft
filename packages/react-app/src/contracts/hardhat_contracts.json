@@ -1,0 +1,4862 @@
+{
+  "4": {
+    "rinkeby": {
+      "name": "rinkeby",
+      "chainId": "4",
+      "contracts": {
+        "ChainAIV2": {
+          "address": "0x09abd805173Ca8bbbe031A7c8E1558cDba7E8F36",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "inferencePrice_",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "jobId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum DataTypes.ModelCategory",
+                  "name": "modelCategory",
+                  "type": "uint8"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bytes",
+                  "name": "seed",
+                  "type": "bytes"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "modelConfigLocation",
+                  "type": "string"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum DataTypes.InputDataLocationType",
+                  "name": "inputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bytes",
+                  "name": "input",
+                  "type": "bytes"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum DataTypes.OutputDataLocationType",
+                  "name": "outputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum DataTypes.OutputDataFormat",
+                  "name": "outputDataFormat",
+                  "type": "uint8"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "createdTimestamp",
+                  "type": "uint256"
+                }
+              ],
+              "name": "JobCreated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "jobId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "JobFailed",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "jobId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "JobSucceeded",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "model",
+                  "type": "address"
+                }
+              ],
+              "name": "ModelAdded",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "model",
+                  "type": "address"
+                }
+              ],
+              "name": "addModel",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "sequencer",
+                  "type": "address"
+                }
+              ],
+              "name": "addSequencer",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "inferencePrice",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "jobs",
+              "outputs": [
+                {
+                  "components": [
+                    {
+                      "internalType": "enum ChainAIV2.JobStatus",
+                      "name": "status",
+                      "type": "uint8"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "id",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "createdTimestamp",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "callbackId",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "callbackAddress",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "bytes4",
+                      "name": "callbackFunction",
+                      "type": "bytes4"
+                    }
+                  ],
+                  "internalType": "struct ChainAIV2.JobParams",
+                  "name": "jobParams",
+                  "type": "tuple"
+                },
+                {
+                  "internalType": "enum DataTypes.InputDataLocationType",
+                  "name": "inputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataLocationType",
+                  "name": "outputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataFormat",
+                  "name": "outputDataFormat",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "modelVersion",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "model",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "seed",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "input",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "output",
+                  "type": "bytes"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "latestJobId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "name": "models",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "model",
+                  "type": "address"
+                }
+              ],
+              "name": "removeModel",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "sequencer",
+                  "type": "address"
+                }
+              ],
+              "name": "removeSequencer",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "name": "sequencers",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes",
+                  "name": "seed",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "callbackId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "callbackAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bytes4",
+                  "name": "callbackFunction",
+                  "type": "bytes4"
+                },
+                {
+                  "internalType": "enum DataTypes.InputDataLocationType",
+                  "name": "inputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "input",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataLocationType",
+                  "name": "outputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataFormat",
+                  "name": "outputDataFormat",
+                  "type": "uint8"
+                }
+              ],
+              "name": "startJob",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "updateInferencePrice",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "jobId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum ChainAIV2.JobStatus",
+                  "name": "jobStatus",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "callbackData",
+                  "type": "bytes"
+                }
+              ],
+              "name": "updateJobStatus",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "EvolvingNFT": {
+          "address": "0x10cb976DC69915C0966291bE15B77d1f98Ea5eba",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "model_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "loadingImg_",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "approved",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Approval",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bool",
+                  "name": "approved",
+                  "type": "bool"
+                }
+              ],
+              "name": "ApprovalForAll",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "tokenURI",
+                  "type": "string"
+                }
+              ],
+              "name": "TokenUriSet",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Transfer",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "approve",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                }
+              ],
+              "name": "balanceOf",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "currentTokenId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "prompt",
+                  "type": "string"
+                }
+              ],
+              "name": "evolve",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getApproved",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                }
+              ],
+              "name": "isApprovedForAll",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "loadingImg",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "prompt",
+                  "type": "string"
+                }
+              ],
+              "name": "mint",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "model",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "name",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ownerOf",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "price",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "safeTransferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "_data",
+                  "type": "bytes"
+                }
+              ],
+              "name": "safeTransferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "approved",
+                  "type": "bool"
+                }
+              ],
+              "name": "setApprovalForAll",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "newLoadingImg",
+                  "type": "string"
+                }
+              ],
+              "name": "setLoadingImage",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "price_",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setMintPriceToThisContract",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "id",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "location",
+                  "type": "bytes"
+                }
+              ],
+              "name": "setOutput",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes4",
+                  "name": "interfaceId",
+                  "type": "bytes4"
+                }
+              ],
+              "name": "supportsInterface",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "symbol",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "index",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenByIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenIdToDataInput",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "index",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenOfOwnerByIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenURI",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "totalSupply",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "transferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "EvolvingNFT2": {
+          "address": "0xe0908f374b5d1185de26D1035a019421918F2C12",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "model_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "loadingImg_",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "approved",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Approval",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bool",
+                  "name": "approved",
+                  "type": "bool"
+                }
+              ],
+              "name": "ApprovalForAll",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "tokenURI",
+                  "type": "string"
+                }
+              ],
+              "name": "TokenUriSet",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Transfer",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "actionIdToActionText",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "actionIdToPrompt",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "approve",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                }
+              ],
+              "name": "balanceOf",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "currentActionId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "currentTokenId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getApproved",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                }
+              ],
+              "name": "isApprovedForAll",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "loadingImg",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string[]",
+                  "name": "actions",
+                  "type": "string[]"
+                },
+                {
+                  "internalType": "string[]",
+                  "name": "prompts",
+                  "type": "string[]"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "defaultActionIndex",
+                  "type": "uint256"
+                }
+              ],
+              "name": "mint",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "model",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "name",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ownerOf",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "price",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "actionId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "regenerate",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "safeTransferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "_data",
+                  "type": "bytes"
+                }
+              ],
+              "name": "safeTransferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "approved",
+                  "type": "bool"
+                }
+              ],
+              "name": "setApprovalForAll",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "newLoadingImg",
+                  "type": "string"
+                }
+              ],
+              "name": "setLoadingImage",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "price_",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setMintPriceToThisContract",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "id",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "location",
+                  "type": "bytes"
+                }
+              ],
+              "name": "setOutput",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes4",
+                  "name": "interfaceId",
+                  "type": "bytes4"
+                }
+              ],
+              "name": "supportsInterface",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "symbol",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "index",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenByIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenIdToActionIds",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenIdToCurrentActionId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "index",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenOfOwnerByIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenURI",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "totalSupply",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "transferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "RLAgent": {
+          "address": "0x06A8197959ef99d8bAE9d6A1ce4459B3d2220bf3",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracleAdmin_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "upgradeable_",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "inferencePrice_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "modelLocation_",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "inputs": [],
+              "name": "getModelLocation",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "latestModelVersionNum",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "modelCategory",
+              "outputs": [
+                {
+                  "internalType": "enum DataTypes.ModelCategory",
+                  "name": "",
+                  "type": "uint8"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "modelLocationsByVersion",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "oracle",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "price",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes4",
+                  "name": "callbackFunction",
+                  "type": "bytes4"
+                }
+              ],
+              "name": "run",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "updateInferencePrice",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "newModelLocation",
+                  "type": "string"
+                }
+              ],
+              "name": "updateModel",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "newOracle",
+                  "type": "address"
+                }
+              ],
+              "name": "updateOracle",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "newOracleAdmin",
+                  "type": "address"
+                }
+              ],
+              "name": "updateOracleAdmin",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "TextConditionalImageGeneration": {
+          "address": "0xee46daCD14Bf468890C23E5B45a8189a2B041814",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracleAdmin_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "upgradeable_",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "inferencePrice_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "modelLocation_",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "inputs": [],
+              "name": "getModelLocation",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "latestModelVersionNum",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "modelCategory",
+              "outputs": [
+                {
+                  "internalType": "enum DataTypes.ModelCategory",
+                  "name": "",
+                  "type": "uint8"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "modelLocationsByVersion",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "oracle",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "price",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "prompt",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "callbackId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes4",
+                  "name": "callbackFunction",
+                  "type": "bytes4"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "seed",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataFormat",
+                  "name": "outputDataFormat",
+                  "type": "uint8"
+                }
+              ],
+              "name": "run",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "updateInferencePrice",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "newModelLocation",
+                  "type": "string"
+                }
+              ],
+              "name": "updateModel",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "newOracle",
+                  "type": "address"
+                }
+              ],
+              "name": "updateOracle",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "newOracleAdmin",
+                  "type": "address"
+                }
+              ],
+              "name": "updateOracleAdmin",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "TicTacToe": {
+          "address": "0xdd881F348DfFF288C8275654330a3E59c4891093",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "model_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "gameCost_",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "creator",
+                  "type": "address"
+                }
+              ],
+              "name": "GameCreated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "joiner",
+                  "type": "address"
+                }
+              ],
+              "name": "GameJoined",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum TicTacToe.GameStatus",
+                  "name": "gameStatus",
+                  "type": "uint8"
+                }
+              ],
+              "name": "GameOver",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "mover",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "xLoc",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "yLoc",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "symbol",
+                  "type": "string"
+                }
+              ],
+              "name": "Move",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bool",
+                  "name": "autoplay",
+                  "type": "bool"
+                }
+              ],
+              "name": "createGame",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "games",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "id",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "playerToMove",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "playerOne",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "playerTwo",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "winner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "enum TicTacToe.GameStatus",
+                  "name": "status",
+                  "type": "uint8"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getGameBoard",
+              "outputs": [
+                {
+                  "internalType": "uint256[3][3]",
+                  "name": "",
+                  "type": "uint256[3][3]"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "autoplay",
+                  "type": "bool"
+                }
+              ],
+              "name": "joinGame",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "latestGameId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "model",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "location",
+                  "type": "bytes"
+                }
+              ],
+              "name": "move",
+              "outputs": [
+                {
+                  "internalType": "enum TicTacToe.GameStatus",
+                  "name": "",
+                  "type": "uint8"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "playerOneSymbol",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "playerTwoSymbol",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "31337": {
+    "localhost": {
+      "name": "localhost",
+      "chainId": "31337",
+      "contracts": {
+        "ChainAIV2": {
+          "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "inferencePrice_",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "jobId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum DataTypes.ModelCategory",
+                  "name": "modelCategory",
+                  "type": "uint8"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bytes",
+                  "name": "seed",
+                  "type": "bytes"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "modelConfigLocation",
+                  "type": "string"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum DataTypes.InputDataLocationType",
+                  "name": "inputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bytes",
+                  "name": "input",
+                  "type": "bytes"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum DataTypes.OutputDataLocationType",
+                  "name": "outputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum DataTypes.OutputDataFormat",
+                  "name": "outputDataFormat",
+                  "type": "uint8"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "createdTimestamp",
+                  "type": "uint256"
+                }
+              ],
+              "name": "JobCreated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "jobId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "JobFailed",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "jobId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "JobSucceeded",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "model",
+                  "type": "address"
+                }
+              ],
+              "name": "ModelAdded",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "model",
+                  "type": "address"
+                }
+              ],
+              "name": "addModel",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "sequencer",
+                  "type": "address"
+                }
+              ],
+              "name": "addSequencer",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "inferencePrice",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "jobs",
+              "outputs": [
+                {
+                  "components": [
+                    {
+                      "internalType": "enum ChainAIV2.JobStatus",
+                      "name": "status",
+                      "type": "uint8"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "id",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "createdTimestamp",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "callbackId",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "callbackAddress",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "bytes4",
+                      "name": "callbackFunction",
+                      "type": "bytes4"
+                    }
+                  ],
+                  "internalType": "struct ChainAIV2.JobParams",
+                  "name": "jobParams",
+                  "type": "tuple"
+                },
+                {
+                  "internalType": "enum DataTypes.InputDataLocationType",
+                  "name": "inputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataLocationType",
+                  "name": "outputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataFormat",
+                  "name": "outputDataFormat",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "modelVersion",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "model",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "seed",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "input",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "output",
+                  "type": "bytes"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "latestJobId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "name": "models",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "model",
+                  "type": "address"
+                }
+              ],
+              "name": "removeModel",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "sequencer",
+                  "type": "address"
+                }
+              ],
+              "name": "removeSequencer",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "name": "sequencers",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes",
+                  "name": "seed",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "callbackId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "callbackAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bytes4",
+                  "name": "callbackFunction",
+                  "type": "bytes4"
+                },
+                {
+                  "internalType": "enum DataTypes.InputDataLocationType",
+                  "name": "inputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "input",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataLocationType",
+                  "name": "outputDataLocationType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataFormat",
+                  "name": "outputDataFormat",
+                  "type": "uint8"
+                }
+              ],
+              "name": "startJob",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "updateInferencePrice",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "jobId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum ChainAIV2.JobStatus",
+                  "name": "jobStatus",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "callbackData",
+                  "type": "bytes"
+                }
+              ],
+              "name": "updateJobStatus",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "EvolvingNFT": {
+          "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "model_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "loadingImg_",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "approved",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Approval",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bool",
+                  "name": "approved",
+                  "type": "bool"
+                }
+              ],
+              "name": "ApprovalForAll",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "tokenURI",
+                  "type": "string"
+                }
+              ],
+              "name": "TokenUriSet",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Transfer",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "approve",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                }
+              ],
+              "name": "balanceOf",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "currentTokenId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getApproved",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                }
+              ],
+              "name": "isApprovedForAll",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "loadingImg",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "prompt",
+                  "type": "string"
+                }
+              ],
+              "name": "mint",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "model",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "name",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ownerOf",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "price",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "safeTransferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "_data",
+                  "type": "bytes"
+                }
+              ],
+              "name": "safeTransferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "approved",
+                  "type": "bool"
+                }
+              ],
+              "name": "setApprovalForAll",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "newLoadingImg",
+                  "type": "string"
+                }
+              ],
+              "name": "setLoadingImage",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "price_",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setMintPriceToThisContract",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "id",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "location",
+                  "type": "bytes"
+                }
+              ],
+              "name": "setOutput",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes4",
+                  "name": "interfaceId",
+                  "type": "bytes4"
+                }
+              ],
+              "name": "supportsInterface",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "symbol",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "index",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenByIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenIdToDataInput",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "index",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenOfOwnerByIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenURI",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "totalSupply",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "transferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "EvolvingNFT2": {
+          "address": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "model_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "loadingImg_",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "approved",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Approval",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bool",
+                  "name": "approved",
+                  "type": "bool"
+                }
+              ],
+              "name": "ApprovalForAll",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "tokenURI",
+                  "type": "string"
+                }
+              ],
+              "name": "TokenUriSet",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Transfer",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "actionIdToActionText",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "actionIdToPrompt",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "approve",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                }
+              ],
+              "name": "balanceOf",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "currentActionId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "currentTokenId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getApproved",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                }
+              ],
+              "name": "isApprovedForAll",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "loadingImg",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string[]",
+                  "name": "actions",
+                  "type": "string[]"
+                },
+                {
+                  "internalType": "string[]",
+                  "name": "prompts",
+                  "type": "string[]"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "defaultActionIndex",
+                  "type": "uint256"
+                }
+              ],
+              "name": "mint",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "model",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "name",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ownerOf",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "price",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "actionId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "regenerate",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "safeTransferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "_data",
+                  "type": "bytes"
+                }
+              ],
+              "name": "safeTransferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "operator",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "approved",
+                  "type": "bool"
+                }
+              ],
+              "name": "setApprovalForAll",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "newLoadingImg",
+                  "type": "string"
+                }
+              ],
+              "name": "setLoadingImage",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "price_",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setMintPriceToThisContract",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "id",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "location",
+                  "type": "bytes"
+                }
+              ],
+              "name": "setOutput",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes4",
+                  "name": "interfaceId",
+                  "type": "bytes4"
+                }
+              ],
+              "name": "supportsInterface",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "symbol",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "index",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenByIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenIdToActionIds",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenIdToCurrentActionId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "index",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenOfOwnerByIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "tokenURI",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "totalSupply",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "transferFrom",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "RLAgent": {
+          "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracleAdmin_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "upgradeable_",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "inferencePrice_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "modelLocation_",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "inputs": [],
+              "name": "getModelLocation",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "latestModelVersionNum",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "modelCategory",
+              "outputs": [
+                {
+                  "internalType": "enum DataTypes.ModelCategory",
+                  "name": "",
+                  "type": "uint8"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "modelLocationsByVersion",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "oracle",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "price",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes4",
+                  "name": "callbackFunction",
+                  "type": "bytes4"
+                }
+              ],
+              "name": "run",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "updateInferencePrice",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "newModelLocation",
+                  "type": "string"
+                }
+              ],
+              "name": "updateModel",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "newOracle",
+                  "type": "address"
+                }
+              ],
+              "name": "updateOracle",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "newOracleAdmin",
+                  "type": "address"
+                }
+              ],
+              "name": "updateOracleAdmin",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "TextConditionalImageGeneration": {
+          "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "owner_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracleAdmin_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "oracle_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "upgradeable_",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "inferencePrice_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "modelLocation_",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "inputs": [],
+              "name": "getModelLocation",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "latestModelVersionNum",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "modelCategory",
+              "outputs": [
+                {
+                  "internalType": "enum DataTypes.ModelCategory",
+                  "name": "",
+                  "type": "uint8"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "modelLocationsByVersion",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "oracle",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "price",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "prompt",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "callbackId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes4",
+                  "name": "callbackFunction",
+                  "type": "bytes4"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "seed",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "enum DataTypes.OutputDataFormat",
+                  "name": "outputDataFormat",
+                  "type": "uint8"
+                }
+              ],
+              "name": "run",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "updateInferencePrice",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "newModelLocation",
+                  "type": "string"
+                }
+              ],
+              "name": "updateModel",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "newOracle",
+                  "type": "address"
+                }
+              ],
+              "name": "updateOracle",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "newOracleAdmin",
+                  "type": "address"
+                }
+              ],
+              "name": "updateOracleAdmin",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
+        "TicTacToe": {
+          "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "model_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "gameCost_",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "creator",
+                  "type": "address"
+                }
+              ],
+              "name": "GameCreated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "joiner",
+                  "type": "address"
+                }
+              ],
+              "name": "GameJoined",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "enum TicTacToe.GameStatus",
+                  "name": "gameStatus",
+                  "type": "uint8"
+                }
+              ],
+              "name": "GameOver",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "mover",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "xLoc",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "yLoc",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "symbol",
+                  "type": "string"
+                }
+              ],
+              "name": "Move",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bool",
+                  "name": "autoplay",
+                  "type": "bool"
+                }
+              ],
+              "name": "createGame",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "games",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "id",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "playerToMove",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "playerOne",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "playerTwo",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "winner",
+                  "type": "address"
+                },
+                {
+                  "internalType": "enum TicTacToe.GameStatus",
+                  "name": "status",
+                  "type": "uint8"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getGameBoard",
+              "outputs": [
+                {
+                  "internalType": "uint256[3][3]",
+                  "name": "",
+                  "type": "uint256[3][3]"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "autoplay",
+                  "type": "bool"
+                }
+              ],
+              "name": "joinGame",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "latestGameId",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "model",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "location",
+                  "type": "bytes"
+                }
+              ],
+              "name": "move",
+              "outputs": [
+                {
+                  "internalType": "enum TicTacToe.GameStatus",
+                  "name": "",
+                  "type": "uint8"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "playerOneSymbol",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "playerTwoSymbol",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "gameId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

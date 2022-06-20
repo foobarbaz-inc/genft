@@ -1,0 +1,580 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "trainingPrice_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "inferencePrice_",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "jobId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ChainAI.JobDataType",
+        "name": "dataType",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "seed",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "modelStorageLocation",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "dataInputStorageLocation",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "createdTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "InferenceJobCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "jobId",
+        "type": "uint256"
+      }
+    ],
+    "name": "JobFailed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "jobId",
+        "type": "uint256"
+      }
+    ],
+    "name": "JobSucceeded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "jobId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ChainAI.JobDataType",
+        "name": "dataType",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "seed",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "dataZipStorageLocation",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "modelStorageLocation",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "initFnStorageLocation",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "lossFnStorageLocation",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ChainAI.Optimizer",
+        "name": "optimizer",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "learning_rate_x1e8",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "batch_size",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "epochs",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "createdTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "TrainingJobCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sequencer",
+        "type": "address"
+      }
+    ],
+    "name": "addSequencer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "inferencePrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "inference_jobs",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum ChainAI.JobStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "callbackId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "callbackAddress",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct ChainAI.JobParams",
+        "name": "jobParams",
+        "type": "tuple"
+      },
+      {
+        "internalType": "enum ChainAI.JobDataType",
+        "name": "dataType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "seed",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "modelStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "dataInputStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "dataOutputStorageLocation",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "job_types",
+    "outputs": [
+      {
+        "internalType": "enum ChainAI.JobType",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sequencer",
+        "type": "address"
+      }
+    ],
+    "name": "removeSequencer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "sequencers",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum ChainAI.JobDataType",
+        "name": "dataType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "seed",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "modelStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "dataInputStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "callbackId",
+        "type": "uint256"
+      }
+    ],
+    "name": "startInferenceJob",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum ChainAI.JobDataType",
+        "name": "dataType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "seed",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "dataZipStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "modelStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "initFnStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "lossFnStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "enum ChainAI.Optimizer",
+        "name": "optimizer",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "learning_rate_x1e8",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "batch_size",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "epochs",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "callbackId",
+        "type": "uint256"
+      }
+    ],
+    "name": "startTrainingJob",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "trainingPrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "training_jobs",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum ChainAI.JobStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "callbackId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "callbackAddress",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct ChainAI.JobParams",
+        "name": "jobParams",
+        "type": "tuple"
+      },
+      {
+        "internalType": "enum ChainAI.JobDataType",
+        "name": "dataType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum ChainAI.Optimizer",
+        "name": "optimizer",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "seed",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "learning_rate_x1e8",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "batch_size",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "epochs",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "dataZipStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "modelStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "initFnStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "lossFnStorageLocation",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "modelOutputStorageLocation",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateInferencePrice",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "jobId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum ChainAI.JobStatus",
+        "name": "jobStatus",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "resultsLocation",
+        "type": "string"
+      }
+    ],
+    "name": "updateJobStatus",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateTrainingPrice",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

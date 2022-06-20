@@ -282,9 +282,6 @@ function App(props) {
         <Menu.Item key="/evolvingnft">
           <Link to="/evolvingnft">Evolving NFT</Link>
         </Menu.Item>
-        <Menu.Item key="/tictactoe">
-          <Link to="/tictactoe">AI TicTacToe</Link>
-        </Menu.Item>
         <Menu.Item key="/inftcreator">
           <Link to="/inftcreator">iNFT Creator</Link>
         </Menu.Item>
@@ -299,19 +296,6 @@ function App(props) {
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
         </Route>
         <Route path="/evolvingnft">
-          <EvolvingNFT
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-          />
-        </Route>
-        <Route path="/tictactoe">
           <EvolvingNFT
             address={address}
             userSigner={userSigner}

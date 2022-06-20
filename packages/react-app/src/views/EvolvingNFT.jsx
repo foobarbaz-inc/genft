@@ -55,6 +55,8 @@ export default function EvolvingNFT({
       */}
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 64 }}>
         <h2>Evolving NFT:</h2>
+        <h4>Imagine an image of a tree that changes with the seasons, or allows you to add birds on the branches, or pick apples from it, with imagery that auto-updates to reflect the change in state. Or a car, which you can take on multiple types of terrain, re-paint, or crash. All this is now possible using the power of generative modeling to dynamically create imagery.</h4>
+        <h2>Create your own interactive NFT with dynamic, regenerative art.</h2>
         <Divider />
         <div style={{ margin: "auto", width: 400 }}>
           <Input
@@ -100,13 +102,46 @@ export default function EvolvingNFT({
           dataSource={nfts}
           renderItem={(item) => (
             <List.Item>
-              <Card title={item.tokenPrompt}>
+              <Card title={item.tokenPrompt} style={{ titleStyle: {flexWrap: 'wrap', flexDirection: 'row'} }}>
                 <Image src={item.uri}/>
+                <Input
+                  onChange={e => {
+                    setPrompt(e.target.value);
+                  }}
+                />
+                <Button
+                  style={{ marginTop: 8 }}
+                  onClick={async () => {
+                    /* look how you call setPrompt on your contract: */
+                    /* notice how you pass a call back for tx updates too */
+                    console.log('tokenID: ', item.tokenId);
+                    const result = tx(writeContracts.EvolvingNFT.evolve(item.tokenId, prompt), update => {
+                      console.log("📡 Transaction Update:", update);
+                      if (update && (update.status === "confirmed" || update.status === 1)) {
+                        console.log(" 🍾 Transaction " + update.hash + " finished!");
+                        console.log(
+                          " ⛽️ " +
+                            update.gasUsed +
+                            "/" +
+                            (update.gasLimit || update.gas) +
+                            " @ " +
+                            parseFloat(update.gasPrice) / 1000000000 +
+                            " gwei",
+                        );
+                      }
+                    });
+                    console.log("awaiting metamask/web3 confirm result...", result);
+                    console.log(await result);
+                    refreshNfts();
+                  }}
+                >
+                  Evolve NFT!
+                </Button>
               </Card>
             </List.Item>
           )}
         />
-        Evolving NFT Contract Address:   
+        Evolving NFT Contract Address:
         <Address
           address={readContracts && readContracts.EvolvingNFT ? readContracts.EvolvingNFT.address : null}
           ensProvider={mainnetProvider}
