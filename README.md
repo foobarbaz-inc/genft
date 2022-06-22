@@ -13,23 +13,4 @@ All smart contracts are in the directory packages/contracts/. The most up to dat
 
 Model.sol is the base class for models uploaded to the platform. A model owner will define a specific subclass or instantiate one that already exists (see the example TextConditionalImageGeneration.sol that can be used for models that take text prompts and a random seed and output images, like VQGAN + CLIP or diffusion models). Model owners can set their price, and get paid when inference is run in addition to the oracle fee.
 
-EvolvingNFT.sol is an example of a project using the oracle to run inference. The mint() and _beforeTokenTransfer() functions include a call to TextConditionalImageGeneration.run(), which triggers inference from the oracle when an NFT is minted or transferred to a new owner.
-
-> install and start your Hardhat chain:
-
-```bash
-yarn install
-yarn chain
-```
-
-> in a second terminal window, start your frontend:
-
-```bash
-yarn start
-```
-
-> in a third terminal window,  deploy your contract:
-
-```bash
-yarn deploy
-```
+EvolvingNFT.sol is an example of a project using the oracle to run inference. The mint(), evolve() and _beforeTokenTransfer() functions include a call to TextConditionalImageGeneration.run(), which triggers inference from the oracle when an NFT is minted or transferred to a new owner.
