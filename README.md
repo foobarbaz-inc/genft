@@ -2,9 +2,9 @@
 
 ## Overview
 
-This project contains the current demo of the oracle & its client projects, EvolvingNFT and TicTacToeAgent. This is a work in progress and has not yet been audited or optimized for gas efficiency.
+This project contains the current demo of the oracle & its client projects, EvolvingNFT and RLAgent. This is a work in progress and has not yet been audited or optimized for gas efficiency.
 
-This is a proof of concept for an oracle which allows Solidity developers to easily use machine learning models in their smart contracts. The proof of concept demonstrates this with two projects, EvolvingNFT, which uses VQGAN + CLIP, and TicTacToe, which uses an RL agent as an autoplayer (still in progress).
+This is a proof of concept for an oracle which allows Solidity developers to easily use machine learning models in their smart contracts. The proof of concept demonstrates this with two projects, EvolvingNFT, which uses CLIP-guided diffusion, and TicTacToe, which uses an RL agent as an autoplayer (still in progress).
 
 
 ## Code Organization
