@@ -18,7 +18,7 @@ function Home({ yourLocalBalance, readContracts }) {
         Welcome to the Buffalo Labs demo.
       </div>
       <div style ={{ margin: 32 }}>
-        Here we showcase an example project using the Buffalo Labs ML oracle -- EvolvingNFT, the first generative art project making use of an on-chain model. In the Contracts tab, see how you can use the Buffalo Solidity SDK to make your own generative art NFT project.
+        Here we showcase an example project using the Buffalo Labs ML oracle -- EvolvingNFT, the first generative art project making use of a diffusion model on-chain. To test it out, please connect to the Rinkeby testnet & mint a prompt on the Evolving NFT tab. In the Contracts tab, see how you can use the Buffalo Solidity SDK to make your own generative art NFT project.
       </div>
     </div>
   );
