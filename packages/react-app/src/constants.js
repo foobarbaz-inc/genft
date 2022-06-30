@@ -7,7 +7,7 @@ export const ETHERSCAN_KEY = "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
 // BLOCKNATIVE ID FOR Notify.js:
 export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 
-export const ALCHEMY_KEY = "HueAAp5afF0YDUItvO1acuGLD3frSZGs";
+export const ALCHEMY_KEY = "Al5Mq3WbyU6-U_ToS3kofG9OFBZvxHoM";
 
 const localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`
@@ -40,7 +40,7 @@ export const NETWORKS = {
     name: "rinkeby",
     color: "#e0d068",
     chainId: 4,
-    rpcUrl: "https://eth-rinkeby.alchemyapi.io/v2/HueAAp5afF0YDUItvO1acuGLD3frSZGs",
+    rpcUrl: "https://eth-rinkeby.alchemyapi.io/v2/Al5Mq3WbyU6-U_ToS3kofG9OFBZvxHoM",
     faucet: "https://faucet.rinkeby.io/",
     blockExplorer: "https://rinkeby.etherscan.io/",
   },
